@@ -13,7 +13,10 @@ namespace helloJkw
 	{
 		static void Main(string[] args)
 		{
-			using (var host = new NancyHost(new Uri("http://localhost:80")))
+			string port = "80";
+			if (args != null && args.Count() > 0)
+				port = args[0];
+			using (var host = new NancyHost(new Uri("http://localhost:" + port)))
 			{
 				host.Start();
 				Console.ReadLine();
