@@ -13,11 +13,11 @@ namespace helloJkw
 	{
 		static void Main(string[] args)
 		{
-			string port = "80";
-			if (args != null && args.Count() > 0)
-				port = args[0];
+			Console.Write("Port: ");
+			var port = Console.ReadLine();
 			using (var host = new NancyHost(new Uri("http://localhost:" + port)))
 			{
+				Console.WriteLine("Start Lucia Shop");
 				host.Start();
 				Console.ReadLine();
 			}
