@@ -34,6 +34,7 @@ namespace helloJkw
 				Logger.Log("Start Lucia Shop");
 				host.Start();
 				Console.ReadLine();
+				Console.ReadLine();
 
 				while (true)
 				{
@@ -53,7 +54,8 @@ namespace helloJkw
 			base.ConfigureConventions(nancyConventions);
 			nancyConventions.StaticContentsConventions.Clear();
 
-			nancyConventions.StaticContentsConventions.AddDirectory("static", "static");
+			nancyConventions.StaticContentsConventions.AddDirectory("Static", "Static");
+			nancyConventions.StaticContentsConventions.AddDirectory("static", "Static");
 		}
 	}
 }
