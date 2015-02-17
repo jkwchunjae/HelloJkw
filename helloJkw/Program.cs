@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 using Nancy;
 using Nancy.Hosting.Self;
 using Nancy.Conventions;
+using Extensions;
 
 namespace helloJkw
 {
@@ -13,14 +14,46 @@ namespace helloJkw
 	{
 		static void Main(string[] args)
 		{
-			Console.Write("Port: ");
-			var port = Console.ReadLine();
+			#region Setting
+			var argsDic = args.ToCommandArgumentsDictionary().ToDefaultDictionary();
+
+			#region Port
+			string port = argsDic["port"];
+			if (port == null)
+			{
+				Console.Write("Port: ");
+				port = Console.ReadLine();
+			}
+			Logger.Log("Port: {0}", port);
+			#endregion
+
+			#endregion
+
 			using (var host = new NancyHost(new Uri("http://localhost:" + port)))
 			{
-				Console.WriteLine("Start Lucia Shop");
+				Logger.Log("Start Lucia Shop");
 				host.Start();
 				Console.ReadLine();
+
+				while (true)
+				{
+					Console.Write("Shutdown helloJkw? (Y/n): ");
+					var ans = Console.ReadLine();
+					if (ans == "Y")
+						break;
+				}
 			}
+		}
+	}
+
+	public class Bootstrapper : DefaultNancyBootstrapper
+	{
+		protected override void ConfigureConventions(NancyConventions nancyConventions)
+		{
+			base.ConfigureConventions(nancyConventions);
+			nancyConventions.StaticContentsConventions.Clear();
+
+			nancyConventions.StaticContentsConventions.AddDirectory("static", "static");
 		}
 	}
 }
