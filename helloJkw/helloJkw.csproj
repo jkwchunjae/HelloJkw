@@ -71,6 +71,9 @@
     <None Include="Static\js\jssor\jssor.slider.debug.min.compress.bat" />
     <None Include="Static\js\jssor\jssor.slider.min.compress.bat" />
     <None Include="Static\js\jssor\jssor.slider.mini.compress.bat" />
+    <None Include="Views\index2.cshtml">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
     <None Include="Views\index.cshtml">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
@@ -89,6 +92,9 @@
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
     <Content Include="Static\css\carousel.css">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Static\css\slide.css">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
     <Content Include="Static\fonts\glyphicons-halflings-regular.svg">
@@ -474,6 +480,9 @@
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
     <Content Include="Static\js\npm.js">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Static\js\slide.js">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
     <Content Include="Static\nancy-logo.png">

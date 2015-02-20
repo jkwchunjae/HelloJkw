@@ -8,5 +8,9 @@ public class IndexModule : NancyModule
 		{
 			return View["index"];
 		};
+		Get["/index2"] = _ =>
+		{
+			return View["index2"];
+		};
 	}
 }
