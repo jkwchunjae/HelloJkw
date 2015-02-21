@@ -15,7 +15,7 @@ namespace helloJkw.Modules.Jkw
 		{
 			Get["/jkw"] = _ =>
 			{
-				var files = Directory.GetFiles(@"Static\Agency\img\bg\", "*");
+				var files = Directory.GetFiles(@"Static/Agency/img/bg/", "*");
 				var rnd = new Random((int)DateTime.Now.Ticks);
 				var model = new
 				{
