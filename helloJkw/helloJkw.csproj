@@ -43,451 +43,62 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Modules\IndexModule.cs" />
+    <Compile Include="Modules\Jkw\JkwHomeModule.cs" />
+    <Compile Include="Modules\Lucia\LuciaHomeModule.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />
-    <None Include="Static\css\bootstrap-theme.css.map">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </None>
-    <None Include="Static\css\bootstrap.css.map">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </None>
-    <None Include="Static\fonts\glyphicons-halflings-regular.eot">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </None>
-    <None Include="Static\fonts\glyphicons-halflings-regular.ttf">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </None>
-    <None Include="Static\fonts\glyphicons-halflings-regular.woff">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </None>
-    <None Include="Static\fonts\glyphicons-halflings-regular.woff2">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </None>
+    <None Include="Static\Agency\font-awesome\fonts\fontawesome-webfont.eot" />
+    <None Include="Static\Agency\font-awesome\fonts\fontawesome-webfont.ttf" />
+    <None Include="Static\Agency\font-awesome\fonts\fontawesome-webfont.woff" />
+    <None Include="Static\Agency\font-awesome\fonts\FontAwesome.otf" />
+    <None Include="Static\Agency\font-awesome\less\bordered-pulled.less" />
+    <None Include="Static\Agency\font-awesome\less\core.less" />
+    <None Include="Static\Agency\font-awesome\less\fixed-width.less" />
+    <None Include="Static\Agency\font-awesome\less\font-awesome.less" />
+    <None Include="Static\Agency\font-awesome\less\icons.less" />
+    <None Include="Static\Agency\font-awesome\less\larger.less" />
+    <None Include="Static\Agency\font-awesome\less\list.less" />
+    <None Include="Static\Agency\font-awesome\less\mixins.less" />
+    <None Include="Static\Agency\font-awesome\less\path.less" />
+    <None Include="Static\Agency\font-awesome\less\rotated-flipped.less" />
+    <None Include="Static\Agency\font-awesome\less\spinning.less" />
+    <None Include="Static\Agency\font-awesome\less\stacked.less" />
+    <None Include="Static\Agency\font-awesome\less\variables.less" />
+    <None Include="Static\Agency\font-awesome\scss\font-awesome.scss" />
+    <None Include="Static\Agency\font-awesome\scss\_bordered-pulled.scss" />
+    <None Include="Static\Agency\font-awesome\scss\_core.scss" />
+    <None Include="Static\Agency\font-awesome\scss\_fixed-width.scss" />
+    <None Include="Static\Agency\font-awesome\scss\_icons.scss" />
+    <None Include="Static\Agency\font-awesome\scss\_larger.scss" />
+    <None Include="Static\Agency\font-awesome\scss\_list.scss" />
+    <None Include="Static\Agency\font-awesome\scss\_mixins.scss" />
+    <None Include="Static\Agency\font-awesome\scss\_path.scss" />
+    <None Include="Static\Agency\font-awesome\scss\_rotated-flipped.scss" />
+    <None Include="Static\Agency\font-awesome\scss\_spinning.scss" />
+    <None Include="Static\Agency\font-awesome\scss\_stacked.scss" />
+    <None Include="Static\Agency\font-awesome\scss\_variables.scss" />
+    <None Include="Static\Agency\fonts\glyphicons-halflings-regular.eot" />
+    <None Include="Static\Agency\fonts\glyphicons-halflings-regular.ttf" />
+    <None Include="Static\Agency\fonts\glyphicons-halflings-regular.woff" />
+    <None Include="Static\Agency\fonts\glyphicons-halflings-regular.woff2" />
+    <None Include="Static\Agency\less\agency.less" />
+    <None Include="Static\Agency\less\mixins.less" />
+    <None Include="Static\Agency\less\variables.less" />
+    <None Include="Static\css\bootstrap-theme.css.map" />
+    <None Include="Static\css\bootstrap.css.map" />
+    <None Include="Static\fonts\glyphicons-halflings-regular.eot" />
+    <None Include="Static\fonts\glyphicons-halflings-regular.ttf" />
+    <None Include="Static\fonts\glyphicons-halflings-regular.woff" />
+    <None Include="Static\fonts\glyphicons-halflings-regular.woff2" />
     <None Include="Static\js\jssor\jssor.player.ytiframe.compress.bat" />
     <None Include="Static\js\jssor\jssor.slider.debug.min.compress.bat" />
     <None Include="Static\js\jssor\jssor.slider.min.compress.bat" />
     <None Include="Static\js\jssor\jssor.slider.mini.compress.bat" />
-    <None Include="Views\index2.cshtml">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </None>
-    <None Include="Views\index.cshtml">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </None>
-  </ItemGroup>
-  <ItemGroup>
-    <Content Include="Static\css\bootstrap-theme.css">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
-    <Content Include="Static\css\bootstrap-theme.min.css">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
-    <Content Include="Static\css\bootstrap.css">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
-    <Content Include="Static\css\bootstrap.min.css">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
-    <Content Include="Static\css\carousel.css">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
-    <Content Include="Static\css\slide.css">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
-    <Content Include="Static\fonts\glyphicons-halflings-regular.svg">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
-    <Content Include="Static\image\card1.jpg">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
-    <Content Include="Static\image\jssor\1920\blue.jpg" />
-    <Content Include="Static\image\jssor\1920\purple.jpg" />
-    <Content Include="Static\image\jssor\1920\red.jpg" />
-    <Content Include="Static\image\jssor\a01.png" />
-    <Content Include="Static\image\jssor\a02.png" />
-    <Content Include="Static\image\jssor\a03.png" />
-    <Content Include="Static\image\jssor\a04.png" />
-    <Content Include="Static\image\jssor\a06.png" />
-    <Content Include="Static\image\jssor\a07.png" />
-    <Content Include="Static\image\jssor\a08.png" />
-    <Content Include="Static\image\jssor\a09.png" />
-    <Content Include="Static\image\jssor\a10.png" />
-    <Content Include="Static\image\jssor\a11.png" />
-    <Content Include="Static\image\jssor\a12.png" />
-    <Content Include="Static\image\jssor\a13.png" />
-    <Content Include="Static\image\jssor\a14.png" />
-    <Content Include="Static\image\jssor\a15.png" />
-    <Content Include="Static\image\jssor\a16.png" />
-    <Content Include="Static\image\jssor\a17.png">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
-    <Content Include="Static\image\jssor\a18.png" />
-    <Content Include="Static\image\jssor\a19.png" />
-    <Content Include="Static\image\jssor\a20.png" />
-    <Content Include="Static\image\jssor\a21.png" />
-    <Content Include="Static\image\jssor\a22.png" />
-    <Content Include="Static\image\jssor\alila\01.jpg" />
-    <Content Include="Static\image\jssor\alila\02.jpg" />
-    <Content Include="Static\image\jssor\alila\03.jpg" />
-    <Content Include="Static\image\jssor\alila\04.jpg" />
-    <Content Include="Static\image\jssor\alila\05.jpg" />
-    <Content Include="Static\image\jssor\alila\06.jpg" />
-    <Content Include="Static\image\jssor\alila\07.jpg" />
-    <Content Include="Static\image\jssor\alila\08.jpg" />
-    <Content Include="Static\image\jssor\alila\09.jpg" />
-    <Content Include="Static\image\jssor\alila\10.jpg" />
-    <Content Include="Static\image\jssor\alila\11.jpg" />
-    <Content Include="Static\image\jssor\alila\12.jpg" />
-    <Content Include="Static\image\jssor\alila\13.jpg" />
-    <Content Include="Static\image\jssor\alila\14.jpg" />
-    <Content Include="Static\image\jssor\alila\15.jpg" />
-    <Content Include="Static\image\jssor\alila\16.jpg" />
-    <Content Include="Static\image\jssor\alila\17.jpg" />
-    <Content Include="Static\image\jssor\alila\18.jpg" />
-    <Content Include="Static\image\jssor\alila\19.jpg" />
-    <Content Include="Static\image\jssor\alila\20.jpg" />
-    <Content Include="Static\image\jssor\alila\21.jpg" />
-    <Content Include="Static\image\jssor\alila\22.jpg" />
-    <Content Include="Static\image\jssor\alila\23.jpg" />
-    <Content Include="Static\image\jssor\alila\24.jpg" />
-    <Content Include="Static\image\jssor\alila\25.jpg" />
-    <Content Include="Static\image\jssor\alila\26.jpg" />
-    <Content Include="Static\image\jssor\alila\27.jpg" />
-    <Content Include="Static\image\jssor\alila\28.jpg" />
-    <Content Include="Static\image\jssor\alila\29.jpg" />
-    <Content Include="Static\image\jssor\alila\30.jpg" />
-    <Content Include="Static\image\jssor\alila\thumb-01.jpg" />
-    <Content Include="Static\image\jssor\alila\thumb-02.jpg" />
-    <Content Include="Static\image\jssor\alila\thumb-03.jpg" />
-    <Content Include="Static\image\jssor\alila\thumb-04.jpg" />
-    <Content Include="Static\image\jssor\alila\thumb-05.jpg" />
-    <Content Include="Static\image\jssor\alila\thumb-06.jpg" />
-    <Content Include="Static\image\jssor\alila\thumb-07.jpg" />
-    <Content Include="Static\image\jssor\alila\thumb-08.jpg" />
-    <Content Include="Static\image\jssor\alila\thumb-09.jpg" />
-    <Content Include="Static\image\jssor\alila\thumb-10.jpg" />
-    <Content Include="Static\image\jssor\alila\thumb-11.jpg" />
-    <Content Include="Static\image\jssor\alila\thumb-12.jpg" />
-    <Content Include="Static\image\jssor\alila\thumb-13.jpg" />
-    <Content Include="Static\image\jssor\alila\thumb-14.jpg" />
-    <Content Include="Static\image\jssor\alila\thumb-15.jpg" />
-    <Content Include="Static\image\jssor\alila\thumb-16.jpg" />
-    <Content Include="Static\image\jssor\alila\thumb-17.jpg" />
-    <Content Include="Static\image\jssor\alila\thumb-18.jpg" />
-    <Content Include="Static\image\jssor\alila\thumb-19.jpg" />
-    <Content Include="Static\image\jssor\alila\thumb-20.jpg" />
-    <Content Include="Static\image\jssor\alila\thumb-21.jpg" />
-    <Content Include="Static\image\jssor\alila\thumb-22.jpg" />
-    <Content Include="Static\image\jssor\alila\thumb-23.jpg" />
-    <Content Include="Static\image\jssor\alila\thumb-24.jpg" />
-    <Content Include="Static\image\jssor\alila\thumb-25.jpg" />
-    <Content Include="Static\image\jssor\alila\thumb-26.jpg" />
-    <Content Include="Static\image\jssor\alila\thumb-27.jpg" />
-    <Content Include="Static\image\jssor\alila\thumb-28.jpg" />
-    <Content Include="Static\image\jssor\alila\thumb-29.jpg" />
-    <Content Include="Static\image\jssor\alila\thumb-30.jpg" />
-    <Content Include="Static\image\jssor\ancient-lady\005.jpg" />
-    <Content Include="Static\image\jssor\ancient-lady\006.jpg" />
-    <Content Include="Static\image\jssor\ancient-lady\011.jpg" />
-    <Content Include="Static\image\jssor\ancient-lady\013.jpg" />
-    <Content Include="Static\image\jssor\ancient-lady\014.jpg" />
-    <Content Include="Static\image\jssor\ancient-lady\019.jpg" />
-    <Content Include="Static\image\jssor\ancient-lady\020.jpg" />
-    <Content Include="Static\image\jssor\ancient-lady\021.jpg" />
-    <Content Include="Static\image\jssor\ancient-lady\022.jpg" />
-    <Content Include="Static\image\jssor\ancient-lady\024.jpg" />
-    <Content Include="Static\image\jssor\ancient-lady\025.jpg" />
-    <Content Include="Static\image\jssor\ancient-lady\027.jpg" />
-    <Content Include="Static\image\jssor\ancient-lady\029.jpg" />
-    <Content Include="Static\image\jssor\ancient-lady\030.jpg" />
-    <Content Include="Static\image\jssor\ancient-lady\031.jpg" />
-    <Content Include="Static\image\jssor\ancient-lady\032.jpg" />
-    <Content Include="Static\image\jssor\ancient-lady\034.jpg" />
-    <Content Include="Static\image\jssor\ancient-lady\038.jpg" />
-    <Content Include="Static\image\jssor\ancient-lady\039.jpg" />
-    <Content Include="Static\image\jssor\ancient-lady\043.jpg" />
-    <Content Include="Static\image\jssor\ancient-lady\044.jpg" />
-    <Content Include="Static\image\jssor\ancient-lady\047.jpg" />
-    <Content Include="Static\image\jssor\ancient-lady\050.jpg" />
-    <Content Include="Static\image\jssor\appicon\01.png" />
-    <Content Include="Static\image\jssor\appicon\02.png" />
-    <Content Include="Static\image\jssor\appicon\03.png" />
-    <Content Include="Static\image\jssor\b02.png" />
-    <Content Include="Static\image\jssor\b03.png" />
-    <Content Include="Static\image\jssor\b05.png" />
-    <Content Include="Static\image\jssor\b06.png" />
-    <Content Include="Static\image\jssor\b07.png" />
-    <Content Include="Static\image\jssor\b10.png" />
-    <Content Include="Static\image\jssor\b11.png" />
-    <Content Include="Static\image\jssor\b12.png" />
-    <Content Include="Static\image\jssor\b13.png" />
-    <Content Include="Static\image\jssor\b14.png" />
-    <Content Include="Static\image\jssor\b16.png" />
-    <Content Include="Static\image\jssor\b17.png" />
-    <Content Include="Static\image\jssor\b18.png" />
-    <Content Include="Static\image\jssor\b20.png" />
-    <Content Include="Static\image\jssor\b21.png" />
-    <Content Include="Static\image\jssor\back.jpg" />
-    <Content Include="Static\image\jssor\browser-icons.png">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
-    <Content Include="Static\image\jssor\close.png" />
-    <Content Include="Static\image\jssor\home\01.jpg" />
-    <Content Include="Static\image\jssor\home\02.jpg" />
-    <Content Include="Static\image\jssor\home\03.jpg" />
-    <Content Include="Static\image\jssor\home\04.jpg" />
-    <Content Include="Static\image\jssor\home\back-dice-02.jpg" />
-    <Content Include="Static\image\jssor\home\back-dice.png" />
-    <Content Include="Static\image\jssor\home\moc-ipad.png" />
-    <Content Include="Static\image\jssor\home\moc-iphone.png" />
-    <Content Include="Static\image\jssor\Icon-Slider-11-jQuery.png" />
-    <Content Include="Static\image\jssor\Icon-Slider-11-No-jQuery.png" />
-    <Content Include="Static\image\jssor\Icon-Slider-12-jQuery.png" />
-    <Content Include="Static\image\jssor\Icon-Slider-12-No-jQuery.png" />
-    <Content Include="Static\image\jssor\landscape\01.jpg">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
-    <Content Include="Static\image\jssor\landscape\02.jpg">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
-    <Content Include="Static\image\jssor\landscape\03.jpg">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
-    <Content Include="Static\image\jssor\landscape\04.jpg">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
-    <Content Include="Static\image\jssor\landscape\05.jpg">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
-    <Content Include="Static\image\jssor\landscape\06.jpg">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
-    <Content Include="Static\image\jssor\landscape\07.jpg">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
-    <Content Include="Static\image\jssor\landscape\08.jpg">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
-    <Content Include="Static\image\jssor\landscape\09.jpg">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
-    <Content Include="Static\image\jssor\landscape\10.jpg">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
-    <Content Include="Static\image\jssor\landscape\11.jpg">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
-    <Content Include="Static\image\jssor\landscape\12.jpg">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
-    <Content Include="Static\image\jssor\landscape\thumb-01.jpg" />
-    <Content Include="Static\image\jssor\landscape\thumb-02.jpg" />
-    <Content Include="Static\image\jssor\landscape\thumb-03.jpg" />
-    <Content Include="Static\image\jssor\landscape\thumb-04.jpg" />
-    <Content Include="Static\image\jssor\landscape\thumb-05.jpg" />
-    <Content Include="Static\image\jssor\landscape\thumb-06.jpg" />
-    <Content Include="Static\image\jssor\landscape\thumb-07.jpg" />
-    <Content Include="Static\image\jssor\landscape\thumb-08.jpg" />
-    <Content Include="Static\image\jssor\landscape\thumb-09.jpg" />
-    <Content Include="Static\image\jssor\landscape\thumb-10.jpg" />
-    <Content Include="Static\image\jssor\landscape\thumb-11.jpg" />
-    <Content Include="Static\image\jssor\landscape\thumb-12.jpg" />
-    <Content Include="Static\image\jssor\loading.gif">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
-    <Content Include="Static\image\jssor\loading2.gif" />
-    <Content Include="Static\image\jssor\logo\amazon.jpg" />
-    <Content Include="Static\image\jssor\logo\android.jpg" />
-    <Content Include="Static\image\jssor\logo\bitly.jpg" />
-    <Content Include="Static\image\jssor\logo\blogger.jpg" />
-    <Content Include="Static\image\jssor\logo\dnn.jpg" />
-    <Content Include="Static\image\jssor\logo\drupal.jpg" />
-    <Content Include="Static\image\jssor\logo\ebay.jpg" />
-    <Content Include="Static\image\jssor\logo\facebook.jpg" />
-    <Content Include="Static\image\jssor\logo\google.jpg" />
-    <Content Include="Static\image\jssor\logo\ibm.jpg" />
-    <Content Include="Static\image\jssor\logo\ios.jpg" />
-    <Content Include="Static\image\jssor\logo\joomla.jpg" />
-    <Content Include="Static\image\jssor\logo\jssor.png" />
-    <Content Include="Static\image\jssor\logo\linkedin.jpg" />
-    <Content Include="Static\image\jssor\logo\mac.jpg" />
-    <Content Include="Static\image\jssor\logo\magento.jpg" />
-    <Content Include="Static\image\jssor\logo\pinterest.jpg" />
-    <Content Include="Static\image\jssor\logo\samsung.jpg" />
-    <Content Include="Static\image\jssor\logo\twitter.jpg" />
-    <Content Include="Static\image\jssor\logo\windows.jpg" />
-    <Content Include="Static\image\jssor\logo\wordpress.jpg" />
-    <Content Include="Static\image\jssor\logo\youtube.jpg" />
-    <Content Include="Static\image\jssor\major\find-out-more-bt.png" />
-    <Content Include="Static\image\jssor\major\main_bg.jpg" />
-    <Content Include="Static\image\jssor\major\main_bg.png" />
-    <Content Include="Static\image\jssor\major\s1.jpg" />
-    <Content Include="Static\image\jssor\major\s1t.jpg" />
-    <Content Include="Static\image\jssor\major\s2.png" />
-    <Content Include="Static\image\jssor\major\s2t.jpg" />
-    <Content Include="Static\image\jssor\major\s3.png" />
-    <Content Include="Static\image\jssor\major\s3t.jpg" />
-    <Content Include="Static\image\jssor\major\s4.png" />
-    <Content Include="Static\image\jssor\major\s4t.jpg" />
-    <Content Include="Static\image\jssor\major\s5.png" />
-    <Content Include="Static\image\jssor\major\s5t.jpg" />
-    <Content Include="Static\image\jssor\major\s6.png" />
-    <Content Include="Static\image\jssor\major\s6t.jpg" />
-    <Content Include="Static\image\jssor\major\s7.png" />
-    <Content Include="Static\image\jssor\major\s7t.jpg" />
-    <Content Include="Static\image\jssor\major\s8.png" />
-    <Content Include="Static\image\jssor\major\s8t.jpg" />
-    <Content Include="Static\image\jssor\motor\001.jpg" />
-    <Content Include="Static\image\jssor\motor\002.jpg" />
-    <Content Include="Static\image\jssor\motor\003.jpg" />
-    <Content Include="Static\image\jssor\motor\004.jpg" />
-    <Content Include="Static\image\jssor\motor\005.jpg" />
-    <Content Include="Static\image\jssor\motor\006.jpg" />
-    <Content Include="Static\image\jssor\motor\007.jpg" />
-    <Content Include="Static\image\jssor\motor\008.jpg" />
-    <Content Include="Static\image\jssor\motor\thumb-001.jpg" />
-    <Content Include="Static\image\jssor\motor\thumb-002.jpg" />
-    <Content Include="Static\image\jssor\motor\thumb-003.jpg" />
-    <Content Include="Static\image\jssor\motor\thumb-004.jpg" />
-    <Content Include="Static\image\jssor\motor\thumb-005.jpg" />
-    <Content Include="Static\image\jssor\motor\thumb-006.jpg" />
-    <Content Include="Static\image\jssor\motor\thumb-007.jpg" />
-    <Content Include="Static\image\jssor\motor\thumb-008.jpg" />
-    <Content Include="Static\image\jssor\nested-thumb\landscape.jpg" />
-    <Content Include="Static\image\jssor\nested-thumb\motor.jpg" />
-    <Content Include="Static\image\jssor\nested-thumb\photography.jpg" />
-    <Content Include="Static\image\jssor\new-site\c-finger-pointing.png" />
-    <Content Include="Static\image\jssor\new-site\c-fruit.png" />
-    <Content Include="Static\image\jssor\new-site\c-jssor-slider.png" />
-    <Content Include="Static\image\jssor\new-site\c-navigator-horizontal.png" />
-    <Content Include="Static\image\jssor\new-site\c-navigator.png" />
-    <Content Include="Static\image\jssor\new-site\c-phone-horizontal.png" />
-    <Content Include="Static\image\jssor\new-site\c-phone.png" />
-    <Content Include="Static\image\jssor\new-site\c-slide-1.jpg" />
-    <Content Include="Static\image\jssor\new-site\c-slide-2.jpg" />
-    <Content Include="Static\image\jssor\new-site\c-slide-3.jpg" />
-    <Content Include="Static\image\jssor\new-site\c-text.png" />
-    <Content Include="Static\image\jssor\new-site\cool-guy.png" />
-    <Content Include="Static\image\jssor\paint\01.jpg" />
-    <Content Include="Static\image\jssor\paint\02.jpg" />
-    <Content Include="Static\image\jssor\paint\03.jpg" />
-    <Content Include="Static\image\jssor\paint\04.jpg" />
-    <Content Include="Static\image\jssor\paint\05.jpg" />
-    <Content Include="Static\image\jssor\paint\06.jpg" />
-    <Content Include="Static\image\jssor\paint\07.jpg" />
-    <Content Include="Static\image\jssor\paint\08.jpg" />
-    <Content Include="Static\image\jssor\paint\09.jpg" />
-    <Content Include="Static\image\jssor\paint\10.jpg" />
-    <Content Include="Static\image\jssor\paint\11.jpg" />
-    <Content Include="Static\image\jssor\photography\001.jpg" />
-    <Content Include="Static\image\jssor\photography\002.jpg" />
-    <Content Include="Static\image\jssor\photography\003.jpg" />
-    <Content Include="Static\image\jssor\photography\004.jpg" />
-    <Content Include="Static\image\jssor\photography\005.jpg" />
-    <Content Include="Static\image\jssor\photography\006.jpg" />
-    <Content Include="Static\image\jssor\photography\007.jpg" />
-    <Content Include="Static\image\jssor\photography\008.jpg" />
-    <Content Include="Static\image\jssor\photography\009.jpg" />
-    <Content Include="Static\image\jssor\photography\010.jpg" />
-    <Content Include="Static\image\jssor\photography\011.jpg" />
-    <Content Include="Static\image\jssor\photography\012.jpg" />
-    <Content Include="Static\image\jssor\photography\013.jpg" />
-    <Content Include="Static\image\jssor\photography\014.jpg" />
-    <Content Include="Static\image\jssor\photography\015.jpg" />
-    <Content Include="Static\image\jssor\photography\thumb-001.jpg" />
-    <Content Include="Static\image\jssor\photography\thumb-002.jpg" />
-    <Content Include="Static\image\jssor\photography\thumb-003.jpg" />
-    <Content Include="Static\image\jssor\photography\thumb-004.jpg" />
-    <Content Include="Static\image\jssor\photography\thumb-005.jpg" />
-    <Content Include="Static\image\jssor\photography\thumb-006.jpg" />
-    <Content Include="Static\image\jssor\photography\thumb-007.jpg" />
-    <Content Include="Static\image\jssor\photography\thumb-008.jpg" />
-    <Content Include="Static\image\jssor\photography\thumb-009.jpg" />
-    <Content Include="Static\image\jssor\photography\thumb-010.jpg" />
-    <Content Include="Static\image\jssor\photography\thumb-011.jpg" />
-    <Content Include="Static\image\jssor\photography\thumb-012.jpg" />
-    <Content Include="Static\image\jssor\photography\thumb-013.jpg" />
-    <Content Include="Static\image\jssor\photography\thumb-014.jpg" />
-    <Content Include="Static\image\jssor\photography\thumb-015.jpg" />
-    <Content Include="Static\image\jssor\play.png" />
-    <Content Include="Static\image\jssor\qr\full-width-slider.png" />
-    <Content Include="Static\image\jssor\qr\jssor.com.png" />
-    <Content Include="Static\image\jssor\share\share-icons.png" />
-    <Content Include="Static\image\jssor\t01.png" />
-    <Content Include="Static\image\jssor\travel\01.jpg" />
-    <Content Include="Static\image\jssor\travel\02.jpg" />
-    <Content Include="Static\image\jssor\travel\03.jpg" />
-    <Content Include="Static\image\jssor\travel\04.jpg" />
-    <Content Include="Static\image\jssor\travel\05.jpg" />
-    <Content Include="Static\image\jssor\travel\06.jpg" />
-    <Content Include="Static\image\jssor\travel\07.jpg" />
-    <Content Include="Static\image\jssor\travel\08.jpg" />
-    <Content Include="Static\image\jssor\travel\09.jpg" />
-    <Content Include="Static\image\jssor\travel\10.jpg" />
-    <Content Include="Static\image\jssor\travel\11.jpg" />
-    <Content Include="Static\image\jssor\travel\12.jpg" />
-    <Content Include="Static\image\jssor\travel\13.jpg" />
-    <Content Include="Static\image\jssor\travel\14.jpg" />
-    <Content Include="Static\image\jssor\travel\15.jpg" />
-    <Content Include="Static\image\jssor\travel\16.jpg" />
-    <Content Include="Static\image\jssor\travel\17.jpg" />
-    <Content Include="Static\image\jssor\travel\18.jpg" />
-    <Content Include="Static\image\jssor\travel\19.jpg" />
-    <Content Include="Static\image\jssor\travel\thumb-01.jpg" />
-    <Content Include="Static\image\jssor\travel\thumb-02.jpg" />
-    <Content Include="Static\image\jssor\travel\thumb-03.jpg" />
-    <Content Include="Static\image\jssor\travel\thumb-04.jpg" />
-    <Content Include="Static\image\jssor\travel\thumb-05.jpg" />
-    <Content Include="Static\image\jssor\travel\thumb-06.jpg" />
-    <Content Include="Static\image\jssor\travel\thumb-07.jpg" />
-    <Content Include="Static\image\jssor\travel\thumb-08.jpg" />
-    <Content Include="Static\image\jssor\travel\thumb-09.jpg" />
-    <Content Include="Static\image\jssor\travel\thumb-10.jpg" />
-    <Content Include="Static\image\jssor\travel\thumb-11.jpg" />
-    <Content Include="Static\image\jssor\travel\thumb-12.jpg" />
-    <Content Include="Static\image\jssor\travel\thumb-13.jpg" />
-    <Content Include="Static\image\jssor\travel\thumb-14.jpg" />
-    <Content Include="Static\image\jssor\travel\thumb-15.jpg" />
-    <Content Include="Static\image\jssor\travel\thumb-16.jpg" />
-    <Content Include="Static\image\jssor\travel\thumb-17.jpg" />
-    <Content Include="Static\image\jssor\travel\thumb-18.jpg" />
-    <Content Include="Static\image\jssor\travel\thumb-19.jpg" />
-    <Content Include="Static\js\bootstrap.js">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
-    <Content Include="Static\js\bootstrap.min.js">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
-    <Content Include="Static\js\jssor\jquery-1.9.1.min.js">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
-    <Content Include="Static\js\jssor\jssor.js">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
-    <Content Include="Static\js\jssor\jssor.player.ytiframe.js" />
-    <Content Include="Static\js\jssor\jssor.player.ytiframe.min.js" />
-    <Content Include="Static\js\jssor\jssor.slider.debug.min.js" />
-    <Content Include="Static\js\jssor\jssor.slider.js">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
-    <Content Include="Static\js\jssor\jssor.slider.min.js">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
-    <Content Include="Static\js\jssor\jssor.slider.mini.js">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
-    <Content Include="Static\js\npm.js">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
-    <Content Include="Static\js\slide.js">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
-    <Content Include="Static\nancy-logo.png">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
+    <None Include="Views\Jkw\jkwHome.cshtml" />
+    <None Include="Views\Lucia\luciaHome.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Extensions\" />
@@ -510,10 +121,103 @@
       <Name>Nancy</Name>
     </ProjectReference>
   </ItemGroup>
+  <ItemGroup>
+    <Content Include="Static\Agency\css\agency.css" />
+    <Content Include="Static\Agency\css\bootstrap.css" />
+    <Content Include="Static\Agency\css\bootstrap.min.css" />
+    <Content Include="Static\Agency\font-awesome\css\font-awesome.css" />
+    <Content Include="Static\Agency\font-awesome\css\font-awesome.min.css" />
+    <Content Include="Static\Agency\font-awesome\fonts\fontawesome-webfont.svg" />
+    <Content Include="Static\Agency\fonts\glyphicons-halflings-regular.svg" />
+    <Content Include="Static\Agency\img\header-bg.jpg" />
+    <Content Include="Static\Agency\img\map-image.png" />
+    <Content Include="Static\Agency\img\bg\prague1.jpg" />
+    <Content Include="Static\Agency\img\bg\prague2.jpg" />
+    <Content Include="Static\Agency\img\bg\prague3.jpg" />
+    <Content Include="Static\Agency\img\bg\prague4.jpg" />
+    <Content Include="Static\Agency\js\agency.js" />
+    <Content Include="Static\Agency\js\bootstrap.js" />
+    <Content Include="Static\Agency\js\bootstrap.min.js" />
+    <Content Include="Static\Agency\js\cbpAnimatedHeader.js" />
+    <Content Include="Static\Agency\js\cbpAnimatedHeader.min.js" />
+    <Content Include="Static\Agency\js\classie.js" />
+    <Content Include="Static\Agency\js\contact_me.js" />
+    <Content Include="Static\Agency\js\jqBootstrapValidation.js" />
+    <Content Include="Static\Agency\js\jquery.js" />
+    <Content Include="Static\css\bootstrap-theme.css" />
+    <Content Include="Static\css\bootstrap-theme.min.css" />
+    <Content Include="Static\css\bootstrap.css" />
+    <Content Include="Static\css\bootstrap.min.css" />
+    <Content Include="Static\css\carousel.css" />
+    <Content Include="Static\css\slide.css" />
+    <Content Include="Static\fonts\glyphicons-halflings-regular.svg" />
+    <Content Include="Static\image\card1.jpg" />
+    <Content Include="Static\image\jssor\a01.png" />
+    <Content Include="Static\image\jssor\a02.png" />
+    <Content Include="Static\image\jssor\a03.png" />
+    <Content Include="Static\image\jssor\a04.png" />
+    <Content Include="Static\image\jssor\a06.png" />
+    <Content Include="Static\image\jssor\a07.png" />
+    <Content Include="Static\image\jssor\a08.png" />
+    <Content Include="Static\image\jssor\a09.png" />
+    <Content Include="Static\image\jssor\a10.png" />
+    <Content Include="Static\image\jssor\a11.png" />
+    <Content Include="Static\image\jssor\a12.png" />
+    <Content Include="Static\image\jssor\a13.png" />
+    <Content Include="Static\image\jssor\a14.png" />
+    <Content Include="Static\image\jssor\a15.png" />
+    <Content Include="Static\image\jssor\a16.png" />
+    <Content Include="Static\image\jssor\a17.png" />
+    <Content Include="Static\image\jssor\a18.png" />
+    <Content Include="Static\image\jssor\a19.png" />
+    <Content Include="Static\image\jssor\a20.png" />
+    <Content Include="Static\image\jssor\a21.png" />
+    <Content Include="Static\image\jssor\a22.png" />
+    <Content Include="Static\image\jssor\b02.png" />
+    <Content Include="Static\image\jssor\b03.png" />
+    <Content Include="Static\image\jssor\b05.png" />
+    <Content Include="Static\image\jssor\b06.png" />
+    <Content Include="Static\image\jssor\b07.png" />
+    <Content Include="Static\image\jssor\b10.png" />
+    <Content Include="Static\image\jssor\b11.png" />
+    <Content Include="Static\image\jssor\b12.png" />
+    <Content Include="Static\image\jssor\b13.png" />
+    <Content Include="Static\image\jssor\b14.png" />
+    <Content Include="Static\image\jssor\b16.png" />
+    <Content Include="Static\image\jssor\b17.png" />
+    <Content Include="Static\image\jssor\b18.png" />
+    <Content Include="Static\image\jssor\b20.png" />
+    <Content Include="Static\image\jssor\b21.png" />
+    <Content Include="Static\image\jssor\back.jpg" />
+    <Content Include="Static\image\jssor\browser-icons.png" />
+    <Content Include="Static\image\jssor\close.png" />
+    <Content Include="Static\image\jssor\Icon-Slider-11-jQuery.png" />
+    <Content Include="Static\image\jssor\Icon-Slider-11-No-jQuery.png" />
+    <Content Include="Static\image\jssor\Icon-Slider-12-jQuery.png" />
+    <Content Include="Static\image\jssor\Icon-Slider-12-No-jQuery.png" />
+    <Content Include="Static\image\jssor\loading.gif" />
+    <Content Include="Static\image\jssor\loading2.gif" />
+    <Content Include="Static\image\jssor\play.png" />
+    <Content Include="Static\image\jssor\t01.png" />
+    <Content Include="Static\js\bootstrap.js" />
+    <Content Include="Static\js\bootstrap.min.js" />
+    <Content Include="Static\js\jssor\jquery-1.9.1.min.js" />
+    <Content Include="Static\js\jssor\jssor.js" />
+    <Content Include="Static\js\jssor\jssor.player.ytiframe.js" />
+    <Content Include="Static\js\jssor\jssor.player.ytiframe.min.js" />
+    <Content Include="Static\js\jssor\jssor.slider.debug.min.js" />
+    <Content Include="Static\js\jssor\jssor.slider.js" />
+    <Content Include="Static\js\jssor\jssor.slider.min.js" />
+    <Content Include="Static\js\jssor\jssor.slider.mini.js" />
+    <Content Include="Static\js\npm.js" />
+    <Content Include="Static\js\slide.js" />
+    <Content Include="Static\nancy-logo.png" />
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>
-    <PreBuildEvent>
-    </PreBuildEvent>
+    <PreBuildEvent>del $(TargetDir)Static\ /s /q
+xcopy /y $(ProjectDir)Static\*.* $(TargetDir)Static\ /s /e /c /h
+xcopy /y $(ProjectDir)Views\*.* $(TargetDir)Views\ /s /e /c /h</PreBuildEvent>
   </PropertyGroup>
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.

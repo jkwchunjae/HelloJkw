@@ -7,6 +7,8 @@ using Nancy;
 using Nancy.Hosting.Self;
 using Nancy.Conventions;
 using Extensions;
+using Nancy.TinyIoc;
+using Nancy.Bootstrapper;
 
 namespace helloJkw
 {
@@ -55,7 +57,20 @@ namespace helloJkw
 			nancyConventions.StaticContentsConventions.Clear();
 
 			nancyConventions.StaticContentsConventions.AddDirectory("Static", "Static");
-			nancyConventions.StaticContentsConventions.AddDirectory("static", "Static");
+			//nancyConventions.StaticContentsConventions.AddDirectory("static", "Static");
+		}
+
+		protected override void ApplicationStartup(TinyIoCContainer container, IPipelines pipelines)
+		{
+			base.ApplicationStartup(container, pipelines);
+			this.Conventions.ViewLocationConventions.Add((viewName, model, context) =>
+				{
+					return string.Concat("Views/Lucia/", viewName);
+				});
+			this.Conventions.ViewLocationConventions.Add((viewName, model, context) =>
+				{
+					return string.Concat("Views/Jkw/", viewName);
+				});
 		}
 	}
 }

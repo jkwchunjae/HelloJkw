@@ -1,0 +1,176 @@
+﻿<!DOCTYPE html>
+<html lang="kr">
+<head>
+	<meta charset="utf-8" />
+	<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+	<meta name="viewport" content="width=device-width, initial-scale=1" />
+	<meta name="description" content="황경욱 루치아의 공방입니다." />
+	<meta name="author" content="황경욱 루치아" />
+	<title>루치아 공방</title>
+
+	<link href="/Static/css/bootstrap.min.css" rel="stylesheet" />
+	<link href="/Static/css/slide.css" rel="stylesheet" />
+
+	<style>
+		.navbar {
+			margin: 0;
+		}
+
+		#thumbnail-list > .container {
+			margin-top: 50px; /* navbar를 fixed 로 바꾸면 margin-top: 50px; 해줘야 하네.. */
+		}
+
+		.container {
+			padding: 0;
+		}
+	</style>
+</head>
+
+<body>
+	<div class="navbar-wrapper">
+		<div class="container">
+			<nav class="navbar navbar-default navbar-fixed-top">
+				<div class="navbar-header">
+					<button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar" aria-expanded="false" aria-controls="navbar">
+						<span class="sr-only">Toggle navigation</span>
+						<span class="icon-bar"></span>
+						<span class="icon-bar"></span>
+						<span class="icon-bar"></span>
+					</button>
+					<a class="navbar-brand" href="#">Lucia Shop</a>
+				</div>
+				<div id="navbar" class="navbar-collapse collapse">
+					<ul class="nav navbar-nav">
+						<li><a href="/card">카드</a></li>  <!--class="active"-->
+						<li><a href="/pop">POP</a></li>
+						<li><a href="/make">공작</a></li>
+
+						@*<li class="dropdown">
+							<a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">Dropdown <span class="caret"></span></a>
+							<ul class="dropdown-menu" role="menu">
+								<li><a href="#">Action</a></li>
+								<li><a href="#">Another action</a></li>
+								<li><a href="#">Something else here</a></li>
+								<li class="divider"></li>
+								<li class="dropdown-header">Nav header</li>
+								<li><a href="#">Separated link</a></li>
+								<li><a href="#">One more separated link</a></li>
+							</ul>
+						</li>*@
+
+					</ul>
+				</div>
+			</nav>
+		</div>
+	</div>
+
+	<div class="container" id="thumbnail-list">
+		<div class="container main-slide">
+			<!-- Caption Style -->
+			<!-- Jssor Slider Begin -->
+			<!-- You can move inline styles to css file or css block. -->
+			<div id="sliderb_container" style="position: relative; width: 600px; height: 300px; overflow: hidden;">
+				<!-- Slides Container -->
+				<div u="slides" style="cursor: move; position: absolute; left: 0px; top: 0px; width: 600px; height: 300px;
+			overflow: hidden;">
+					<div>
+						<img data-u="image" src="http://placehold.it/500X200&text=Card1" />
+						<div data-u="thumb">카드 1 의 설명</div>
+					</div>
+					<div>
+						<img data-u="image" src="http://placehold.it/500X200&text=Card2" />
+						<div data-u="thumb">카드 2 의 설명</div>
+					</div>
+					<div>
+						<img data-u="image" src="http://placehold.it/500X200&text=Card3" />
+						<div data-u="thumb">카드 3 의 설명</div>
+					</div>
+					<div>
+						<img data-u="image" src="http://placehold.it/500X200&text=Card4" />
+						<div data-u="thumb">카드 4 의 설명</div>
+					</div>
+					<div>
+						<img data-u="image" src="http://placehold.it/500X200&text=Card5" />
+						<div data-u="thumb">카드 5 의 설명</div>
+					</div>
+				</div>
+
+				<!-- ThumbnailNavigator Skin Begin -->
+				<div u="thumbnavigator" class="sliderb-T" style="position: absolute; bottom: 0px; left: 0px; height:45px; width:600px;">
+					<div style="filter: alpha(opacity=40); opacity:0.4; position: absolute; display: block;
+				background-color: #000000; top: 0px; left: 0px; width: 100%; height: 100%;">
+					</div>
+					<!-- Thumbnail Item Skin Begin -->
+					<div u="slides">
+						<div u="prototype" style="POSITION: absolute; WIDTH: 600px; HEIGHT: 45px; TOP: 0; LEFT: 0;">
+							<div u="thumbnailtemplate" style="font-family: verdana; font-weight: normal; POSITION: absolute; WIDTH: 100%; HEIGHT: 100%; TOP: 0; LEFT: 0; color:#fff; line-height: 45px; font-size:20px; padding-left:10px;"></div>
+						</div>
+					</div>
+					<!-- Thumbnail Item Skin End -->
+				</div>
+				<!-- ThumbnailNavigator Skin End -->
+				<!-- Bullet Navigator Skin Begin -->
+				<!-- bullet navigator container -->
+				<div u="navigator" class="jssorb01" style="position: absolute; bottom: 16px; right: 10px;">
+					<!-- bullet navigator item prototype -->
+					<div u="prototype" style="POSITION: absolute; WIDTH: 12px; HEIGHT: 12px;"></div>
+				</div>
+				<!-- Bullet Navigator Skin End -->
+				<!-- Arrow Left -->
+				<span u="arrowleft" class="jssora05l" style="width: 40px; height: 40px; top: 123px; left: 8px;">
+				</span>
+				<!-- Arrow Right -->
+				<span u="arrowright" class="jssora05r" style="width: 40px; height: 40px; top: 123px; right: 8px">
+				</span>
+				<!-- Arrow Navigator Skin End -->
+				@*<a style="display: none" href="http://www.jssor.com">Image Slider</a>*@
+				<!-- Trigger -->
+			</div>
+			<!-- Jssor Slider End -->
+		</div>
+		<!-- slider End -->
+
+		<!-- Thumbnail Begin -->
+		<div class="row">
+			<div class="col-xs-12 col-md-4">
+				<a href="#" class="thumbnail"><img src="http://placehold.it/500X200&text=test" /></a>
+			</div>
+			<div class="col-xs-12 col-md-4">
+				<a href="#" class="thumbnail"><img src="http://placehold.it/500X200&text=test" /></a>
+			</div>
+			<div class="col-xs-12 col-md-4">
+				<a href="#" class="thumbnail"><img src="http://placehold.it/500X200&text=test" /></a>
+			</div>
+		</div>
+		<div class="row">
+			<div class="col-xs-12 col-md-4">
+				<a href="#" class="thumbnail"><img src="http://placehold.it/500X200&text=test" /></a>
+			</div>
+			<div class="col-xs-12 col-md-4">
+				<a href="#" class="thumbnail"><img src="http://placehold.it/500X200&text=test" /></a>
+			</div>
+			<div class="col-xs-12 col-md-4">
+				<a href="#" class="thumbnail"><img src="http://placehold.it/500X200&text=test" /></a>
+			</div>
+		</div>
+		<div class="row">
+			<div class="col-xs-12 col-md-4">
+				<a href="#" class="thumbnail"><img src="http://placehold.it/500X200&text=test" /></a>
+			</div>
+			<div class="col-xs-12 col-md-4">
+				<a href="#" class="thumbnail"><img src="http://placehold.it/500X200&text=test" /></a>
+			</div>
+			<div class="col-xs-12 col-md-4">
+				<a href="#" class="thumbnail"><img src="http://placehold.it/500X200&text=test" /></a>
+			</div>
+		</div>
+		<!-- Thumbnail End -->
+	</div>
+	<script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.2/jquery.min.js"></script>
+	<script type="text/javascript" src="/Static/js/bootstrap.min.js"></script>
+	<script type="text/javascript" src="/Static/js/jssor/jssor.js"></script>
+	<script type="text/javascript" src="/Static/js/jssor/jssor.slider.js"></script>
+	<script type="text/javascript" src="/Static/js/slide.js"></script>
+</body>
+
+</html>
