@@ -69,6 +69,9 @@ namespace helloJkw
 				});
 			this.Conventions.ViewLocationConventions.Add((viewName, model, context) =>
 				{
+					"viewName: {0}".With(viewName).Dump();
+					"moduleName: {0}".With(context.ModuleName).Dump();
+					"modulePath: {0}".With(context.ModulePath).Dump();
 					return string.Concat("Views/Jkw/", viewName);
 				});
 		}
