@@ -204,6 +204,22 @@
     <Content Include="_Static\image\jssor\loading2.gif" />
     <Content Include="_Static\image\jssor\play.png" />
     <Content Include="_Static\image\jssor\t01.png" />
+    <Content Include="_Static\image\lucia\main\20120607_231629.jpg" />
+    <Content Include="_Static\image\lucia\main\20140313_145400.jpg" />
+    <Content Include="_Static\image\lucia\main\20140408_225352.jpg" />
+    <Content Include="_Static\image\lucia\main\20140408_225806.jpg" />
+    <Content Include="_Static\image\lucia\main\20140408_225819.jpg" />
+    <Content Include="_Static\image\lucia\main\20140408_225834.jpg" />
+    <Content Include="_Static\image\lucia\main\20140515_212648.jpg" />
+    <Content Include="_Static\image\lucia\main\20140515_212716.jpg" />
+    <Content Include="_Static\image\lucia\main\20140515_212734.jpg" />
+    <Content Include="_Static\image\lucia\main\20141207_170511.jpg" />
+    <Content Include="_Static\image\lucia\main\20141207_170608.jpg" />
+    <Content Include="_Static\image\lucia\main\20141208_105854.jpg" />
+    <Content Include="_Static\image\lucia\main\slide\KakaoTalk_20150222_210846650.jpg" />
+    <Content Include="_Static\image\lucia\main\slide\KakaoTalk_20150222_210846835.jpg" />
+    <Content Include="_Static\image\lucia\main\slide\KakaoTalk_20150222_210848352.jpg" />
+    <Content Include="_Static\image\lucia\main\튤립카드.jpg" />
     <Content Include="_Static\js\bootstrap.js" />
     <Content Include="_Static\js\bootstrap.min.js" />
     <Content Include="_Static\js\jssor\jquery-1.9.1.min.js" />
@@ -223,7 +239,9 @@
     <PreBuildEvent>del $(TargetDir)Static\ /s /q
 xcopy /y $(ProjectDir)_Static\*.* $(TargetDir)Static\ /s /e /c /h
 del $(TargetDir)Views\ /s /q
-xcopy /y $(ProjectDir)_Views\*.* $(TargetDir)Views\ /s /e /c /h</PreBuildEvent>
+xcopy /y $(ProjectDir)_Views\*.* $(TargetDir)Views\ /s /e /c /h
+del $(TargetDir)_Jkw\ /s /q
+xcopy /y $(ProjectDir)_Jkw\*.* $(TargetDir)_Jkw\ /s /e /c /h</PreBuildEvent>
   </PropertyGroup>
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.
