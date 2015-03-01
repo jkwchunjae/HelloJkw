@@ -9,7 +9,7 @@ namespace helloJkw
 {
 	public static class LuciaStatic
 	{
-		public static string RootPath;
+		public static string RootPath = @"lucia";
 		public static DirInfo LuciaDir;
 
 		public static string MainDirName

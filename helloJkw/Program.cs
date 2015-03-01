@@ -31,8 +31,6 @@ namespace helloJkw
 
 			#endregion
 
-			LuciaStatic.RootPath = @"Static/image/lucia";
-
 			LuciaStatic.LuciaDir = LuciaStatic.RootPath.CreateDirInfo();
 
 			using (var host = new NancyHost(new Uri("http://localhost:" + port)))
@@ -61,8 +59,8 @@ namespace helloJkw
 			nancyConventions.StaticContentsConventions.Clear();
 
 			nancyConventions.StaticContentsConventions.AddDirectory("Static", "Static");
-			nancyConventions.StaticContentsConventions.AddDirectory("_Jkw", "_Jkw");
-			nancyConventions.StaticContentsConventions.AddDirectory("_Lucia", "_Lucia");
+			nancyConventions.StaticContentsConventions.AddDirectory("jkw", "jkw");
+			nancyConventions.StaticContentsConventions.AddDirectory("lucia", "lucia");
 		}
 
 		protected override void ApplicationStartup(TinyIoCContainer container, IPipelines pipelines)
@@ -74,9 +72,6 @@ namespace helloJkw
 				});
 			this.Conventions.ViewLocationConventions.Add((viewName, model, context) =>
 				{
-					//"viewName: {0}".With(viewName).Dump();
-					//"moduleName: {0}".With(context.ModuleName).Dump();
-					//"modulePath: {0}".With(context.ModulePath).Dump();
 					return string.Concat("Views/Jkw/", viewName);
 				});
 		}
