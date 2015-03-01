@@ -3,20 +3,70 @@ using System.IO;
 using System.Linq;
 using Nancy;
 using Extensions;
+using System.Collections.Generic;
+using System.Text.RegularExpressions;
+using helloJkw.Extensions;
 
-public class LuciaHomeModule : NancyModule
+namespace helloJkw.Modules.Lucia
 {
-	public LuciaHomeModule()
+	public class LuciaHomeModule : NancyModule
 	{
-		Get["/lucia"] = _ =>
+		public LuciaHomeModule()
 		{
-			// 이미지를 손으로 하나하나 추가하기 힘들어서 폴더 안에 있는 모든 파일을 순서대로 불러오게 하였다.
-			var files = Directory.GetFiles(@"Static/image/lucia/main/", "*").OrderBy(e => e);
-			var model = new
+			Get["/"] = _ =>
 			{
-				ImageList = files.Select(e => Path.GetFileName(e)).ToList()
+				var mainDirName = LuciaStatic.MainDirName;
+				var mainImageList = LuciaStatic.LuciaDir[mainDirName].GetFiles()
+					.Select(e => Path.GetFileName(e.Name));
+				var mainMenuList = LuciaStatic.LuciaDir.GetDirNames()
+					.Where(e => e != mainDirName)
+					.Select(e => e.RemovePrefixNumber());
+				var slideImageList = LuciaStatic.LuciaDir[mainDirName]["slide"].GetFiles()
+					.Select(e => Path.GetFileName(e.Name));
+
+				var model = new
+				{
+					RootPath = LuciaStatic.RootPath,
+					MainMenu = mainMenuList.ToList(),
+					MainDirName = mainDirName,
+					MainImageList = mainImageList,
+					SlideImageList = slideImageList,
+					//ImageList = mainImageList.Select(e => "{0}/{1}/{2}".With(LuciaStatic.RootPath, mainDirName, Path.GetFileName(e.Name))).ToList(),
+					//ImageList = mainImageList.Select(e => Path.GetFileName(e.Name)).ToList()
+				};
+				return View["luciaHome", model];
 			};
-			return View["luciaHome", model];
-		};
+		}
+	}
+
+	public class LuciaCardModule : NancyModule
+	{
+		public LuciaCardModule()
+		{
+			Get["/category/{category}"] = _ =>
+			{
+				var mainDirName = LuciaStatic.MainDirName;
+				var mainMenuList = LuciaStatic.LuciaDir.GetDirNames()
+					.Where(e => e != mainDirName)
+					.Select(e => Regex.Replace(e, @"\d*\.\s", "")); // 000. XXXX 이런 형태에서 XXX 만 가져온다.
+				var category = (string)_.category;
+
+				var productList = LuciaStatic.LuciaDir[category].GetDirNames()
+					.Select(e => new ProductInfo
+					{
+						Name = e
+					}.ToExpando())
+					.ToList();
+
+				var model = new
+				{
+					RootPath = LuciaStatic.RootPath,
+					MainMenu = mainMenuList,
+					Category = category,
+					ProductList = productList, 
+				};
+				return View["luciaCategory", model];
+			};
+		}
 	}
 }

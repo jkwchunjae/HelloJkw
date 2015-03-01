@@ -13,7 +13,7 @@ namespace helloJkw.Modules.Jkw
 	{
 		public JkwHomeModule()
 		{
-			Get["/"] = _ =>
+			Get["/jkw"] = _ =>
 			{
 				var files = Directory.GetFiles(@"Static/Agency/img/bg/", "*");
 				var gameRoot = @"_Jkw/Games";
@@ -29,7 +29,7 @@ namespace helloJkw.Modules.Jkw
 				var model = new
 				{
 					BackGroundFileName = Path.GetFileName(files[rnd.Next(files.Count())])
-					, Games = games
+					//, Games = games
 				};
 				return View["jkwHome", model];
 			};

@@ -31,6 +31,10 @@ namespace helloJkw
 
 			#endregion
 
+			LuciaStatic.RootPath = @"Static/image/lucia";
+
+			LuciaStatic.LuciaDir = LuciaStatic.RootPath.CreateDirInfo();
+
 			using (var host = new NancyHost(new Uri("http://localhost:" + port)))
 			{
 				Logger.Log("Start Lucia Shop");
@@ -58,6 +62,7 @@ namespace helloJkw
 
 			nancyConventions.StaticContentsConventions.AddDirectory("Static", "Static");
 			nancyConventions.StaticContentsConventions.AddDirectory("_Jkw", "_Jkw");
+			nancyConventions.StaticContentsConventions.AddDirectory("_Lucia", "_Lucia");
 		}
 
 		protected override void ApplicationStartup(TinyIoCContainer container, IPipelines pipelines)

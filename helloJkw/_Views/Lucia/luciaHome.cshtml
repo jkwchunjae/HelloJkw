@@ -41,23 +41,10 @@
 				</div>
 				<div id="navbar" class="navbar-collapse collapse">
 					<ul class="nav navbar-nav">
-						<li><a href="#">카드</a></li>  <!--class="active"-->
-						<li><a href="#">POP</a></li>
-						<li><a href="#">공작</a></li>
-
-						@*<li class="dropdown">
-							<a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">Dropdown <span class="caret"></span></a>
-							<ul class="dropdown-menu" role="menu">
-								<li><a href="#">Action</a></li>
-								<li><a href="#">Another action</a></li>
-								<li><a href="#">Something else here</a></li>
-								<li class="divider"></li>
-								<li class="dropdown-header">Nav header</li>
-								<li><a href="#">Separated link</a></li>
-								<li><a href="#">One more separated link</a></li>
-							</ul>
-						</li>*@
-
+						@foreach (var menu in @Model.MainMenu)
+						{
+							<li><a href="/category/@menu">@menu</a></li>
+						}
 					</ul>
 				</div>
 			</nav>
@@ -72,26 +59,13 @@
 			<div id="sliderb_container" style="position: relative; width: 800px; height: 450px; overflow: hidden;">
 				<!-- Slides Container -->
 				<div u="slides" style="cursor: move; position: absolute; left: 0px; top: 0px; width: 800px; height: 450px; overflow: hidden;">
-					<div>
-						<img data-u="image" src="/Static/image/lucia/main/slide/KakaoTalk_20150222_210846835.jpg" />
-						<div data-u="thumb">파스텔 카드</div>
-					</div>
-					<div>
-						<img data-u="image" src="/Static/image/lucia/main/slide/KakaoTalk_20150222_210848352.jpg" />
-						<div data-u="thumb">파스텔 카드</div>
-					</div>
-					<div>
-						<img data-u="image" src="/Static/image/lucia/main/slide/KakaoTalk_20150222_210846650.jpg" />
-						<div data-u="thumb">파스텔 카드</div>
-					</div>
-					@*<div>
-						<img data-u="image" src="/Static/image/lucia/main/slide/20141207_170511.jpg" />
-						<div data-u="thumb">카드 4 의 설명</div>
-					</div>*@
-					@*<div>
-						<img data-u="image" src="/Static/image/lucia/main/slide/20141207_170511.jpg" />
-						<div data-u="thumb">카드 5 의 설명</div>
-					</div>*@
+					@foreach (var image in @Model.SlideImageList)
+					{
+						<div>
+							<img data-u="image" src="@Model.RootPath/@Model.MainDirName/slide/@image" />
+							<div data-u="thumb"></div>
+						</div>
+					}
 				</div>
 
 				<!-- ThumbnailNavigator Skin Begin -->
@@ -131,10 +105,10 @@
 		<!-- Thumbnail Begin -->
 		@* 이미지를 손으로 하나하나 추가하기 힘들어서 폴더 안에 있는 모든 파일을 순서대로 불러오게 하였다. *@
 		<div class="row">
-			@foreach (var image in @Model.ImageList)
+			@foreach (var image in @Model.MainImageList)
 			{
 				<div class="col-xs-12 col-md-4">
-					<a href="/Static/image/lucia/main/@image" target="_blank" class="thumbnail"><img src="/Static/image/lucia/main/@image" /></a>
+					<a href="@Model.RootPath/@Model.MainDirName/@image" target="_blank" class="thumbnail"><img src="@Model.RootPath/@Model.MainDirName/@image" /></a>
 				</div>
 			}
 		</div>

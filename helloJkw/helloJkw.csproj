@@ -43,9 +43,12 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Extensions\Extensions.cs" />
+    <Compile Include="LuciaStatic.cs" />
     <Compile Include="Modules\Games\ColorConquer\CcMain.cs" />
     <Compile Include="Modules\Jkw\JkwHomeModule.cs" />
     <Compile Include="Modules\Lucia\LuciaHomeModule.cs" />
+    <Compile Include="Modules\Lucia\ProductInfo.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
@@ -100,10 +103,12 @@
     <None Include="_Static\js\jssor\jssor.slider.mini.compress.bat" />
     <None Include="_Views\Games\ColorConquer\ccMain.cshtml" />
     <None Include="_Views\Jkw\jkwHome.cshtml" />
+    <None Include="_Views\Lucia\LuciaCategory.cshtml" />
     <None Include="_Views\Lucia\luciaHome.cshtml" />
   </ItemGroup>
   <ItemGroup>
-    <Folder Include="Extensions\" />
+    <Folder Include="Utils\" />
+    <Folder Include="_Static\image\lucia\" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\..\Extensions\Extensions\Extensions.csproj">
@@ -204,22 +209,6 @@
     <Content Include="_Static\image\jssor\loading2.gif" />
     <Content Include="_Static\image\jssor\play.png" />
     <Content Include="_Static\image\jssor\t01.png" />
-    <Content Include="_Static\image\lucia\main\20120607_231629.jpg" />
-    <Content Include="_Static\image\lucia\main\20140313_145400.jpg" />
-    <Content Include="_Static\image\lucia\main\20140408_225352.jpg" />
-    <Content Include="_Static\image\lucia\main\20140408_225806.jpg" />
-    <Content Include="_Static\image\lucia\main\20140408_225819.jpg" />
-    <Content Include="_Static\image\lucia\main\20140408_225834.jpg" />
-    <Content Include="_Static\image\lucia\main\20140515_212648.jpg" />
-    <Content Include="_Static\image\lucia\main\20140515_212716.jpg" />
-    <Content Include="_Static\image\lucia\main\20140515_212734.jpg" />
-    <Content Include="_Static\image\lucia\main\20141207_170511.jpg" />
-    <Content Include="_Static\image\lucia\main\20141207_170608.jpg" />
-    <Content Include="_Static\image\lucia\main\20141208_105854.jpg" />
-    <Content Include="_Static\image\lucia\main\slide\KakaoTalk_20150222_210846650.jpg" />
-    <Content Include="_Static\image\lucia\main\slide\KakaoTalk_20150222_210846835.jpg" />
-    <Content Include="_Static\image\lucia\main\slide\KakaoTalk_20150222_210848352.jpg" />
-    <Content Include="_Static\image\lucia\main\튤립카드.jpg" />
     <Content Include="_Static\js\bootstrap.js" />
     <Content Include="_Static\js\bootstrap.min.js" />
     <Content Include="_Static\js\jssor\jquery-1.9.1.min.js" />
@@ -236,11 +225,11 @@
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>
-    <PreBuildEvent>del $(TargetDir)Static\ /s /q
+    <PreBuildEvent>rd /s /q $(TargetDir)Static
 xcopy /y $(ProjectDir)_Static\*.* $(TargetDir)Static\ /s /e /c /h
-del $(TargetDir)Views\ /s /q
+rd /s /q $(TargetDir)Views
 xcopy /y $(ProjectDir)_Views\*.* $(TargetDir)Views\ /s /e /c /h
-del $(TargetDir)_Jkw\ /s /q
+rd /s /q $(TargetDir)_Jkw
 xcopy /y $(ProjectDir)_Jkw\*.* $(TargetDir)_Jkw\ /s /e /c /h</PreBuildEvent>
   </PropertyGroup>
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
