@@ -16,7 +16,7 @@ namespace helloJkw.Modules.Jkw
 			Get["/jkw"] = _ =>
 			{
 				var files = Directory.GetFiles(@"Static/Agency/img/bg/", "*");
-				var gameRoot = @"_Jkw/Games";
+				var gameRoot = @"jkw/Games";
 				var games = Directory.GetDirectories(gameRoot)
 					.Select(path => new
 					{
@@ -28,8 +28,8 @@ namespace helloJkw.Modules.Jkw
 				var rnd = new Random((int)DateTime.Now.Ticks);
 				var model = new
 				{
-					BackGroundFileName = Path.GetFileName(files[rnd.Next(files.Count())])
-					//, Games = games
+					BackGroundFileName = Path.GetFileName(files[rnd.Next(files.Count())]), 
+					Games = games
 				};
 				return View["jkwHome", model];
 			};
