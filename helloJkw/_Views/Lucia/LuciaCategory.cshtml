@@ -61,7 +61,7 @@
 					<span class="icon-bar"></span>
 					<span class="icon-bar"></span>
 				</button>
-				<a class="navbar-brand" href="/">Lucia Handmade Card</a>
+				<a class="navbar-brand" href="http://luciahandmadecard.com">Lucia Handmade Card</a>
 			</div>
 			<div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
 				<ul class="nav navbar-nav">
@@ -70,7 +70,7 @@
 						string active = null;
 						if (@menu == @Model.Category)
 						{ active = "active"; }
-						<li class="@active"><a href="/category/@menu">@menu</a></li>
+						<li class="@active"><a href="/lucia/category/@menu">@menu</a></li>
 					}
 				</ul>
 			</div>
@@ -85,11 +85,11 @@
 					{
 					<div class="col-sm-4 col-lg-4 col-md-4">
 						<div class="thumbnail">
-							<a href="/product/@Model.Category/@product.Name"><img src="http://placehold.it/320x150" alt=""></a>
+							<a href="/lucia/product/@Model.Category/@product.Name"><img src="http://placehold.it/320x150" alt=""></a>
 							<div class="caption">
 								<h4 class="pull-right">2,499 원</h4>
 								<h4>
-									<a href="/product/@Model.Category/@product.Name">@product.Name</a>
+									<a href="/lucia/product/@Model.Category/@product.Name">@product.Name</a>
 								</h4>
 								<p>See more snippets like this online store item at <a target="_blank" href="http://www.bootsnipp.com">Bootsnipp - http://bootsnipp.com</a>.</p>
 							</div>

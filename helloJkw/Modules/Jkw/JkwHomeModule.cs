@@ -13,7 +13,7 @@ namespace helloJkw.Modules.Jkw
 	{
 		public JkwHomeModule()
 		{
-			Get["/jkw"] = _ =>
+			Get["/"] = _ =>
 			{
 				var files = Directory.GetFiles(@"Static/Agency/img/bg/", "*");
 				var gameRoot = @"jkw/Games";

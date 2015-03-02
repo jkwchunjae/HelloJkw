@@ -13,7 +13,7 @@ namespace helloJkw.Modules.Lucia
 	{
 		public LuciaHomeModule()
 		{
-			Get["/"] = _ =>
+			Get["/lucia"] = _ =>
 			{
 				var mainDirName = LuciaStatic.MainDirName;
 				var mainImageList = LuciaStatic.LuciaDir[mainDirName].GetFiles()
@@ -40,7 +40,7 @@ namespace helloJkw.Modules.Lucia
 	{
 		public LuciaCategoryModule()
 		{
-			Get["/category/{category}"] = _ =>
+			Get["/lucia/category/{category}"] = _ =>
 			{
 				string category = _.category;
 
@@ -67,7 +67,7 @@ namespace helloJkw.Modules.Lucia
 	{
 		public LuciaProductModule()
 		{
-			Get["/product/{category}/{product}"] = _ =>
+			Get["/lucia/product/{category}/{product}"] = _ =>
 			{
 				string category = _.category;
 				string product = _.product;
