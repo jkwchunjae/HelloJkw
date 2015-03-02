@@ -9,25 +9,12 @@
 	<title>루치아 핸드메이드 카드</title>
 
 	<link href="/Static/css/bootstrap.min.css" rel="stylesheet" />
-	<link href="/Static/css/slide.css" rel="stylesheet" />
+	@*<link href="/Static/css/slide.css" rel="stylesheet" />*@
 
 	<style>
 
 		body {
 			padding-top: 70px; /* Required padding for .navbar-fixed-top. Remove if using .navbar-static-top. Change if height of navigation changes. */
-		}
-
-		.slide-image {
-			width: 100%;
-		}
-
-		.carousel-holder {
-			margin-bottom: 30px;
-		}
-
-		.carousel-control,
-		.item {
-			border-radius: 4px;
 		}
 
 		.caption {
@@ -94,9 +81,9 @@
 		<div class="row">
 			<div class="col-md-12 col-xs-12">
 				<div class="row">
+					@foreach (var product in @Model.ProductList)
+					{
 					<div class="col-sm-4 col-lg-4 col-md-4">
-						@foreach (var product in @Model.ProductList)
-						{
 						<div class="thumbnail">
 							<a href="/product/@Model.Category/@product.Name"><img src="http://placehold.it/320x150" alt=""></a>
 							<div class="caption">
@@ -117,13 +104,24 @@
 								</p>
 							</div>
 						</div>
-						}
 					</div>
-
+					}	
 				</div>
 			</div>
 		</div>
 	</div>
 
+	<div class="container">
+		<hr />
+		<footer>
+			<div class="row">
+				<div class="col-lg-12">
+					<p>Copyright &copy; Lucia Handmade Card 2015</p>
+				</div>
+			</div>
+		</footer>
+	</div>
+	<script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.2/jquery.min.js"></script>
+	<script type="text/javascript" src="/Static/js/bootstrap.min.js"></script>
 </body>
 </html>

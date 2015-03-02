@@ -18,16 +18,13 @@ namespace helloJkw.Modules.Lucia
 				var mainDirName = LuciaStatic.MainDirName;
 				var mainImageList = LuciaStatic.LuciaDir[mainDirName].GetFiles()
 					.Select(e => Path.GetFileName(e.Name));
-				var mainMenuList = LuciaStatic.LuciaDir.GetDirNames()
-					.Where(e => e != mainDirName)
-					.Select(e => e.RemovePrefixNumber());
 				var slideImageList = LuciaStatic.LuciaDir[mainDirName]["slide"].GetFiles()
 					.Select(e => Path.GetFileName(e.Name));
 
 				var model = new
 				{
 					RootPath = LuciaStatic.RootPath,
-					MainMenu = mainMenuList.ToList(),
+					MainMenu = LuciaStatic.GetMainMenu(),
 					MainDirName = mainDirName,
 					MainImageList = mainImageList,
 					SlideImageList = slideImageList,
@@ -39,17 +36,13 @@ namespace helloJkw.Modules.Lucia
 		}
 	}
 
-	public class LuciaCardModule : NancyModule
+	public class LuciaCategoryModule : NancyModule
 	{
-		public LuciaCardModule()
+		public LuciaCategoryModule()
 		{
 			Get["/category/{category}"] = _ =>
 			{
-				var mainDirName = LuciaStatic.MainDirName;
-				var mainMenuList = LuciaStatic.LuciaDir.GetDirNames()
-					.Where(e => e != mainDirName)
-					.Select(e => Regex.Replace(e, @"\d*\.\s", "")); // 000. XXXX 이런 형태에서 XXX 만 가져온다.
-				var category = (string)_.category;
+				string category = _.category;
 
 				var productList = LuciaStatic.LuciaDir[category].GetDirNames()
 					.Select(e => new ProductInfo
@@ -61,11 +54,36 @@ namespace helloJkw.Modules.Lucia
 				var model = new
 				{
 					RootPath = LuciaStatic.RootPath,
-					MainMenu = mainMenuList,
+					MainMenu = LuciaStatic.GetMainMenu(),
 					Category = category,
 					ProductList = productList, 
 				};
 				return View["luciaCategory", model];
+			};
+		}
+	}
+
+	public class LuciaProductModule : NancyModule
+	{
+		public LuciaProductModule()
+		{
+			Get["/product/{category}/{product}"] = _ =>
+			{
+				string category = _.category;
+				string product = _.product;
+				return "{0}/{1}".With(category, product);
+			};
+		}
+	}
+
+	public class LuciaRefreshDir : NancyModule
+	{
+		public LuciaRefreshDir()
+		{
+			Get["/refresh"] = _ =>
+			{
+				LuciaStatic.LuciaDir = LuciaStatic.RootPath.CreateDirInfo();
+				return "완료";
 			};
 		}
 	}

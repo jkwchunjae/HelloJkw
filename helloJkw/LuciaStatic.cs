@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using helloJkw.Extensions;
 
 namespace helloJkw
 {
@@ -20,6 +21,11 @@ namespace helloJkw
 			}
 		}
 
-		//public IEnumerable<string>
+		public static IEnumerable<string> GetMainMenu()
+		{
+			return LuciaDir.GetDirNames()
+				.Where(e => e != MainDirName)
+				.Select(e => e.RemovePrefixNumber());
+		}
 	}
 }
