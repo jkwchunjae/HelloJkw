@@ -15,6 +15,7 @@ namespace helloJkw.Modules.Lucia
 		{
 			Get["/lucia"] = _ =>
 			{
+				LuciaStatic.UpdateLuciaDir(5);
 				var mainDirName = LuciaStatic.MainDirName;
 				var mainImageList = LuciaStatic.LuciaDir[mainDirName].GetFiles()
 					.Select(e => Path.GetFileName(e.Name));
@@ -36,33 +37,6 @@ namespace helloJkw.Modules.Lucia
 		}
 	}
 
-	public class LuciaCategoryModule : NancyModule
-	{
-		public LuciaCategoryModule()
-		{
-			Get["/lucia/category/{category}"] = _ =>
-			{
-				string category = _.category;
-
-				var productList = LuciaStatic.LuciaDir[category].GetDirNames()
-					.Select(e => new ProductInfo
-					{
-						Name = e
-					}.ToExpando())
-					.ToList();
-
-				var model = new
-				{
-					RootPath = LuciaStatic.RootPath,
-					MainMenu = LuciaStatic.GetMainMenu(),
-					Category = category,
-					ProductList = productList, 
-				};
-				return View["luciaCategory", model];
-			};
-		}
-	}
-
 	public class LuciaProductModule : NancyModule
 	{
 		public LuciaProductModule()
@@ -71,6 +45,7 @@ namespace helloJkw.Modules.Lucia
 			{
 				string category = _.category;
 				string product = _.product;
+				LuciaStatic.UpdateLuciaDir(5);
 				return "{0}/{1}".With(category, product);
 			};
 		}
@@ -82,7 +57,7 @@ namespace helloJkw.Modules.Lucia
 		{
 			Get["/refresh"] = _ =>
 			{
-				LuciaStatic.LuciaDir = LuciaStatic.RootPath.CreateDirInfo();
+				LuciaStatic.UpdateLuciaDir();
 				return "완료";
 			};
 		}

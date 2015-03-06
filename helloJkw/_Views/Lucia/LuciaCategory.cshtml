@@ -85,13 +85,14 @@
 					{
 					<div class="col-sm-4 col-lg-4 col-md-4">
 						<div class="thumbnail">
-							<a href="/lucia/product/@Model.Category/@product.Name"><img src="http://placehold.it/320x150" alt=""></a>
+							<a href="/lucia/product/@Model.Category/@product.Name"><img src="@product.MainImage" alt=""></a>
 							<div class="caption">
-								<h4 class="pull-right">2,499 원</h4>
+								<h4 class="pull-right">@product.Price 원</h4>
 								<h4>
 									<a href="/lucia/product/@Model.Category/@product.Name">@product.Name</a>
 								</h4>
-								<p>See more snippets like this online store item at <a target="_blank" href="http://www.bootsnipp.com">Bootsnipp - http://bootsnipp.com</a>.</p>
+								@*<p>See more snippets like this online store item at <a target="_blank" href="http://www.bootsnipp.com">Bootsnipp - http://bootsnipp.com</a>.</p>*@
+								<p>@product.MainContent</p>
 							</div>
 							<div class="ratings">
 								<p class="pull-right">15 reviews</p>

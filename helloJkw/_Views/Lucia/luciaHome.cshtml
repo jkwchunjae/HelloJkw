@@ -56,7 +56,7 @@
 					@foreach (var image in @Model.SlideImageList)
 					{
 						<div>
-							<img data-u="image" src="@Model.RootPath/@Model.MainDirName/slide/@image" />
+							<img data-u="image" src="/@Model.RootPath/@Model.MainDirName/slide/@image" />
 							<div data-u="thumb"></div>
 						</div>
 					}
@@ -103,7 +103,9 @@
 			@foreach (var image in @Model.MainImageList)
 			{
 				<div class="col-xs-12 col-md-4">
-					<a href="@Model.RootPath/@Model.MainDirName/@image" target="_blank" class="thumbnail"><img src="@Model.RootPath/@Model.MainDirName/@image" /></a>
+					<a href="/@Model.RootPath/@Model.MainDirName/@image" target="_blank" class="thumbnail">
+						<img src="/@Model.RootPath/@Model.MainDirName/@image" />
+					</a>
 				</div>
 			}
 		</div>

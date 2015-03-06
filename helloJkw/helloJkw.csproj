@@ -44,9 +44,11 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Extensions\Extensions.cs" />
-    <Compile Include="LuciaStatic.cs" />
+    <Compile Include="Lucia\LuciaDirInfo.cs" />
+    <Compile Include="Lucia\LuciaStatic.cs" />
     <Compile Include="Modules\Games\ColorConquer\CcMain.cs" />
     <Compile Include="Modules\Jkw\JkwHomeModule.cs" />
+    <Compile Include="Modules\Lucia\LuciaCategoryModule.cs" />
     <Compile Include="Modules\Lucia\LuciaHomeModule.cs" />
     <Compile Include="Modules\Lucia\ProductInfo.cs" />
     <Compile Include="Program.cs" />
