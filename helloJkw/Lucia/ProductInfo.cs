@@ -4,11 +4,12 @@ using System.Dynamic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using Extensions;
 using System.IO;
 using System.Text.RegularExpressions;
+using Extensions;
+using helloJkw.Extensions;
 
-namespace helloJkw.Modules.Lucia
+namespace helloJkw.Lucia
 {
 	public class ProductInfo
 	{
@@ -18,13 +19,12 @@ namespace helloJkw.Modules.Lucia
 		public string Name { get; set; }
 		public int Price { get; set; }
 		public int? SalePrice { get; set; }
-		public string MainContent { get; set; }
+		public string[] MainContent { get; set; }
 		public string MainImage
 		{
 			get
 			{
-				var ImageExtensionList = new List<string>(){ "png", "jpg", "jpeg", "gif" };
-				ImageExtensionList = ImageExtensionList.Select(e => ".{0}".With(e)).ToList();
+				var ImageExtensionList = new List<string>(){ ".png", ".jpg", ".jpeg", ".gif" };
 				var ImageList = _dirInfo.GetFiles()
 					.Where(e => ImageExtensionList.Contains(Path.GetExtension(e.FullName).ToLower()))
 					.Select(e => e.FullName.RegexReplace(@"\\", "/"))
@@ -46,6 +46,20 @@ namespace helloJkw.Modules.Lucia
 				return mainImage;
 			}
 		}
+		public string[] ImageList
+		{
+			get
+			{
+				var ImageExtensionList = new List<string>(){ ".png", ".jpg", ".jpeg", ".gif" };
+				var ImageList = _dirInfo.GetFiles()
+					.Where(e => ImageExtensionList.Contains(Path.GetExtension(e.FullName).ToLower()))
+					.Select(e => e.FullName.RegexReplace(@"\\", "/"))
+					//.Select(e => Path.GetFileName(e))
+					.Select(e => e.Substring(e.IndexOf("/{0}/".With(LuciaStatic.RootPath))))
+					.ToArray();
+				return ImageList;
+			}
+		}
 
 		public ProductInfo() { }
 
@@ -64,41 +78,16 @@ namespace helloJkw.Modules.Lucia
 
 		private void SetInfoText(string productInfoPath)
 		{
-			if (productInfoPath == null) return;
-
-			string currentKey = null;
-			foreach (var line in File.ReadAllLines(productInfoPath, Encoding.Default))
+			if (productInfoPath == null)
 			{
-				if (line.Contains('='))
-				{
-					var splitted= line.Split('=');
-					currentKey = splitted[0].Trim();
-					string value = "";
-					if (splitted.Count() > 1)
-						value = splitted[1];
-					InfoDic.Add(currentKey, value);
-				}
-				else
-				{
-					InfoDic[currentKey] = (InfoDic[currentKey] += Environment.NewLine + line).Trim();
-				}
+				MainContent = new string[] { };
+				return;
 			}
 
-			var dic = InfoDic.ToDefaultDictionary();
+			InfoDic = productInfoPath.InfoToDictionary();
+			var dic = InfoDic.ToDefaultDictionary("");
 			Price = int.Parse(dic["가격"]);
-			MainContent = dic["대표설명"];
-		}
-
-		public ExpandoObject ToExpando()
-		{
-			IDictionary<string, object> expando = new ExpandoObject();
-			var type = this.GetType();
-			foreach (var field in type.GetFields())
-				expando.Add(field.Name, field.GetValue(this));
-			foreach (var properity in type.GetProperties())
-				expando.Add(properity.Name, properity.GetValue(this));
-
-			return (ExpandoObject)expando;
+			MainContent = dic["대표설명"].RegexReplace(@"\r", "").Split('\n');
 		}
 	}
 

@@ -36,7 +36,7 @@
 			</div>
 			<div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
 				<ul class="nav navbar-nav">
-					@foreach (var menu in @Model.MainMenu)
+					@foreach (var menu in @Model.mainMenu)
 					{
 						<li><a href="/lucia/category/@menu">@menu</a></li>
 					}
@@ -53,10 +53,10 @@
 			<div id="sliderb_container" style="position: relative; width: 800px; height: 450px; overflow: hidden;">
 				<!-- Slides Container -->
 				<div u="slides" style="cursor: move; position: absolute; left: 0px; top: 0px; width: 800px; height: 450px; overflow: hidden;">
-					@foreach (var image in @Model.SlideImageList)
+					@foreach (var image in @Model.slideImageList)
 					{
 						<div>
-							<img data-u="image" src="/@Model.RootPath/@Model.MainDirName/slide/@image" />
+							<img data-u="image" src="/@Model.rootPath/@Model.mainDirName/slide/@image" />
 							<div data-u="thumb"></div>
 						</div>
 					}
@@ -100,11 +100,11 @@
 	<div class="container">
 		@* 이미지를 손으로 하나하나 추가하기 힘들어서 폴더 안에 있는 모든 파일을 순서대로 불러오게 하였다. *@
 		<div class="row">
-			@foreach (var image in @Model.MainImageList)
+			@foreach (var image in @Model.mainImageList)
 			{
 				<div class="col-xs-12 col-md-4">
-					<a href="/@Model.RootPath/@Model.MainDirName/@image" target="_blank" class="thumbnail">
-						<img src="/@Model.RootPath/@Model.MainDirName/@image" />
+					<a href="/@Model.rootPath/@Model.mainDirName/@image" target="_blank" class="thumbnail">
+						<img src="/@Model.rootPath/@Model.mainDirName/@image" />
 					</a>
 				</div>
 			}
