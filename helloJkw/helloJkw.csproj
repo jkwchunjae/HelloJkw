@@ -44,13 +44,15 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Extensions\Extensions.cs" />
+    <Compile Include="Extensions\IntHelper.cs" />
     <Compile Include="Lucia\LuciaDirInfo.cs" />
     <Compile Include="Lucia\LuciaStatic.cs" />
     <Compile Include="Modules\Games\ColorConquer\CcMain.cs" />
     <Compile Include="Modules\Jkw\JkwHomeModule.cs" />
     <Compile Include="Modules\Lucia\LuciaCategoryModule.cs" />
     <Compile Include="Modules\Lucia\LuciaHomeModule.cs" />
-    <Compile Include="Modules\Lucia\ProductInfo.cs" />
+    <Compile Include="Lucia\ProductInfo.cs" />
+    <Compile Include="Modules\Lucia\LuciaProductModule.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
@@ -107,6 +109,7 @@
     <None Include="_Views\Jkw\jkwHome.cshtml" />
     <None Include="_Views\Lucia\LuciaCategory.cshtml" />
     <None Include="_Views\Lucia\luciaHome.cshtml" />
+    <None Include="_Views\Lucia\LuciaProduct.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Utils\" />
@@ -160,6 +163,9 @@
     <Content Include="_Static\css\bootstrap.css" />
     <Content Include="_Static\css\bootstrap.min.css" />
     <Content Include="_Static\css\carousel.css" />
+    <Content Include="_Static\css\luciaProduct.css" />
+    <Content Include="_Static\css\luciaCategory.css" />
+    <Content Include="_Static\css\luciaDefault.css" />
     <Content Include="_Static\css\slide.css" />
     <Content Include="_Static\fonts\glyphicons-halflings-regular.svg" />
     <Content Include="_Static\image\card1.jpg" />

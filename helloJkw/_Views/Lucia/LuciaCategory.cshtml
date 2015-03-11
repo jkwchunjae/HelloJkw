@@ -1,4 +1,9 @@
-﻿<!DOCTYPE html>
+﻿@{
+	string rootPath = @Model.rootPath;
+	string category = @Model.category;
+}
+
+<!DOCTYPE html>
 <html lang="kr">
 <head>
 	<meta charset="utf-8" />
@@ -9,46 +14,9 @@
 	<title>루치아 핸드메이드 카드</title>
 
 	<link href="/Static/css/bootstrap.min.css" rel="stylesheet" />
+	<link href="/Static/css/luciaDefault.css" rel="stylesheet" />
+	<link href="/Static/css/luciaCategory.css" rel="stylesheet" />
 	@*<link href="/Static/css/slide.css" rel="stylesheet" />*@
-
-	<style>
-
-		body {
-			padding-top: 70px; /* Required padding for .navbar-fixed-top. Remove if using .navbar-static-top. Change if height of navigation changes. */
-		}
-
-		.caption {
-			height: 130px;
-			overflow: hidden;
-		}
-
-		.caption h4 {
-			white-space: nowrap;
-		}
-
-		.thumbnail img {
-			width: 100%;
-		}
-
-		.ratings {
-			padding-right: 10px;
-			padding-left: 10px;
-			color: #d17581;
-		}
-
-		.thumbnail {
-			padding: 0;
-		}
-
-		.thumbnail .caption-full {
-			padding: 9px;
-			color: #333;
-		}
-
-		footer {
-			margin: 50px 0;
-		}
-	</style>
 </head>
 
 <body>
@@ -61,14 +29,14 @@
 					<span class="icon-bar"></span>
 					<span class="icon-bar"></span>
 				</button>
-				<a class="navbar-brand" href="http://luciahandmadecard.com">Lucia Handmade Card</a>
+				<h1> <a class="navbar-brand" href="http://luciahandmadecard.com">Lucia Handmade Card</a> </h1>
 			</div>
 			<div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
 				<ul class="nav navbar-nav">
-					@foreach (var menu in @Model.MainMenu)
+					@foreach (var menu in @Model.mainMenu)
 					{
 						string active = null;
-						if (@menu == @Model.Category)
+						if (@menu == @category)
 						{ active = "active"; }
 						<li class="@active"><a href="/lucia/category/@menu">@menu</a></li>
 					}
@@ -81,18 +49,23 @@
 		<div class="row">
 			<div class="col-md-12 col-xs-12">
 				<div class="row">
-					@foreach (var product in @Model.ProductList)
+					@foreach (var product in @Model.productList)
 					{
 					<div class="col-sm-4 col-lg-4 col-md-4">
 						<div class="thumbnail">
-							<a href="/lucia/product/@Model.Category/@product.Name"><img src="@product.MainImage" alt=""></a>
+							<a href="/lucia/product/@Model.category/@product.Name"><img src="@product.MainImage" alt=""></a>
 							<div class="caption">
 								<h4 class="pull-right">@product.Price 원</h4>
 								<h4>
-									<a href="/lucia/product/@Model.Category/@product.Name">@product.Name</a>
+									<a href="/lucia/product/@Model.category/@product.Name">@product.Name</a>
 								</h4>
 								@*<p>See more snippets like this online store item at <a target="_blank" href="http://www.bootsnipp.com">Bootsnipp - http://bootsnipp.com</a>.</p>*@
-								<p>@product.MainContent</p>
+								<p>
+								@foreach (string content in @product.MainContent)
+								{
+									@content<br />
+								}
+								</p>
 							</div>
 							<div class="ratings">
 								<p class="pull-right">15 reviews</p>

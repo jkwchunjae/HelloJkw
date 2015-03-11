@@ -24,29 +24,15 @@ namespace helloJkw.Modules.Lucia
 
 				var model = new
 				{
-					RootPath = LuciaStatic.RootPath,
-					MainMenu = LuciaStatic.GetMainMenu(),
-					MainDirName = mainDirName,
-					MainImageList = mainImageList,
-					SlideImageList = slideImageList,
+					rootPath = LuciaStatic.RootPath,
+					mainMenu = LuciaStatic.GetMainMenu(),
+					mainDirName,
+					mainImageList,
+					slideImageList,
 					//ImageList = mainImageList.Select(e => "{0}/{1}/{2}".With(LuciaStatic.RootPath, mainDirName, Path.GetFileName(e.Name))).ToList(),
 					//ImageList = mainImageList.Select(e => Path.GetFileName(e.Name)).ToList()
 				};
 				return View["luciaHome", model];
-			};
-		}
-	}
-
-	public class LuciaProductModule : NancyModule
-	{
-		public LuciaProductModule()
-		{
-			Get["/lucia/product/{category}/{product}"] = _ =>
-			{
-				string category = _.category;
-				string product = _.product;
-				LuciaStatic.UpdateLuciaDir(5);
-				return "{0}/{1}".With(category, product);
 			};
 		}
 	}
