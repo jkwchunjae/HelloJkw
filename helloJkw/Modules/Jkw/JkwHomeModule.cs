@@ -6,6 +6,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Extensions;
+using helloJkw.Extensions;
 
 namespace helloJkw.Modules.Jkw
 {
@@ -20,16 +21,16 @@ namespace helloJkw.Modules.Jkw
 				var games = Directory.GetDirectories(gameRoot)
 					.Select(path => new
 					{
-						EngName = Path.GetFileName(path),
-						KorName = File.ReadAllText(Path.Combine(path, "info.txt")),
-						Thumbnail = Path.GetFileName(Directory.GetFiles(path, "*thumbnail*").FirstOrDefault()),
-					});
+						engName = Path.GetFileName(path),
+						korName = File.ReadAllText(Path.Combine(path, "info.txt")),
+						thumbnail = Path.GetFileName(Directory.GetFiles(path, "*thumbnail*").FirstOrDefault()),
+					}.ToExpando());
 
 				var rnd = new Random((int)DateTime.Now.Ticks);
 				var model = new
 				{
 					BackGroundFileName = Path.GetFileName(files[rnd.Next(files.Count())]), 
-					Games = games
+					games = games
 				};
 				return View["jkwHome", model];
 			};

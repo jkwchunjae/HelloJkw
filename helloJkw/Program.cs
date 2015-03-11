@@ -67,13 +67,11 @@ namespace helloJkw
 		{
 			base.ApplicationStartup(container, pipelines);
 			this.Conventions.ViewLocationConventions.Add((viewName, model, context) =>
-				{
-					return string.Concat("Views/Lucia/", viewName);
-				});
+				{ return string.Concat("Views/Lucia/", viewName); });
 			this.Conventions.ViewLocationConventions.Add((viewName, model, context) =>
-				{
-					return string.Concat("Views/Jkw/", viewName);
-				});
+				{ return string.Concat("Views/Jkw/", viewName); });
+			this.Conventions.ViewLocationConventions.Add((viewName, model, context) =>
+				{ return string.Concat("Views/Games/", viewName); });
 		}
 	}
 }
