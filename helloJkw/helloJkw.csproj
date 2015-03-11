@@ -229,11 +229,7 @@
     <PreBuildEvent>rd /s /q $(TargetDir)Static
 xcopy /y $(ProjectDir)_Static\*.* $(TargetDir)Static\ /s /e /c /h
 rd /s /q $(TargetDir)Views
-xcopy /y $(ProjectDir)_Views\*.* $(TargetDir)Views\ /s /e /c /h
-rd /s /q $(TargetDir)jkw
-xcopy /y C:\Users\Administrator\Dropbox\helloJkw\jkw\*.* $(TargetDir)jkw\ /s /e /c /h
-rd /s /q $(TargetDir)lucia
-xcopy /y C:\Users\Administrator\Dropbox\helloJkw\lucia\*.* $(TargetDir)lucia\ /s /e /c /h</PreBuildEvent>
+xcopy /y $(ProjectDir)_Views\*.* $(TargetDir)Views\ /s /e /c /h</PreBuildEvent>
   </PropertyGroup>
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.
