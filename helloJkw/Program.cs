@@ -32,6 +32,7 @@ namespace helloJkw
 			#endregion
 
 			LuciaStatic.LuciaDir = LuciaStatic.RootPath.CreateDirInfo();
+			LuciaStatic.UpdateLuciaDir(0);
 
 			using (var host = new NancyHost(new Uri("http://localhost:" + port)))
 			{
@@ -61,6 +62,8 @@ namespace helloJkw
 			nancyConventions.StaticContentsConventions.AddDirectory("Static", "Static");
 			nancyConventions.StaticContentsConventions.AddDirectory("jkw", "jkw");
 			nancyConventions.StaticContentsConventions.AddDirectory("lucia", "lucia");
+			nancyConventions.StaticContentsConventions.AddDirectory("lucia-web", "lucia-web");
+			nancyConventions.StaticContentsConventions.AddDirectory("lucia-mobile", "lucia-mobile");
 		}
 
 		protected override void ApplicationStartup(TinyIoCContainer container, IPipelines pipelines)

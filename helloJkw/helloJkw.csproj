@@ -36,6 +36,7 @@
   <ItemGroup>
     <Reference Include="System" />
     <Reference Include="System.Core" />
+    <Reference Include="System.Drawing" />
     <Reference Include="System.Xml.Linq" />
     <Reference Include="System.Data.DataSetExtensions" />
     <Reference Include="Microsoft.CSharp" />
@@ -45,6 +46,7 @@
   <ItemGroup>
     <Compile Include="Extensions\Extensions.cs" />
     <Compile Include="Extensions\IntHelper.cs" />
+    <Compile Include="Lucia\ImageResizer.cs" />
     <Compile Include="Lucia\LuciaDirInfo.cs" />
     <Compile Include="Lucia\LuciaStatic.cs" />
     <Compile Include="Modules\Games\ColorConquer\ColorConquerMain.cs" />
@@ -119,6 +121,10 @@
     <ProjectReference Include="..\..\Extensions\Extensions\Extensions.csproj">
       <Project>{5b845d86-ae90-40bc-9950-25f4d03c016a}</Project>
       <Name>Extensions</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\ImageProcessor\src\ImageProcessor\ImageProcessor.csproj">
+      <Project>{3b5dd734-fb7a-487d-8ce6-55e7af9aea7e}</Project>
+      <Name>ImageProcessor</Name>
     </ProjectReference>
     <ProjectReference Include="..\..\Nancy\src\Nancy.Hosting.Self\Nancy.Hosting.Self.csproj">
       <Project>{aa7f66eb-ec2c-47de-855f-30b3e6ef2134}</Project>

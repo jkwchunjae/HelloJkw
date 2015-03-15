@@ -13,9 +13,11 @@ namespace helloJkw.Modules.Lucia
 	{
 		public LuciaHomeModule()
 		{
-			Get["/lucia"] = _ =>
+			Get["/lucia/{device?web}"] = _ =>
 			{
 				LuciaStatic.UpdateLuciaDir(5);
+				string device = _.device;
+
 				var mainDirName = LuciaStatic.MainDirName;
 				var mainImageList = LuciaStatic.LuciaDir[mainDirName].GetFiles()
 					.Select(e => Path.GetFileName(e.Name));
@@ -24,7 +26,8 @@ namespace helloJkw.Modules.Lucia
 
 				var model = new
 				{
-					rootPath = LuciaStatic.RootPath,
+					rootPath = (device == "m" ? LuciaStatic.RootPathMobile : LuciaStatic.RootPathWeb),
+					device = device,
 					mainMenu = LuciaStatic.GetMainMenu(),
 					mainDirName,
 					mainImageList,

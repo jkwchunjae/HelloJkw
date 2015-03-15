@@ -49,6 +49,13 @@ namespace helloJkw
 			return _dirList;
 		}
 
+		public IEnumerable<ProductInfo> GetProductList()
+		{
+			return _dirList
+				.Where(e => e.ProductInfo.ImageList.Count() > 0)
+				.Select(e => e.ProductInfo);
+		}
+
 		public IEnumerable<string> GetDirNames()
 		{
 			return _dirList.Select(e => Path.GetFileName(e._path));

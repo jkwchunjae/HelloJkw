@@ -1,5 +1,6 @@
 ﻿@{
 	string rootPath = @Model.rootPath;
+	string device = @Model.device;
 	string category = @Model.category;
 }
 
@@ -38,7 +39,7 @@
 						string active = null;
 						if (@menu == @category)
 						{ active = "active"; }
-						<li class="@active"><a href="/lucia/category/@menu">@menu</a></li>
+						<li class="@active"><a href="/lucia/@device/category/@menu">@menu</a></li>
 					}
 				</ul>
 			</div>
@@ -53,11 +54,11 @@
 					{
 					<div class="col-sm-4 col-lg-4 col-md-4">
 						<div class="thumbnail">
-							<a href="/lucia/product/@Model.category/@product.Name"><img src="@product.MainImage" alt=""></a>
+							<a href="/lucia/@device/product/@category/@product.Name"><img src="/@rootPath/@product.MainImage" alt=""></a>
 							<div class="caption">
 								<h4 class="pull-right">@product.Price 원</h4>
 								<h4>
-									<a href="/lucia/product/@Model.category/@product.Name">@product.Name</a>
+									<a href="/lucia/@device/product/@category/@product.Name">@product.Name</a>
 								</h4>
 								@*<p>See more snippets like this online store item at <a target="_blank" href="http://www.bootsnipp.com">Bootsnipp - http://bootsnipp.com</a>.</p>*@
 								<p>

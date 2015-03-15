@@ -5,14 +5,18 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using helloJkw.Extensions;
+using System.IO;
 
 namespace helloJkw
 {
 	public static class LuciaStatic
 	{
 		public static string RootPath = @"lucia";
+		public static string RootPathWeb = @"lucia-web";
+		public static string RootPathMobile = @"lucia-mobile";
 		public static LuciaDirInfo LuciaDir;
-		public static DateTime LastUpdateTime { get; set; }
+
+		private static DateTime _lastUpdateTime;
 
 		public static string MainDirName
 		{
@@ -24,10 +28,14 @@ namespace helloJkw
 
 		public static LuciaDirInfo UpdateLuciaDir(int minute = 0)
 		{
-			if (DateTime.Now.Subtract(LastUpdateTime).TotalMinutes < minute)
+			if (DateTime.Now.Subtract(_lastUpdateTime).TotalMinutes < minute)
 				return LuciaDir;
 			LuciaDir = RootPath.CreateDirInfo();
-			LastUpdateTime = DateTime.Now;
+			var rootFullPath = Path.GetFullPath(RootPath).Replace(@"\", "/");
+			if (rootFullPath[rootFullPath.Length - 1] != '/') rootFullPath += '/';
+			ImageResizer.SyncImages(rootFullPath, "/lucia/", "/lucia-web/", ratio:0.25);
+			ImageResizer.SyncImages(rootFullPath, "/lucia/", "/lucia-mobile/", ratio:0.1);
+			_lastUpdateTime = DateTime.Now;
 			return LuciaDir;
 		}
 

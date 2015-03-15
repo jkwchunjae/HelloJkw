@@ -24,17 +24,6 @@ namespace helloJkw.Lucia
 		{
 			get
 			{
-				var ImageExtensionList = new List<string>(){ ".png", ".jpg", ".jpeg", ".gif" };
-				var ImageList = _dirInfo.GetFiles()
-					.Where(e => ImageExtensionList.Contains(Path.GetExtension(e.FullName).ToLower()))
-					.Select(e => e.FullName.RegexReplace(@"\\", "/"))
-					.Select(e => e.Substring(e.IndexOf("/{0}/".With(LuciaStatic.RootPath))))
-					.ToList();
-
-				var test = _dirInfo.GetFiles()
-					.Select(e => Path.GetExtension(e.FullName))
-					.ToList();
-
 				string mainImage = "http://placehold.it/320x120";
 				if (!ImageList.Any()) return mainImage;
 
@@ -46,7 +35,7 @@ namespace helloJkw.Lucia
 				return mainImage;
 			}
 		}
-		public string[] ImageList
+		public IEnumerable<string> ImageList
 		{
 			get
 			{
@@ -54,9 +43,8 @@ namespace helloJkw.Lucia
 				var ImageList = _dirInfo.GetFiles()
 					.Where(e => ImageExtensionList.Contains(Path.GetExtension(e.FullName).ToLower()))
 					.Select(e => e.FullName.RegexReplace(@"\\", "/"))
-					//.Select(e => Path.GetFileName(e))
 					.Select(e => e.Substring(e.IndexOf("/{0}/".With(LuciaStatic.RootPath))))
-					.ToArray();
+					.Select(e => e.Replace("/{0}/".With(LuciaStatic.RootPath), ""));
 				return ImageList;
 			}
 		}

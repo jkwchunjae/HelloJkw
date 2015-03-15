@@ -13,9 +13,10 @@ namespace helloJkw.Modules.Lucia
 	{
 		public LuciaProductModule()
 		{
-			Get["/lucia/product/{category}/{productName}"] = _ =>
+			Get["/lucia/{device?web}/product/{category}/{productName}"] = _ =>
 			{
 				LuciaStatic.UpdateLuciaDir(5);
+				string device = _.device;
 				string category = _.category;
 				string productName = _.productName;
 
@@ -31,7 +32,8 @@ namespace helloJkw.Modules.Lucia
 
 				var model = new
 				{
-					rootPath = LuciaStatic.RootPath,
+					rootPath = (device == "m" ? LuciaStatic.RootPathMobile : LuciaStatic.RootPathWeb),
+					device,
 					mainMenu = LuciaStatic.GetMainMenu(),
 					productList,
 					category,

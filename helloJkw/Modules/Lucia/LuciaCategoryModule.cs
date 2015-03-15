@@ -12,18 +12,20 @@ namespace helloJkw.Modules.Lucia
 	{
 		public LuciaCategoryModule()
 		{
-			Get["/lucia/category/{category}"] = _ =>
+			Get["/lucia/{device?web}/category/{category}"] = _ =>
 			{
 				LuciaStatic.UpdateLuciaDir(5);
+				string device = _.device;
 				string category = _.category;
 
 				var productList = LuciaStatic.LuciaDir[category]
-					.GetSubDirList()
-					.Select(e => e.ProductInfo.ToExpando());
+					.GetProductList()
+					.Select(e => e.ToExpando());
 
 				var model = new
 				{
-					rootPath = LuciaStatic.RootPath,
+					rootPath = (device == "m" ? LuciaStatic.RootPathMobile : LuciaStatic.RootPathWeb),
+					device,
 					mainMenu = LuciaStatic.GetMainMenu(),
 					category,
 					productList,
