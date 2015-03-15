@@ -14,23 +14,30 @@ namespace helloJkw.Modules.Lucia
 		{
 			Get["/lucia/{device?web}/category/{category}"] = _ =>
 			{
-				LuciaStatic.UpdateLuciaDir(5);
+				LuciaStatic.UpdateLuciaDir();
 				string device = _.device;
 				string category = _.category;
 
-				var productList = LuciaStatic.LuciaDir[category]
-					.GetProductList()
-					.Select(e => e.ToExpando());
-
-				var model = new
+				try
 				{
-					rootPath = (device == "m" ? LuciaStatic.RootPathMobile : LuciaStatic.RootPathWeb),
-					device,
-					mainMenu = LuciaStatic.GetMainMenu(),
-					category,
-					productList,
-				};
-				return View["luciaCategory", model];
+					var productList = LuciaStatic.LuciaDir[category]
+						.GetProductList()
+						.Select(e => e.ToExpando());
+
+					var model = new
+					{
+						rootPath = (device == "m" ? LuciaStatic.RootPathMobile : LuciaStatic.RootPathWeb),
+						device,
+						mainMenu = LuciaStatic.GetMainMenu(),
+						category,
+						productList,
+					};
+					return View["luciaCategory", model];
+				}
+				catch
+				{
+					return "wrong url";
+				}
 			};
 		}
 	}

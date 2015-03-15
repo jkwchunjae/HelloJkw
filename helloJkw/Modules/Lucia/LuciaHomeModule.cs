@@ -15,7 +15,7 @@ namespace helloJkw.Modules.Lucia
 		{
 			Get["/lucia/{device?web}"] = _ =>
 			{
-				LuciaStatic.UpdateLuciaDir(5);
+				LuciaStatic.UpdateLuciaDir();
 				string device = _.device;
 
 				var mainDirName = LuciaStatic.MainDirName;
@@ -46,7 +46,7 @@ namespace helloJkw.Modules.Lucia
 		{
 			Get["/refresh"] = _ =>
 			{
-				LuciaStatic.UpdateLuciaDir();
+				LuciaStatic.UpdateLuciaDir(0);
 				return "완료";
 			};
 		}

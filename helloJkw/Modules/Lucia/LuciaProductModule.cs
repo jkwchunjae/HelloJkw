@@ -15,20 +15,22 @@ namespace helloJkw.Modules.Lucia
 		{
 			Get["/lucia/{device?web}/product/{category}/{productName}"] = _ =>
 			{
-				LuciaStatic.UpdateLuciaDir(5);
+				LuciaStatic.UpdateLuciaDir();
 				string device = _.device;
 				string category = _.category;
 				string productName = _.productName;
 
 				var productList = LuciaStatic.LuciaDir[category]
-					.GetSubDirList()
-					.Select(e => e.ProductInfo.ToExpando());
+					.GetProductList()
+					.Select(e => e.ToExpando());
 
 				var productInfo = LuciaStatic.LuciaDir[category]
-					.GetSubDirList()
-					.Where(e => e.ProductInfo.Name == productName)
-					.Select(e => e.ProductInfo)
+					.GetProductList()
+					.Where(e => e.Name == productName)
 					.FirstOrDefault();
+
+				if (productInfo == null)
+					return "wrong url";
 
 				var model = new
 				{

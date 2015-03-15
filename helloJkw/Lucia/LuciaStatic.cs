@@ -26,15 +26,15 @@ namespace helloJkw
 			}
 		}
 
-		public static LuciaDirInfo UpdateLuciaDir(int minute = 0)
+		public static LuciaDirInfo UpdateLuciaDir(int minute = 10)
 		{
 			if (DateTime.Now.Subtract(_lastUpdateTime).TotalMinutes < minute)
 				return LuciaDir;
 			LuciaDir = RootPath.CreateDirInfo();
 			var rootFullPath = Path.GetFullPath(RootPath).Replace(@"\", "/");
 			if (rootFullPath[rootFullPath.Length - 1] != '/') rootFullPath += '/';
-			ImageResizer.SyncImages(rootFullPath, "/lucia/", "/lucia-web/", ratio:0.25);
-			ImageResizer.SyncImages(rootFullPath, "/lucia/", "/lucia-mobile/", ratio:0.1);
+			ImageResizer.SyncImages(rootFullPath, "/lucia/", "/lucia-web/", ratio:0.4);
+			ImageResizer.SyncImages(rootFullPath, "/lucia/", "/lucia-mobile/", ratio:0.25);
 			_lastUpdateTime = DateTime.Now;
 			return LuciaDir;
 		}
