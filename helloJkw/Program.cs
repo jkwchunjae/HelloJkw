@@ -26,7 +26,7 @@ namespace helloJkw
 				Console.Write("Port: ");
 				port = Console.ReadLine();
 			}
-			Logger.Log("Port: {0}", port);
+			Logger.Log("Port: {port}", new { port });
 			#endregion
 
 			#endregion
