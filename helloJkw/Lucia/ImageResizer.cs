@@ -14,13 +14,15 @@ namespace helloJkw
 	{
 		private static string _sourceFolder;
 		private static string _targetFolder;
-		private static double _ratio; // 그림 확대/축소 비율
+		private static int _optimalWidth;
+		private static int _optimalHeight;
 
-		public static void SyncImages(string sourcePath, string sourceFolder, string targetFolder, double ratio = 1)
+		public static void SyncImages(string sourcePath, string sourceFolder, string targetFolder, int optimalWidth, int optimalHeight)
 		{
 			_sourceFolder = sourceFolder;
 			_targetFolder = targetFolder;
-			_ratio = ratio;
+			_optimalWidth = optimalWidth;
+			_optimalHeight = optimalHeight;
 			var targetPath = sourcePath.MakeTargetPath(_sourceFolder, _targetFolder);
 			SyncDir(sourcePath, targetPath);
 		}
@@ -42,12 +44,12 @@ namespace helloJkw
 			foreach (var sourceFile in Directory.GetFiles(sourcePath))
 			{
 				var targetFile = sourceFile.MakeTargetPath(_sourceFolder, _targetFolder);
-				SyncImage(sourceFile, targetFile, ratio: _ratio);
+				SyncImage(sourceFile, targetFile);
 			}
 			#endregion
 		}
 
-		private static void SyncImage(string sourceFile, string targetFile, double ratio = 1)
+		private static void SyncImage(string sourceFile, string targetFile)
 		{
 			try
 			{
@@ -56,12 +58,12 @@ namespace helloJkw
 				if (!ImageExtensionList.Contains(ext)) return;
 				//if (File.Exists(targetFile)) File.Delete(targetFile);
 				if (File.Exists(targetFile)) return;
-				sourceFile.ResizeAndSave(targetFile, ratio: _ratio);
+				sourceFile.ResizeAndSave(targetFile);
 			}
 			catch { }
 		}
 
-		public static void ResizeAndSave(this string sourceFile, string targetFile, double ratio = 1)
+		public static void ResizeAndSave(this string sourceFile, string targetFile)
 		{
 			try
 			{
@@ -83,6 +85,15 @@ namespace helloJkw
 					#region size
 					var width = sourceImage.Image.Width;
 					var height = sourceImage.Image.Height;
+					double ratio = 1;
+					if (width >= height) // 가로 사진
+					{
+						ratio = (double)_optimalWidth / width;
+					}
+					else // 세로 사진
+					{
+						ratio = (double)_optimalHeight / height;
+					}
 					var size = new Size((int)(width * ratio), (int)(height * ratio));
 					#endregion
 

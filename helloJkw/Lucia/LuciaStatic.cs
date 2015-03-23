@@ -33,8 +33,8 @@ namespace helloJkw
 			LuciaDir = RootPath.CreateDirInfo();
 			var rootFullPath = Path.GetFullPath(RootPath).Replace(@"\", "/");
 			if (rootFullPath[rootFullPath.Length - 1] != '/') rootFullPath += '/';
-			ImageResizer.SyncImages(rootFullPath, "/lucia/", "/lucia-web/", ratio:0.4);
-			ImageResizer.SyncImages(rootFullPath, "/lucia/", "/lucia-mobile/", ratio:0.25);
+			ImageResizer.SyncImages(sourcePath: rootFullPath, sourceFolder: "/lucia/", targetFolder: "/lucia-web/", optimalWidth: 700, optimalHeight: 600);
+			ImageResizer.SyncImages(sourcePath: rootFullPath, sourceFolder: "/lucia/", targetFolder: "/lucia-mobile/", optimalWidth: 400, optimalHeight: 500);
 			_lastUpdateTime = DateTime.Now;
 			return LuciaDir;
 		}
