@@ -5,8 +5,9 @@ using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using ImageProcessor;
-using ImageProcessor.Imaging.Formats;
+using Extensions;
+using System.Drawing.Imaging;
+using System.Drawing.Drawing2D;
 
 namespace helloJkw
 {
@@ -58,52 +59,40 @@ namespace helloJkw
 				if (!ImageExtensionList.Contains(ext)) return;
 				//if (File.Exists(targetFile)) File.Delete(targetFile);
 				if (File.Exists(targetFile)) return;
-				sourceFile.ResizeAndSave(targetFile);
+				sourceFile.ResizeAndSave(targetFile, _optimalWidth, _optimalHeight);
 			}
 			catch { }
 		}
 
-		public static void ResizeAndSave(this string sourceFile, string targetFile)
+		public static void ResizeAndSave(this string sourceFile, string targetFile, int optimalWidth, int optimalHeight)
 		{
-			try
+			var sourceImage = new Bitmap(sourceFile);
+
+			var width = sourceImage.Width;
+			var height = sourceImage.Height;
+			double ratio = (width >= height) ? (double)optimalWidth / width : (double)optimalHeight / height;
+
+			int newWidth = (int)(width * ratio);
+			int newHeight = (int)(height * ratio);
+
+			var newImage = new Bitmap(newWidth, newHeight, PixelFormat.Format32bppRgb);
+
+			using (var graphics = Graphics.FromImage(newImage))
 			{
-				using (var imageFactory = new ImageFactory(preserveExifData: true))
-				{
-					var sourceImage = imageFactory.Load(sourceFile);
-
-					#region format
-					ISupportedImageFormat format = null;
-					var ext = Path.GetExtension(sourceFile).ToLower();
-					if (ext == ".jpg" || ext == ".jpeg")
-						format = new JpegFormat { Quality = 100 };
-					if (ext == ".png")
-						format = new PngFormat { Quality = 100 };
-					if (ext == ".gif")
-						format = new GifFormat { Quality = 100 };
-					#endregion
-
-					#region size
-					var width = sourceImage.Image.Width;
-					var height = sourceImage.Image.Height;
-					double ratio = 1;
-					if (width >= height) // 가로 사진
-					{
-						ratio = (double)_optimalWidth / width;
-					}
-					else // 세로 사진
-					{
-						ratio = (double)_optimalHeight / height;
-					}
-					var size = new Size((int)(width * ratio), (int)(height * ratio));
-					#endregion
-
-					sourceImage
-						.Resize(size)
-						.Format(format)
-						.Save(targetFile);
-				}
+				graphics.CompositingQuality = CompositingQuality.HighQuality;
+				graphics.InterpolationMode = InterpolationMode.HighQualityBicubic;
+				graphics.SmoothingMode = SmoothingMode.HighQuality;
+				graphics.DrawImage(sourceImage, 0, 0, newWidth, newHeight);
 			}
-			catch { }
+
+			var imageCodecInfo = ImageCodecInfo.GetImageDecoders().Where(e => e.FormatID == ImageFormat.Jpeg.Guid).FirstOrDefault();
+
+			var encoder = System.Drawing.Imaging.Encoder.Quality;
+			var encoderParameters = new EncoderParameters(1);
+			encoderParameters.Param[0] = new EncoderParameter(encoder, 100L);
+			newImage.Save(targetFile, imageCodecInfo, encoderParameters);
+			newImage.Dispose();
+			sourceImage.Dispose();
 		}
 
 		private static string MakeTargetPath(this string sourcePath, string find, string replace)
