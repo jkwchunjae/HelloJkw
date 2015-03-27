@@ -29,7 +29,7 @@ namespace helloJkw.Lucia
 
 				var MainImageList = ImageList.Where(e => e.Contains("대표"));
 				if (MainImageList.Any())
-					mainImage = MainImageList.ElementAt(StaticRandom.Next(MainImageList.Count()));
+					return MainImageList.ElementAt(StaticRandom.Next(MainImageList.Count()));
 				mainImage = ImageList.ElementAt(StaticRandom.Next(ImageList.Count()));
 
 				return mainImage;
