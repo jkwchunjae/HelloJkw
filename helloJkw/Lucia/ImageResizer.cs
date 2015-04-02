@@ -42,11 +42,11 @@ namespace helloJkw
 			#endregion
 
 			#region Sync ImageFile
-			foreach (var sourceFile in Directory.GetFiles(sourcePath))
+			Parallel.ForEach(Directory.GetFiles(sourcePath), sourceFile =>
 			{
 				var targetFile = sourceFile.MakeTargetPath(_sourceFolder, _targetFolder);
 				SyncImage(sourceFile, targetFile);
-			}
+			});
 			#endregion
 		}
 
@@ -80,7 +80,7 @@ namespace helloJkw
 			using (var graphics = Graphics.FromImage(newImage))
 			{
 				graphics.CompositingQuality = CompositingQuality.HighQuality;
-				graphics.InterpolationMode = InterpolationMode.HighQualityBicubic;
+				graphics.InterpolationMode = InterpolationMode.HighQualityBilinear;
 				graphics.SmoothingMode = SmoothingMode.HighQuality;
 				graphics.DrawImage(sourceImage, 0, 0, newWidth, newHeight);
 			}
