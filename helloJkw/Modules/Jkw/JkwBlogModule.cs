@@ -13,7 +13,8 @@ namespace helloJkw.Modules.Jkw
 		{
 			Get["/blog"] = _ => 
 			{
-				return "blog";
+				var view = View["jkwBlogHome"];
+				return view;
 			};
 		}
 	}
