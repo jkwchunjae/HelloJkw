@@ -110,9 +110,7 @@
     <None Include="_Static\js\jssor\jssor.slider.mini.compress.bat" />
     <None Include="_Views\Games\colorConquerMain.cshtml" />
     <None Include="_Views\Jkw\jkwBlogHome.cshtml" />
-    <None Include="_Views\Jkw\jkwHome.cshtml">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </None>
+    <None Include="_Views\Jkw\jkwHome.cshtml" />
     <None Include="_Views\Lucia\LuciaCategory.cshtml" />
     <None Include="_Views\Lucia\luciaHome.cshtml" />
     <None Include="_Views\Lucia\LuciaProduct.cshtml" />
@@ -170,6 +168,7 @@
     <Content Include="_Static\css\bootstrap.css" />
     <Content Include="_Static\css\bootstrap.min.css" />
     <Content Include="_Static\css\carousel.css" />
+    <Content Include="_Static\css\jkwBlogHome.css" />
     <Content Include="_Static\css\luciaProduct.css" />
     <Content Include="_Static\css\luciaCategory.css" />
     <Content Include="_Static\css\luciaDefault.css" />
@@ -239,14 +238,8 @@
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>
-    <PreBuildEvent>rd /s /q $(TargetDir)Static
-xcopy /y $(ProjectDir)_Static\*.* $(TargetDir)Static\ /s /e /c /h
-rd /s /q $(TargetDir)Views
-xcopy /y $(ProjectDir)_Views\*.* $(TargetDir)Views\ /s /e /c /h
-rd /s /q $(TargetDir)jkw
-xcopy /y C:\Users\jkwchunjae\Dropbox\helloJkw\jkw\*.* $(TargetDir)jkw\ /s /e /c /h
-rd /s /q $(TargetDir)lucia
-xcopy /y C:\Users\jkwchunjae\Dropbox\helloJkw\lucia\*.* $(TargetDir)lucia\ /s /e /c /h</PreBuildEvent>
+    <PreBuildEvent>
+    </PreBuildEvent>
   </PropertyGroup>
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.

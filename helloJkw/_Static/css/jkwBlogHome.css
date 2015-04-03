@@ -1,0 +1,57 @@
+﻿div#top-post {
+	padding-top: 50px;
+}
+
+a {
+	color: gray;
+}
+
+a:hover, a:focus, a:active {
+	color: black;
+	text-decoration: none;
+}
+
+span.label a {
+	color: white;
+}
+
+article.post span.post-category {
+	display: inline;
+	color: gray;
+	margin-right: 10px;
+}
+
+article.post time.post-datetime {
+	display: inline;
+	color: gray;
+}
+
+p.post-content
+{
+	/*height: 100px;
+	overflow-y: scroll;*/
+}
+
+@media(min-width:768px) {
+	div#top-post {
+		padding-top: 90px;
+	}
+
+	article.post h2.post-title {
+		display: inline;
+		margin-right: 10px;
+	}
+
+	p.post-content {
+		margin-top: 10px;
+	}
+
+	hr.post-main {
+		margin: 10px 55px;
+	}
+}
+
+::selection {
+    text-shadow: none;
+	background-color: #c8c8c8;
+}
