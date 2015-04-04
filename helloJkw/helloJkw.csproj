@@ -46,6 +46,8 @@
   <ItemGroup>
     <Compile Include="Extensions\Extensions.cs" />
     <Compile Include="Extensions\IntHelper.cs" />
+    <Compile Include="Jkw\Blog\PostManager.cs" />
+    <Compile Include="Jkw\Blog\Post.cs" />
     <Compile Include="Lucia\ImageResizer.cs" />
     <Compile Include="Lucia\LuciaDirInfo.cs" />
     <Compile Include="Lucia\LuciaStatic.cs" />
@@ -58,6 +60,7 @@
     <Compile Include="Modules\Lucia\LuciaProductModule.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Utils\Utils.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />
@@ -116,7 +119,6 @@
     <None Include="_Views\Lucia\LuciaProduct.cshtml" />
   </ItemGroup>
   <ItemGroup>
-    <Folder Include="Utils\" />
     <Folder Include="_Views\Games\ColorConquer\" />
   </ItemGroup>
   <ItemGroup>
