@@ -16,7 +16,7 @@ namespace helloJkw
 			Get["/"] = _ =>
 			{
 				var files = Directory.GetFiles(@"Static/Agency/img/bg/", "*");
-				var gameRoot = @"jkw/Games";
+				var gameRoot = @"jkw/games";
 				var games = Directory.GetDirectories(gameRoot)
 					.Select(path => new
 					{
