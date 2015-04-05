@@ -1,6 +1,4 @@
 ﻿using Extensions;
-using helloJkw.Lucia;
-using helloJkw.Modules.Lucia;
 using System;
 using System.Collections.Generic;
 using System.IO;
