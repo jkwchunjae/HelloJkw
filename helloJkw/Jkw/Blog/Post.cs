@@ -10,6 +10,7 @@ namespace helloJkw
 {
 	public class Post
 	{
+		public string Filepath { get; set; }
 		public string Name { get; set; }
 		public string Title { get; set; }
 		public string Category { get; set; }
@@ -24,6 +25,7 @@ namespace helloJkw
 		/// <param name="text">directory에 저장되어 있는 text원본</param>
 		public Post(string filepath)
 		{
+			Filepath = filepath;
 			var text = File.ReadAllText(filepath);
 			var filename = Path.GetFileNameWithoutExtension(filepath);
 			Parse(filename, text);
