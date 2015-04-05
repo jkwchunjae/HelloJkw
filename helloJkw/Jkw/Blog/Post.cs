@@ -14,6 +14,7 @@ namespace helloJkw
 		public string Name { get; set; }
 		public string Title { get; set; }
 		public string Category { get; set; }
+		public string CategoryUrl { get; set; }
 		public HashSet<string> Tags { get; set; }
 		public DateTime Date { get; set; }
 		public string Content;
@@ -46,6 +47,7 @@ namespace helloJkw
 			Html = Content.ToHtml();
 			Title = textList.GetValue("@title");
 			Category = textList.GetValue("@category");
+			CategoryUrl = Category;
 			Tags = textList.GetValue("@tags").Split(',').Select(e => e.Trim()).ToHashSet();
 		}
 
@@ -55,7 +57,7 @@ namespace helloJkw
 		}
 	}
 
-	public static class PostUtil
+	static class PostUtil
 	{
 		public static string GetValue(this IEnumerable<string> textList, string key, string splitToken = ":")
 		{

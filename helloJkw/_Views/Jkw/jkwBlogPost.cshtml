@@ -1,5 +1,5 @@
 ﻿@{
-    
+	var post = @Model.post;
 }
 <!DOCTYPE html>
 <html lang="kr">
@@ -58,22 +58,19 @@
     </nav>
 	<div class="container" id="top-post">
 		<div class="col-md-9" id="posts">
-			@foreach (var post in @Model.mainPostList)
-			{
-				<div class="row">
-					<article class="post">
-						<h2 class="post-title"><a href="/blog/post/@post.Name">@post.Title</a></h2>
-						<span class="post-category label label-info"><a href="/blog/category/@post.Category">@post.Category</a></span>
-						@foreach (var tag in @post.Tags)
-						{
-							<span class="post-tag label label-success"><a href="/blog/tag/@tag">@tag</a></span>
-						}
-						<time class="post-datetime" datetime="@string.Format("{0:yyyy-MM-dd}", @post.Date)">@string.Format("{0:yyyy.MM.dd}", @post.Date)</time>
-						<div class="post-content">@Html.Raw(@post.Html)</div>
-					</article>
-				</div>
-				<hr />
-			}
+			<div class="row">
+				<article class="post">
+					<h2 class="post-title"><a href="/blog/post/@post.Name">@post.Title</a></h2>
+					<span class="post-category label label-info"><a href="/blog/category/@post.Category">@post.Category</a></span>
+					@foreach (var tag in @post.Tags)
+					{
+						<span class="post-tag label label-success"><a href="/blog/tag/@tag">@tag</a></span>
+					}
+					<time class="post-datetime" datetime="@string.Format("{0:yyyy-MM-dd}", @post.Date)">@string.Format("{0:yyyy.MM.dd}", @post.Date)</time>
+					<div class="post-content">@Html.Raw(@post.Html)</div>
+				</article>
+			</div>
+			<hr />
 		</div>
 		<div class="col-md-3">
 			<div id="category-list">

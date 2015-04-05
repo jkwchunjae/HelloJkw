@@ -46,13 +46,14 @@
   <ItemGroup>
     <Compile Include="Extensions\Extensions.cs" />
     <Compile Include="Extensions\IntHelper.cs" />
-    <Compile Include="Jkw\Blog\PostManager.cs" />
+    <Compile Include="Jkw\Blog\BlogManager.cs" />
     <Compile Include="Jkw\Blog\Post.cs" />
     <Compile Include="Lucia\ImageResizer.cs" />
     <Compile Include="Lucia\LuciaDirInfo.cs" />
     <Compile Include="Lucia\LuciaStatic.cs" />
     <Compile Include="Modules\Games\ColorConquer\ColorConquerMain.cs" />
     <Compile Include="Modules\Jkw\JkwBlogModule.cs" />
+    <Compile Include="Modules\Jkw\JkwBlogPost.cs" />
     <Compile Include="Modules\Jkw\JkwHomeModule.cs" />
     <Compile Include="Modules\Lucia\LuciaCategoryModule.cs" />
     <Compile Include="Modules\Lucia\LuciaHomeModule.cs" />
@@ -112,6 +113,9 @@
     <None Include="_Static\js\jssor\jssor.slider.min.compress.bat" />
     <None Include="_Static\js\jssor\jssor.slider.mini.compress.bat" />
     <None Include="_Views\Games\colorConquerMain.cshtml" />
+    <None Include="_Views\Jkw\jkwBlogCategory.cshtml" />
+    <None Include="_Views\Jkw\jkwBlogPost.cshtml" />
+    <None Include="_Views\Jkw\jkwBlogTag.cshtml" />
     <None Include="_Views\Jkw\jkwBlogHome.cshtml" />
     <None Include="_Views\Jkw\jkwHome.cshtml" />
     <None Include="_Views\Lucia\LuciaCategory.cshtml" />

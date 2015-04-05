@@ -18,18 +18,29 @@ span.label a {
 article.post span.post-category {
 	display: inline;
 	color: gray;
-	margin-right: 10px;
+	margin-right: 5px;
 }
 
 article.post time.post-datetime {
 	display: inline;
 	color: gray;
+	margin-left: 5px;
 }
 
 p.post-content
 {
 	/*height: 100px;
 	overflow-y: scroll;*/
+}
+
+div#tag-list
+{
+	margin-top: 20px;
+}
+
+div#tag-list a.btn
+{
+	margin-top: 3px;
 }
 
 @media(min-width:768px) {
@@ -42,7 +53,7 @@ p.post-content
 		margin-right: 10px;
 	}
 
-	p.post-content {
+	div.post-content {
 		margin-top: 10px;
 	}
 
