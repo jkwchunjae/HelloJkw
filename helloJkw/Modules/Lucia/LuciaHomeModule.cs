@@ -7,7 +7,7 @@ using System.Collections.Generic;
 using System.Text.RegularExpressions;
 using helloJkw.Extensions;
 
-namespace helloJkw.Modules.Lucia
+namespace helloJkw
 {
 	public class LuciaHomeModule : NancyModule
 	{

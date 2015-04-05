@@ -5,7 +5,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace helloJkw.Modules.Games.ColorConquer
+namespace helloJkw
 {
 	public class ColorConquerMain : NancyModule
 	{

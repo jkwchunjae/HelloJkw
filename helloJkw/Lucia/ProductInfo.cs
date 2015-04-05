@@ -7,9 +7,8 @@ using System.Threading.Tasks;
 using System.IO;
 using System.Text.RegularExpressions;
 using Extensions;
-using helloJkw.Extensions;
 
-namespace helloJkw.Lucia
+namespace helloJkw
 {
 	public class ProductInfo
 	{

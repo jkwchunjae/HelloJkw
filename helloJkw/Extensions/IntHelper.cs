@@ -5,7 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 using Extensions;
 
-namespace helloJkw.Extensions
+namespace helloJkw
 {
 	public static class IntHelper
 	{

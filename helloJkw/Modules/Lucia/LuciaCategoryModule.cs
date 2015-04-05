@@ -6,7 +6,7 @@ using System.Text;
 using System.Threading.Tasks;
 using helloJkw.Extensions;
 
-namespace helloJkw.Modules.Lucia
+namespace helloJkw
 {
 	public class LuciaCategoryModule : NancyModule
 	{

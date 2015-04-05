@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 using Extensions;
 using System.IO;
 
-namespace helloJkw.Jkw.Blog
+namespace helloJkw
 {
 	public class Post
 	{

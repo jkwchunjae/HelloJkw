@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 using Extensions;
 using helloJkw.Extensions;
 
-namespace helloJkw.Modules.Lucia
+namespace helloJkw
 {
 	public class LuciaProductModule : NancyModule
 	{

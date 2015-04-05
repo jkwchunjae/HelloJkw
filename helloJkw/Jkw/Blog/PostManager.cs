@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 using Extensions;
 using System.IO;
 
-namespace helloJkw.Jkw.Blog
+namespace helloJkw
 {
 	public static class PostManager
 	{
@@ -15,8 +15,12 @@ namespace helloJkw.Jkw.Blog
 
 		public static void UpdatePost()
 		{
-			var path = Path.Combine(Environment.CurrentDirectory, 
-			Directory.GetFiles()
+			var path = Path.Combine(Environment.CurrentDirectory, BlogRootPath, "posts").Replace(@"\", "/");
+			Logger.Log(path);
+			foreach (var files in Directory.GetFiles(path))
+			{
+				Logger.Log(files);
+			}
 		}
 	}
 }
