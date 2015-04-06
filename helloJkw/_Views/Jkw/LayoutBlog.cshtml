@@ -1,0 +1,38 @@
+﻿@inherits Nancy.ViewEngines.Razor.NancyRazorViewBase<dynamic>
+@{
+	Layout = "Layout.cshtml";
+}
+
+@section Css
+{
+	<link href="/Static/css/jkwBlogHome.css" rel="stylesheet">
+}
+
+@section Javascript
+{
+	<script type="text/javascript">
+		$("nav.navbar").addClass("navbar-shrink");
+	</script>
+}
+
+<div class="container" id="top-post">
+	<div class="col-md-9" id="posts">
+		@RenderBody()
+	</div>
+	<div class="col-md-3">
+		<div id="category-list">
+			@foreach (var category in @Model.categoryList)
+			{
+				<a class="btn btn-info" href="/blog/category/@category.Url">@category.Name <span class="badge category-count">@category.Count</span></a>
+			}
+		</div>
+		<div id="tag-list">
+			@foreach (var tag in @Model.tagList)
+			{
+				<a class="btn btn-success btn-xs" href="/blog/tag/@tag">@tag</a>
+			}
+		</div>
+	</div>
+</div>
+
+<hr class="post-main" />

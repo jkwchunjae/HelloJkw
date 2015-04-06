@@ -36,23 +36,23 @@ namespace helloJkw
 				.Select(filepath => new Post(filepath))
 				.ToList();
 			DateList = PostList.Select(post => post.Date).Distinct().ToList();
-			CategoryList = PostList.Select(post => post.Category)
+			CategoryList = PostList.Select(post => new { post.CategoryUrl, post.Category })
 				.GroupBy(e => e)
-				.Select(e => new CategoryItem { CategoryName = e.Key, Count = e.Count() })
+				.Select(e => new CategoryItem { Url = e.Key.CategoryUrl, Name = e.Key.Category, Count = e.Count() })
 				.ToList();
-			TagList = PostList.SelectMany(post => post.Tags.ToList()).ToList();
+			TagList = PostList.SelectMany(post => post.Tags.ToList()).Distinct().OrderBy(e => e).ToList();
 		}
 
-		public static IEnumerable<Post> GetLastDatePost()
+		public static IEnumerable<Post> GetLastPosts(int postCount)
 		{
-			var lastDate = DateList.Max();
-			return PostList.Where(post => post.Date == lastDate);
+			return PostList.OrderByDescending(e => e.Date).Take(postCount);
 		}
 	}
 
 	public class CategoryItem
 	{
-		public string CategoryName;
+		public string Url;
+		public string Name;
 		public int Count;
 	}
 }

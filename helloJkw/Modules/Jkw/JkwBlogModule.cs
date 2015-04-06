@@ -4,31 +4,36 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Extensions;
+using System.Dynamic;
 
 namespace helloJkw
 {
 	public class JkwBlogModule : NancyModule
 	{
+		public dynamic Model = new ExpandoObject();
 		public JkwBlogModule()
 		{
-			Get["/blog"] = _ => 
+			Model.categoryList = BlogManager.CategoryList
+				.OrderByDescending(e => e.Count)
+				.Select(e => e.ToExpando());
+			Model.tagList = BlogManager.TagList;
+		}
+	}
+
+	public class JkwBlogHomeModule : JkwBlogModule
+	{
+		public JkwBlogHomeModule()
+			:base()
+		{
+			Get["/blog/{getCount?3}"] = _ =>
 			{
 				BlogManager.UpdatePost();
-				var mainPostList = BlogManager.GetLastDatePost()
-					.Select(e => e.ToExpando())
-					.Take(3);
-				var categoryList = BlogManager.CategoryList
-					.OrderByDescending(e => e.Count)
+				string getCount = _.getCount;
+				Model.mainPostList = BlogManager.GetLastPosts(getCount.ToInt())
 					.Select(e => e.ToExpando());
-				var tagList = BlogManager.TagList;
 
-				var model = new
-				{
-					mainPostList
-					, categoryList
-					, tagList
-				};
-				return View["jkwBlogHome", model];
+				return View["jkwBlogHome", Model];
 			};
 
 			Get["/blog/category/{category}"] = _ =>
@@ -36,21 +41,12 @@ namespace helloJkw
 				BlogManager.UpdatePost();
 				var category = _.category;
 
-				var postList = BlogManager.PostList
+				Model.postList = BlogManager.PostList
 					.Where(e => e.CategoryUrl == category)
+					.OrderByDescending(e => e.Date)
 					.Select(e => e.ToExpando());
-				var categoryList = BlogManager.CategoryList
-					.OrderByDescending(e => e.Count)
-					.Select(e => e.ToExpando());
-				var tagList = BlogManager.TagList;
 
-				var model = new
-				{
-					postList
-					, categoryList
-					, tagList
-				};
-				return View["jkwBlogCategory", model];
+				return View["jkwBlogCategory", Model];
 			};
 
 			Get["/blog/tag/{tag}"] = _ =>
@@ -58,21 +54,12 @@ namespace helloJkw
 				BlogManager.UpdatePost();
 				var tag = _.tag;
 
-				var postList = BlogManager.PostList
+				Model.postList = BlogManager.PostList
 					.Where(e => e.Tags.Contains(tag))
+					.OrderByDescending(e => e.Date)
 					.Select(e => e.ToExpando());
-				var categoryList = BlogManager.CategoryList
-					.OrderByDescending(e => e.Count)
-					.Select(e => e.ToExpando());
-				var tagList = BlogManager.TagList;
 
-				var model = new
-				{
-					postList
-					, categoryList
-					, tagList
-				};
-				return View["jkwBlogTag", model];
+				return View["jkwBlogTag", Model];
 			};
 		}
 	}

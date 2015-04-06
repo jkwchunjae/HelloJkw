@@ -5,6 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 using Extensions;
 using System.IO;
+using System.Text.RegularExpressions;
 
 namespace helloJkw
 {
@@ -46,14 +47,16 @@ namespace helloJkw
 			Content = text.Substring(indexContent + 8).Trim();
 			Html = Content.ToHtml();
 			Title = textList.GetValue("@title");
-			Category = textList.GetValue("@category");
-			CategoryUrl = Category;
 			Tags = textList.GetValue("@tags").Split(',').Select(e => e.Trim()).ToHashSet();
-		}
+			Category = CategoryUrl = textList.GetValue("@category");
 
-		public bool ContainsTag(string tag)
-		{
-			return Tags.Contains(tag);
+			var categoryPattern = @"(.*)\((.*)\)";
+			if (Regex.IsMatch(Category, categoryPattern))
+			{
+				var m = Regex.Match(Category, categoryPattern);
+				Category = m.Groups[1].Captures[0].Value.Trim();
+				CategoryUrl = m.Groups[2].Captures[0].Value.Trim();
+			}
 		}
 	}
 

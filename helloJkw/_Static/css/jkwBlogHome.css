@@ -33,6 +33,15 @@ p.post-content
 	overflow-y: scroll;*/
 }
 
+div#category-list a.btn
+{
+}
+
+div#category-list span.category-count
+{
+	margin-left: 5px;
+}
+
 div#tag-list
 {
 	margin-top: 20px;
