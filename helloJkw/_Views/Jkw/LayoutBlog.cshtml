@@ -30,7 +30,7 @@
 		<div id="tag-list">
 			@foreach (var tag in @Model.tagList)
 			{
-				<a class="btn btn-success btn-xs" href="/blog/tag/@tag">@tag</a>
+				<a class="btn btn-success btn-xs" href="/blog/tag/@tag.Url">@tag.Name</a>
 			}
 		</div>
 	</div>

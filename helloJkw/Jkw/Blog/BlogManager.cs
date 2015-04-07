@@ -16,7 +16,7 @@ namespace helloJkw
 		public static List<Post> PostList;
 		public static List<DateTime> DateList;
 		public static List<CategoryItem> CategoryList;
-		public static List<string> TagList;
+		public static List<TagItem> TagList;
 
 		static BlogManager()
 		{
@@ -39,13 +39,26 @@ namespace helloJkw
 			CategoryList = PostList.Select(post => new { post.CategoryUrl, post.Category })
 				.GroupBy(e => e)
 				.Select(e => new CategoryItem { Url = e.Key.CategoryUrl, Name = e.Key.Category, Count = e.Count() })
+				.OrderByDescending(e => e.Count)
 				.ToList();
-			TagList = PostList.SelectMany(post => post.Tags.ToList()).Distinct().OrderBy(e => e).ToList();
+			TagList = PostList.SelectMany(post => post.Tags)
+				.GroupBy(e => new { e.Name, e.Url })
+				.Select(e => new TagItem{ Name = e.Key.Name, Url = e.Key.Url, Count = e.Count()})
+				.OrderByDescending(e => e.Count)
+				.ToList();
 		}
 
 		public static IEnumerable<Post> GetLastPosts(int postCount)
 		{
 			return PostList.OrderByDescending(e => e.Date).Take(postCount);
+		}
+
+		public static IEnumerable<Post> ContainsTagPostList(string tagUrl)
+		{
+			//return PostList.Where(e => e.Tags.Where(t => t.Url == tagUrl).Any());
+			foreach (var post in PostList)
+				if (post.Tags.Select(e => e.Url).Contains(tagUrl))
+					yield return post;
 		}
 	}
 

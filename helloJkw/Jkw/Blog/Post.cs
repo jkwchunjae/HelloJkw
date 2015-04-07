@@ -16,7 +16,7 @@ namespace helloJkw
 		public string Title { get; set; }
 		public string Category { get; set; }
 		public string CategoryUrl { get; set; }
-		public HashSet<string> Tags { get; set; }
+		public List<TagItem> Tags { get; set; }
 		public DateTime Date { get; set; }
 		public string Content;
 		public string Html;
@@ -47,7 +47,10 @@ namespace helloJkw
 			Content = text.Substring(indexContent + 8).Trim();
 			Html = Content.ToHtml();
 			Title = textList.GetValue("@title");
-			Tags = textList.GetValue("@tags").Split(',').Select(e => e.Trim()).ToHashSet();
+			Tags = textList.GetValue("@tags").Split(',')
+				.Select(e => e.Trim().SplitUrl())
+				.Select(e => new TagItem { Name = e.Item1, Url = e.Item2 })
+				.ToList();
 			Category = CategoryUrl = textList.GetValue("@category");
 
 			var categoryPattern = @"(.*)\((.*)\)";
@@ -60,6 +63,13 @@ namespace helloJkw
 		}
 	}
 
+	public class TagItem
+	{
+		public string Name;
+		public string Url;
+		public int Count;
+	}
+
 	static class PostUtil
 	{
 		public static string GetValue(this IEnumerable<string> textList, string key, string splitToken = ":")
@@ -69,6 +79,17 @@ namespace helloJkw
 			var tokenIndex = keyValue.IndexOf(splitToken);
 			if (tokenIndex == -1) return "";
 			return keyValue.Substring(tokenIndex + 1).Trim();
+		}
+
+		public static Tuple<string, string> SplitUrl(this string text)
+		{
+			var pattern = @"(.*)\((.*)\)";
+			var m = Regex.Match(text, pattern);
+			if (!m.Success)
+				return Tuple.Create(text, text);
+			var v1 = m.Groups[1].Captures[0].Value.Trim();
+			var v2 = m.Groups[2].Captures[0].Value.Trim();
+			return Tuple.Create(v1, v2);
 		}
 	}
 }

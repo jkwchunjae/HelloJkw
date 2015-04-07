@@ -39,7 +39,7 @@ namespace helloJkw
 			Get["/blog/category/{category}"] = _ =>
 			{
 				BlogManager.UpdatePost();
-				var category = _.category;
+				string category = _.category;
 
 				Model.postList = BlogManager.PostList
 					.Where(e => e.CategoryUrl == category)
@@ -52,12 +52,14 @@ namespace helloJkw
 			Get["/blog/tag/{tag}"] = _ =>
 			{
 				BlogManager.UpdatePost();
-				var tag = _.tag;
+				string tag = _.tag;
 
-				Model.postList = BlogManager.PostList
-					.Where(e => e.Tags.Contains(tag))
+				Model.postList = BlogManager
+					.ContainsTagPostList(tag)
 					.OrderByDescending(e => e.Date)
 					.Select(e => e.ToExpando());
+					//.PostList
+					//.Where(e => e.Tags.Contains(tag))
 
 				return View["jkwBlogTag", Model];
 			};

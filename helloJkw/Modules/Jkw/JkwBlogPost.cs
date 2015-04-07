@@ -13,7 +13,11 @@ namespace helloJkw
 		{
 			Get["/blog/post/{postname}"] = _ =>
 			{
+#if DEBUG
+				BlogManager.UpdatePost(0);
+#else
 				BlogManager.UpdatePost();
+#endif
 				var postname = _.postname;
 
 				Model.post = BlogManager.PostList
