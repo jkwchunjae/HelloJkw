@@ -1,10 +1,8 @@
-﻿@using helloJkw.Lucia;
-@using helloJkw.Extensions;
-@{
+﻿@{
 	string rootPath = @Model.rootPath;
 	string device = @Model.device;
 	string category = @Model.category;
-	ProductInfo productInfo = @Model.productInfo;
+	var productInfo = @Model.productInfo;
 }
 
 <!DOCTYPE html>
@@ -73,7 +71,7 @@
 				<div class="thumbnail">
 					<img class="img-responsive" src="/@rootPath/@productInfo.MainImage" alt="@productInfo.Name 의 대표 사진">
 					<div class="caption-full">
-						<h4 class="pull-right">@productInfo.Price.ToComma() 원</h4>
+						<h4 class="pull-right">@productInfo.Price 원</h4>
 						<h4>
 							<a href="#">@productInfo.Name</a>
 						</h4>
