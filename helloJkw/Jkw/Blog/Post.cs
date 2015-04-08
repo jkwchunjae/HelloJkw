@@ -20,6 +20,7 @@ namespace helloJkw
 		public DateTime Date { get; set; }
 		public string Content;
 		public string Html;
+		public string HtmlCut;
 
 		/// <summary>
 		/// text원본을 받아 파싱한다.
@@ -46,10 +47,11 @@ namespace helloJkw
 			Date = filename.Substring(0, 8).ToDate();
 			Content = text.Substring(indexContent + 8).Trim();
 			Html = Content.ToHtml();
+			HtmlCut = Html.GetFirstParagraph();
 			Title = textList.GetValue("@title");
 			Tags = textList.GetValue("@tags").Split(',')
 				.Select(e => e.Trim().SplitUrl())
-				.Select(e => new TagItem { Name = e.Item1, Url = e.Item2 })
+				.Select(e => new TagItem { Name = e.Item1.ToLower(), Url = e.Item2.ToLower() })
 				.ToList();
 			Category = CategoryUrl = textList.GetValue("@category");
 

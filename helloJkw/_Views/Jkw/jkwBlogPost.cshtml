@@ -6,14 +6,18 @@
 
 <div class="row">
 	<article class="post">
-		<h2 class="post-title"><a href="/blog/post/@post.Name">@post.Title</a></h2>
+		<h2 class="post-title">@post.Title</h2>
 		<span class="post-category label label-info"><a href="/blog/category/@post.CategoryUrl">@post.Category</a></span>
+		@foreach (var tag in @post.Tags)
+		{
+			@*<span class="post-tag label label-success"><a href="/blog/tag/@tag.Url">@tag.Name</a></span>*@
+		}
+		<time class="post-datetime" datetime="@string.Format("{0:yyyy-MM-dd}", @post.Date)">@string.Format("{0:yyyy.MM.dd}", @post.Date)</time>
+		<div class="post-content">@Html.Raw(@post.Html)</div>
 		@foreach (var tag in @post.Tags)
 		{
 			<span class="post-tag label label-success"><a href="/blog/tag/@tag.Url">@tag.Name</a></span>
 		}
-		<time class="post-datetime" datetime="@string.Format("{0:yyyy-MM-dd}", @post.Date)">@string.Format("{0:yyyy.MM.dd}", @post.Date)</time>
-		<div class="post-content">@Html.Raw(@post.Html)</div>
 	</article>
 	<div id="disqus_thread"></div>
 	<script type="text/javascript">

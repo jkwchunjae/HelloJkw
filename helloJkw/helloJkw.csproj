@@ -120,10 +120,10 @@
     <None Include="_Views\Jkw\jkwHome.cshtml" />
     <None Include="_Views\Jkw\Layout.cshtml" />
     <None Include="_Views\Jkw\LayoutBlog.cshtml" />
+    <None Include="_Views\Lucia\luciaCategory.cshtml" />
     <None Include="_Views\Lucia\luciaLayout.cshtml" />
-    <None Include="_Views\Lucia\LuciaCategory.cshtml" />
     <None Include="_Views\Lucia\luciaHome.cshtml" />
-    <None Include="_Views\Lucia\LuciaProduct.cshtml" />
+    <None Include="_Views\Lucia\luciaProduct.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="_Views\Games\ColorConquer\" />
