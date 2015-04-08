@@ -1,22 +1,13 @@
-﻿@{
+﻿@inherits Nancy.ViewEngines.Razor.NancyRazorViewBase<dynamic>
+@{
+	Layout = "Layout.cshtml";
 	string rootPath = @Model.rootPath;
 	string device = @Model.device;
 }
 
-<!DOCTYPE html>
-<html lang="kr">
-<head>
-	<meta charset="utf-8" />
-	<meta http-equiv="X-UA-Compatible" content="IE=edge" />
-	<meta name="viewport" content="width=device-width, initial-scale=1" />
-	<meta name="description" content="루치아 핸드메이드 카드" />
-	<meta name="author" content="황경욱 루치아" />
-	<title>루치아 핸드메이드 카드</title>
-
-	<link href="/Static/css/bootstrap.min.css" rel="stylesheet" />
-	<link href="/Static/css/slide.css" rel="stylesheet" />
-
-	<style>
+@section Css
+{
+	<style type="text/css">
 		body {
 			padding-top: 70px; /* Required padding for .navbar-fixed-top. Remove if using .navbar-static-top. Change if height of navigation changes. */
 		}
@@ -25,9 +16,15 @@
 			margin: 50px 0;
 		}
 	</style>
+}
 
-	<script language="javascript">
-		@* 
+@section Javascript
+{
+	<script type="text/javascript" src="/Static/js/jssor/jssor.js"></script>
+	<script type="text/javascript" src="/Static/js/jssor/jssor.slider.js"></script>
+	<script type="text/javascript" src="/Static/js/slide.js"></script>
+	<script language="text/javascript">
+		@*
 		모바일일 땐 http://*/lucia/m 으로 갈 수 있도록 한다.
 		if 를 쓴 이유는.. 쓰지 않으면 http://*/lucia/m 에서 무한루프를 돌기 때문에..
 		 *@
@@ -37,120 +34,73 @@
 			@script
 		}
 	</script>
-</head>
+}
 
-<body>
-	<nav class="navbar navbar-default navbar-fixed-top" role="navigation">
-		<div class="container">
-			<div class="navbar-header">
-				<button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1">
-					<span class="sr-only">Toggle navigation</span>
-					<span class="icon-bar"></span>
-					<span class="icon-bar"></span>
-					<span class="icon-bar"></span>
-				</button>
-				<a class="navbar-brand" href="http://luciahandmadecard.com">Lucia Handmade Card</a>
-			</div>
-			<div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
-				<ul class="nav navbar-nav">
-					@foreach (var menu in @Model.mainMenu)
-					{
-						<li><a href="/lucia/@device/category/@menu">@menu</a></li>
-					}
-				</ul>
-			</div>
-		</div>
-	</nav>
-
-	<div class="container" id="thumbnail-list">
-		<div class="main-slide">
-			<!-- Caption Style -->
-			<!-- Jssor Slider Begin -->
-			<!-- You can move inline styles to css file or css block. -->
-			<div id="sliderb_container" style="position: relative; width: 800px; height: 450px; overflow: hidden;">
-				<!-- Slides Container -->
-				<div u="slides" style="cursor: move; position: absolute; left: 0px; top: 0px; width: 800px; height: 450px; overflow: hidden;">
-					@foreach (var image in @Model.slideImageList)
-					{
-						<div>
-							<img data-u="image" src="/@rootPath/@Model.mainDirName/slide/@image" />
-							<div data-u="thumb"></div>
-						</div>
-					}
-				</div>
-
-				<!-- ThumbnailNavigator Skin Begin -->
-				<div u="thumbnavigator" class="sliderb-T" style="position: absolute; bottom: 0px; left: 0px; height:45px; width:800px;">
-					<div style="filter: alpha(opacity=40); opacity:0.4; position: absolute; display: block; background-color: #000000; top: 0px; left: 0px; width: 100%; height: 100%;">
+<div class="container" id="thumbnail-list">
+	<div class="main-slide">
+		<!-- Caption Style -->
+		<!-- Jssor Slider Begin -->
+		<!-- You can move inline styles to css file or css block. -->
+		<div id="sliderb_container" style="position: relative; width: 800px; height: 450px; overflow: hidden;">
+			<!-- Slides Container -->
+			<div u="slides" style="cursor: move; position: absolute; left: 0px; top: 0px; width: 800px; height: 450px; overflow: hidden;">
+				@foreach (var image in @Model.slideImageList)
+				{
+					<div>
+						<img data-u="image" src="/@rootPath/@Model.mainDirName/slide/@image" />
+						<div data-u="thumb"></div>
 					</div>
-					<!-- Thumbnail Item Skin Begin -->
-					<div u="slides">
-						<div u="prototype" style="POSITION: absolute; WIDTH: 600px; HEIGHT: 45px; TOP: 0; LEFT: 0;">
-							<div u="thumbnailtemplate" style="font-family: verdana; font-weight: normal; POSITION: absolute; WIDTH: 100%; HEIGHT: 100%; TOP: 0; LEFT: 0; color:#fff; line-height: 45px; font-size:20px; padding-left:10px;"></div>
-						</div>
-					</div>
-					<!-- Thumbnail Item Skin End -->
-				</div>
-				<!-- ThumbnailNavigator Skin End -->
-				<!-- Bullet Navigator Skin Begin -->
-				<!-- bullet navigator container -->
-				<div u="navigator" class="jssorb01" style="position: absolute; bottom: 16px; right: 10px;">
-					<!-- bullet navigator item prototype -->
-					<div u="prototype" style="POSITION: absolute; WIDTH: 12px; HEIGHT: 12px;"></div>
-				</div>
-				<!-- Bullet Navigator Skin End -->
-				<!-- Arrow Left -->
-				<span u="arrowleft" class="jssora05l" style="width: 40px; height: 40px; top: 123px; left: 8px;">
-				</span>
-				<!-- Arrow Right -->
-				<span u="arrowright" class="jssora05r" style="width: 40px; height: 40px; top: 123px; right: 8px">
-				</span>
-				<!-- Arrow Navigator Skin End -->
-				@*<a style="display: none" href="http://www.jssor.com">Image Slider</a>*@
-				<!-- Trigger -->
+				}
 			</div>
-			<!-- Jssor Slider End -->
+
+			<!-- ThumbnailNavigator Skin Begin -->
+			<div u="thumbnavigator" class="sliderb-T" style="position: absolute; bottom: 0px; left: 0px; height:45px; width:800px;">
+				<div style="filter: alpha(opacity=40); opacity:0.4; position: absolute; display: block; background-color: #000000; top: 0px; left: 0px; width: 100%; height: 100%;">
+				</div>
+				<!-- Thumbnail Item Skin Begin -->
+				<div u="slides">
+					<div u="prototype" style="POSITION: absolute; WIDTH: 600px; HEIGHT: 45px; TOP: 0; LEFT: 0;">
+						<div u="thumbnailtemplate" style="font-family: verdana; font-weight: normal; POSITION: absolute; WIDTH: 100%; HEIGHT: 100%; TOP: 0; LEFT: 0; color:#fff; line-height: 45px; font-size:20px; padding-left:10px;"></div>
+					</div>
+				</div>
+				<!-- Thumbnail Item Skin End -->
+			</div>
+			<!-- ThumbnailNavigator Skin End -->
+			<!-- Bullet Navigator Skin Begin -->
+			<!-- bullet navigator container -->
+			<div u="navigator" class="jssorb01" style="position: absolute; bottom: 16px; right: 10px;">
+				<!-- bullet navigator item prototype -->
+				<div u="prototype" style="POSITION: absolute; WIDTH: 12px; HEIGHT: 12px;"></div>
+			</div>
+			<!-- Bullet Navigator Skin End -->
+			<!-- Arrow Left -->
+			<span u="arrowleft" class="jssora05l" style="width: 40px; height: 40px; top: 123px; left: 8px;">
+			</span>
+			<!-- Arrow Right -->
+			<span u="arrowright" class="jssora05r" style="width: 40px; height: 40px; top: 123px; right: 8px">
+			</span>
+			<!-- Arrow Navigator Skin End -->
+			@*<a style="display: none" href="http://www.jssor.com">Image Slider</a>*@
+			<!-- Trigger -->
 		</div>
-		<!-- slider End -->
+		<!-- Jssor Slider End -->
 	</div>
+	<!-- slider End -->
+</div>
 
-	<div class="container">
-		@* 이미지를 손으로 하나하나 추가하기 힘들어서 폴더 안에 있는 모든 파일을 순서대로 불러오게 하였다. *@
-		<div class="row">
-			@foreach (var image in @Model.mainImageList)
-			{
-				<div class="col-xs-12 col-md-4">
-					@*<a href="/@Model.rootPath/@Model.mainDirName/@image" target="_blank" class="thumbnail">
+<div class="container">
+	@* 이미지를 손으로 하나하나 추가하기 힘들어서 폴더 안에 있는 모든 파일을 순서대로 불러오게 하였다. *@
+	<div class="row">
+		@foreach (var image in @Model.mainImageList)
+		{
+			<div class="col-xs-12 col-md-4">
+				@*<a href="/@Model.rootPath/@Model.mainDirName/@image" target="_blank" class="thumbnail">
 						<img src="/@Model.rootPath/@Model.mainDirName/@image" />
 					</a>*@
-					<a href="#" class="thumbnail">
-						<img src="/@rootPath/@Model.mainDirName/@image" />
-					</a>
-				</div>
-			}
-		</div>
-	</div>
-
-	<div class="container">
-		<hr />
-		<footer>
-			<div class="row">
-				<div class="col-xs-12 col-md-4">
-					<p>Copyright &copy; Lucia Handmade Card 2015</p>
-				</div>
-				<div class="col-xs-12 col-md-4">
-				</div>
-				<div class="col-xs-12 col-md-4">
-					<p>Powered by <a href="http://hellojkw.com">Hello Jkw</a></p>
-				</div>
+				<a href="#" class="thumbnail">
+					<img src="/@rootPath/@Model.mainDirName/@image" />
+				</a>
 			</div>
-		</footer>
+		}
 	</div>
-	<script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.2/jquery.min.js"></script>
-	<script type="text/javascript" src="/Static/js/bootstrap.min.js"></script>
-	<script type="text/javascript" src="/Static/js/jssor/jssor.js"></script>
-	<script type="text/javascript" src="/Static/js/jssor/jssor.slider.js"></script>
-	<script type="text/javascript" src="/Static/js/slide.js"></script>
-</body>
-
-</html>
+</div>

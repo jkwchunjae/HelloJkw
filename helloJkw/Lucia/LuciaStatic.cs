@@ -45,19 +45,4 @@ namespace helloJkw
 				.Select(e => e.RemovePrefixNumber());
 		}
 	}
-
-	public static class StaticRandom
-	{
-		public static Random random = new Random((int)DateTime.Now.Ticks);
-		
-		public static int Next(int maxValue)
-		{
-			return random.Next(maxValue);
-		}
-		
-		public static int Next(int minValue, int maxValue)
-		{
-			return random.Next(minValue, maxValue);
-		}
-	}
 }

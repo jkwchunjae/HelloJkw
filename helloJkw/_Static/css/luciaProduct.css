@@ -1,5 +1,5 @@
 ﻿.thumbnail img {
-	/*width: 100%;*/
+	width: 100%;
 }
 
 .ratings {
@@ -15,8 +15,18 @@
 .thumbnail .caption-full {
 	padding: 9px;
 	color: #333;
+	background-color: aliceblue;
 }
 
-footer {
-	margin: 50px 0;
+table.table {
+	background-color: white;
+}
+
+@media(min-width:768px) {
+	img.product {
+		max-height: 500px;
+		max-width: 700px;
+		width: auto;
+		height: auto;
+	}
 }

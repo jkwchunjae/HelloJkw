@@ -28,28 +28,5 @@ namespace helloJkw
 
 			return (ExpandoObject)expando;
 		}
-
-		public static Dictionary<string, string> InfoToDictionary(this string filepath)
-		{
-			var infoDic = new Dictionary<string, string>();
-			string currentKey = null;
-			foreach (var line in File.ReadAllLines(filepath, Encoding.Default))
-			{
-				if (line.Contains('='))
-				{
-					var splitted = line.Split('=');
-					currentKey = splitted[0].Trim();
-					string value = "";
-					if (splitted.Count() > 1)
-						value = splitted[1];
-					infoDic.Add(currentKey, value);
-				}
-				else
-				{
-					infoDic[currentKey] = (infoDic[currentKey] += Environment.NewLine + line).Trim();
-				}
-			}
-			return infoDic;
-		}
 	}
 }

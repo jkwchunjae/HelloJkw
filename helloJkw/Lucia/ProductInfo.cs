@@ -13,7 +13,8 @@ namespace helloJkw
 	public class ProductInfo
 	{
 		LuciaDirInfo _dirInfo;
-		Dictionary<string, string> InfoDic = new Dictionary<string, string>();
+		public Dictionary<string, string> InfoDic = new Dictionary<string, string>();
+		public List<Tuple<string, string>> InfoList = new List<Tuple<string, string>>();
 
 		public string Name { get; set; }
 		public int Price { get; set; }
@@ -23,15 +24,12 @@ namespace helloJkw
 		{
 			get
 			{
-				string mainImage = "http://placehold.it/320x120";
-				if (!ImageList.Any()) return mainImage;
+				if (!ImageList.Any()) return "http://placehold.it/320x120";
 
 				var MainImageList = ImageList.Where(e => e.Contains("대표"));
 				if (MainImageList.Any())
-					return MainImageList.ElementAt(StaticRandom.Next(MainImageList.Count()));
-				mainImage = ImageList.ElementAt(StaticRandom.Next(ImageList.Count()));
-
-				return mainImage;
+					return MainImageList.GetRandom();
+				return ImageList.GetRandom();
 			}
 		}
 		public IEnumerable<string> ImageList
@@ -68,14 +66,68 @@ namespace helloJkw
 			if (productInfoPath == null)
 			{
 				MainContent = new string[] { };
+				InfoList.Insert(0, Tuple.Create("상품명", Name));
 				return;
 			}
 
-			InfoDic = productInfoPath.InfoToDictionary();
+			InfoList = productInfoPath.InfoToList();
+			InfoList.Insert(0, Tuple.Create("상품명", Name));
+			InfoDic = InfoList.GroupBy(e => e.Item1).ToDictionary(e => e.Key, e => e.First().Item2);
 			var dic = InfoDic.ToDefaultDictionary("");
 			Price = int.Parse(dic["가격"]);
 			MainContent = dic["대표설명"].RegexReplace(@"\r", "").Split('\n');
 		}
 	}
 
+	public static class ProductStatic
+	{
+		public static List<Tuple<string, string>> InfoToList(this string filepath)
+		{
+			var result = new List<Tuple<string, string>>();
+			string currentKey = null;
+			string currentValue = null;
+			foreach (var line in File.ReadAllLines(filepath, Encoding.Default))
+			{
+				if (line.Contains('='))
+				{
+					var splitted = line.Split('=');
+					currentKey = splitted[0].Trim();
+					currentValue = "";
+					if (splitted.Count() > 1)
+						currentValue = splitted[1].Trim();
+					result.Add(Tuple.Create(currentKey, currentValue));
+				}
+				else
+				{
+					result.Remove(Tuple.Create(currentKey, currentValue));
+					currentValue += Environment.NewLine + line.Trim();
+					result.Add(Tuple.Create(currentKey, currentValue));
+				}
+			}
+			return result;
+		}
+
+		//public static Dictionary<string, string> InfoToDictionary(this string filepath)
+		//{
+		//	var infoDic = new Dictionary<string, string>();
+		//	string currentKey = null;
+		//	foreach (var line in File.ReadAllLines(filepath, Encoding.Default))
+		//	{
+		//		if (line.Contains('='))
+		//		{
+		//			var splitted = line.Split('=');
+		//			currentKey = splitted[0].Trim();
+		//			string value = "";
+		//			if (splitted.Count() > 1)
+		//				value = splitted[1];
+		//			infoDic.Add(currentKey, value);
+		//		}
+		//		else
+		//		{
+		//			infoDic[currentKey] = (infoDic[currentKey] += Environment.NewLine + line).Trim();
+		//		}
+		//	}
+		//	return infoDic;
+		//}
+	}
 }
