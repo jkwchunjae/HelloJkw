@@ -1,0 +1,9 @@
+﻿div#layout-content{
+	padding-top: 50px;
+}
+
+@media(min-width:768px) {
+	div#layout-content{
+		padding-top: 90px;
+	}
+}
