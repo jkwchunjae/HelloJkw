@@ -55,6 +55,7 @@
     <Compile Include="Modules\Jkw\JkwBlogModule.cs" />
     <Compile Include="Modules\Jkw\JkwBlogPost.cs" />
     <Compile Include="Modules\Jkw\JkwHomeModule.cs" />
+    <Compile Include="Modules\Jkw\JkwKboChartModule.cs" />
     <Compile Include="Modules\Lucia\LuciaCategoryModule.cs" />
     <Compile Include="Modules\Lucia\LuciaHomeModule.cs" />
     <Compile Include="Lucia\ProductInfo.cs" />
@@ -118,6 +119,7 @@
     <None Include="_Views\Jkw\jkwBlogPost.cshtml" />
     <None Include="_Views\Jkw\jkwBlogTag.cshtml" />
     <None Include="_Views\Jkw\jkwHome.cshtml" />
+    <None Include="_Views\Jkw\jkwKboChart.cshtml" />
     <None Include="_Views\Jkw\Layout.cshtml" />
     <None Include="_Views\Jkw\LayoutBlog.cshtml" />
     <None Include="_Views\Lucia\luciaCategory.cshtml" />
