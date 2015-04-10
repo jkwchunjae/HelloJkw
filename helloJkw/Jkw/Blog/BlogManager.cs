@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 using Extensions;
 using System.IO;
 using System.Text.RegularExpressions;
+using System.Dynamic;
 
 namespace helloJkw
 {
@@ -14,6 +15,7 @@ namespace helloJkw
 		static DateTime _lastUpdateTime;
 		public static string BlogRootPath = @"jkw/blog/";
 		public static List<Post> PostList;
+		public static List<ExpandoObject> PostExpandoList;
 		public static List<DateTime> DateList;
 		public static List<CategoryItem> CategoryList;
 		public static List<TagItem> TagList;

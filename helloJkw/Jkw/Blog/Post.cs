@@ -47,7 +47,7 @@ namespace helloJkw
 			Date = filename.Substring(0, 8).ToDate();
 			Content = text.Substring(indexContent + 8).Trim();
 			Html = Content.ToHtml();
-			HtmlCut = Html.GetFirstParagraph();
+			HtmlCut = Html.CutParagraph();
 			Title = textList.GetValue("@title");
 			Tags = textList.GetValue("@tags").Split(',')
 				.Select(e => e.Trim().SplitUrl())
@@ -92,6 +92,20 @@ namespace helloJkw
 			var v1 = m.Groups[1].Captures[0].Value.Trim();
 			var v2 = m.Groups[2].Captures[0].Value.Trim();
 			return Tuple.Create(v1, v2);
+		}
+
+		static MarkdownSharp.Markdown _markdown = new MarkdownSharp.Markdown();
+		public static string ToHtml(this string text)
+		{
+			return _markdown.Transform(text);
+		}
+
+		public static string CutParagraph(this string html)
+		{
+			if (html.Length <= 300)
+				return html;
+			var lastP = html.Substring(0, 300).LastIndexOf(@"</p>");
+			return html.Substring(0, lastP + 4);
 		}
 	}
 }

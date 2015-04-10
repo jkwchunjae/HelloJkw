@@ -15,8 +15,7 @@ namespace helloJkw
 		public JkwBlogModule()
 		{
 			Model.categoryList = BlogManager.CategoryList
-				.OrderByDescending(e => e.Count)
-				.Select(e => e.ToExpando());
+				.OrderByDescending(e => e.Count);
 			Model.tagList = BlogManager.TagList;
 		}
 	}
@@ -30,10 +29,25 @@ namespace helloJkw
 			{
 				BlogManager.UpdatePost();
 				string getCount = _.getCount;
-				Model.mainPostList = BlogManager.GetLastPosts(getCount.ToInt())
-					.Select(e => e.ToExpando());
+				Model.mainPostList = BlogManager.GetLastPosts(getCount.ToInt());
 
 				return View["jkwBlogHome", Model];
+			};
+
+			Get["/blog/post/{postname}"] = _ =>
+			{
+#if DEBUG
+				BlogManager.UpdatePost(0);
+#else
+				BlogManager.UpdatePost();
+#endif
+				string postname = _.postname;
+
+				Model.post = BlogManager.PostList
+					.Where(e => e.Name == postname)
+					.FirstOrDefault();
+
+				return View["jkwBlogPost", Model];
 			};
 
 			Get["/blog/category/{category}"] = _ =>
@@ -43,8 +57,7 @@ namespace helloJkw
 
 				Model.postList = BlogManager.PostList
 					.Where(e => e.CategoryUrl == category)
-					.OrderByDescending(e => e.Date)
-					.Select(e => e.ToExpando());
+					.OrderByDescending(e => e.Date);
 
 				return View["jkwBlogCategory", Model];
 			};
@@ -56,10 +69,7 @@ namespace helloJkw
 
 				Model.postList = BlogManager
 					.ContainsTagPostList(tag)
-					.OrderByDescending(e => e.Date)
-					.Select(e => e.ToExpando());
-					//.PostList
-					//.Where(e => e.Tags.Contains(tag))
+					.OrderByDescending(e => e.Date);
 
 				return View["jkwBlogTag", Model];
 			};

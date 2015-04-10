@@ -14,7 +14,7 @@
 				<span class="post-tag label label-success"><a href="/blog/tag/@tag.Url">@tag.Name</a></span>
 			}
 			<time class="post-datetime" datetime="@string.Format("{0:yyyy-MM-dd}", @post.Date)">@string.Format("{0:yyyy.MM.dd}", @post.Date)</time>
-			<div class="post-content">@Html.Raw(@post.Html)</div>
+			<div class="post-content">@Html.Raw(@post.HtmlCut)</div>
 		</article>
 	</div>
 	<hr />
