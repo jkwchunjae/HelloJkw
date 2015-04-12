@@ -48,6 +48,7 @@
     <Compile Include="Extensions\IntHelper.cs" />
     <Compile Include="Jkw\Blog\BlogManager.cs" />
     <Compile Include="Jkw\Blog\Post.cs" />
+    <Compile Include="Jkw\Kbo\KboMatch.cs" />
     <Compile Include="Lucia\ImageResizer.cs" />
     <Compile Include="Lucia\LuciaDirInfo.cs" />
     <Compile Include="Lucia\LuciaStatic.cs" />
@@ -134,6 +135,10 @@
       <Project>{5b845d86-ae90-40bc-9950-25f4d03c016a}</Project>
       <Name>Extensions</Name>
     </ProjectReference>
+    <ProjectReference Include="..\..\HtmlAgilityPack\HtmlAgilityPack\HtmlAgilityPack.fx.4.5.csproj">
+      <Project>{1028002a-bbe2-4ff2-94b7-a8368a8f6887}</Project>
+      <Name>HtmlAgilityPack.fx.4.5</Name>
+    </ProjectReference>
     <ProjectReference Include="..\..\Nancy\src\Nancy.Hosting.Self\Nancy.Hosting.Self.csproj">
       <Project>{aa7f66eb-ec2c-47de-855f-30b3e6ef2134}</Project>
       <Name>Nancy.Hosting.Self</Name>
@@ -145,6 +150,10 @@
     <ProjectReference Include="..\..\Nancy\src\Nancy\Nancy.csproj">
       <Project>{34576216-0dca-4b0f-a0dc-9075e75a676f}</Project>
       <Name>Nancy</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\Newtonsoft.Json\Src\Newtonsoft.Json\Newtonsoft.Json.csproj">
+      <Project>{eeea67f9-9089-481d-a4dc-0966dec9fd7d}</Project>
+      <Name>Newtonsoft.Json</Name>
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>

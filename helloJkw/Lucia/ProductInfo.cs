@@ -17,8 +17,14 @@ namespace helloJkw
 		public List<Tuple<string, string>> InfoList = new List<Tuple<string, string>>();
 
 		public string Name { get; set; }
-		public int Price { get; set; }
-		public int? SalePrice { get; set; }
+		public string NameDisplay
+		{
+			get
+			{
+				return Name.RemovePrefixNumber();
+			}
+		}
+		public string Price { get; set; }
 		public string[] MainContent { get; set; }
 		public string MainImage
 		{
@@ -74,7 +80,7 @@ namespace helloJkw
 			InfoList.Insert(0, Tuple.Create("상품명", Name));
 			InfoDic = InfoList.GroupBy(e => e.Item1).ToDictionary(e => e.Key, e => e.First().Item2);
 			var dic = InfoDic.ToDefaultDictionary("");
-			Price = int.Parse(dic["가격"]);
+			Price = dic["가격"];
 			MainContent = dic["대표설명"].RegexReplace(@"\r", "").Split('\n');
 		}
 	}

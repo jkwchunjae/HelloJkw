@@ -28,9 +28,8 @@
 						<div class="caption">
 							<h4 class="pull-right">@product.Price 원</h4>
 							<h4>
-								<a href="/lucia/@device/product/@category/@product.Name">@product.Name</a>
+								<a href="/lucia/@device/product/@category/@product.Name">@product.NameDisplay</a>
 							</h4>
-							@*<p>See more snippets like this online store item at <a target="_blank" href="http://www.bootsnipp.com">Bootsnipp - http://bootsnipp.com</a>.</p>*@
 							<p>
 							@foreach (string content in @product.MainContent)
 							{

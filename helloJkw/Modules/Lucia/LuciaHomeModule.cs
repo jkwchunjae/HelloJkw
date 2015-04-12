@@ -5,6 +5,7 @@ using Nancy;
 using Extensions;
 using System.Collections.Generic;
 using System.Text.RegularExpressions;
+using System.Dynamic;
 
 namespace helloJkw
 {
@@ -18,23 +19,37 @@ namespace helloJkw
 				string device = _.device;
 
 				var mainDirName = LuciaStatic.MainDirName;
-				var mainImageList = LuciaStatic.LuciaDir[mainDirName].GetFiles()
-					.Select(e => Path.GetFileName(e.Name));
-				var slideImageList = LuciaStatic.LuciaDir[mainDirName]["slide"].GetFiles()
-					.Select(e => Path.GetFileName(e.Name));
+				//var mainImageList = LuciaStatic.LuciaDir[mainDirName].GetFiles()
+				//	.Select(e => Path.GetFileName(e.Name));
+				//var slideImageList = LuciaStatic.LuciaDir[mainDirName]["slide"].GetFiles()
+				//	.Select(e => Path.GetFileName(e.Name));
 
-				var model = new
-				{
-					rootPath = (device == "m" ? LuciaStatic.RootPathMobile : LuciaStatic.RootPathWeb),
-					device = device,
-					mainMenu = LuciaStatic.GetMainMenu(),
-					mainDirName,
-					mainImageList,
-					slideImageList,
-					//ImageList = mainImageList.Select(e => "{0}/{1}/{2}".With(LuciaStatic.RootPath, mainDirName, Path.GetFileName(e.Name))).ToList(),
-					//ImageList = mainImageList.Select(e => Path.GetFileName(e.Name)).ToList()
-				};
-				return View["luciaHome", model];
+				dynamic Model = new ExpandoObject();
+
+				Model.rootPath = (device == "m" ? LuciaStatic.RootPathMobile : LuciaStatic.RootPathWeb);
+				Model.device = device;
+				Model.mainMenu = LuciaStatic.GetMainMenu();
+				Model.categorys = LuciaStatic.LuciaDir.GetSubDirList()
+					.Where(e => !e.FolderName.Contains("main"))
+					.Select(e => new
+					{
+						Name = e.FolderName.RemovePrefixNumber(),
+						MainImage = e.GetProductList().GetRandom().MainImage
+					})
+					.Select(e => e.ToExpando());
+
+				//var model = new
+				//{
+				//	rootPath = (device == "m" ? LuciaStatic.RootPathMobile : LuciaStatic.RootPathWeb),
+				//	device = device,
+				//	mainMenu = LuciaStatic.GetMainMenu(),
+				//	//mainDirName,
+				//	//mainImageList,
+				//	//slideImageList,
+				//	//ImageList = mainImageList.Select(e => "{0}/{1}/{2}".With(LuciaStatic.RootPath, mainDirName, Path.GetFileName(e.Name))).ToList(),
+				//	//ImageList = mainImageList.Select(e => Path.GetFileName(e.Name)).ToList()
+				//};
+				return View["luciaHome", Model];
 			};
 		}
 	}

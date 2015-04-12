@@ -19,7 +19,7 @@
 
 <div class="row">
 
-	<div class="col-md-3">
+	<div class="col-md-3 product-list">
 		<p class="lead"></p>
 		<h2 class="lead"><a href="/lucia/category/@category">@category</a></h2>
 		<div class="list-group">
@@ -28,7 +28,7 @@
 				string active = null;
 				if (@product.Name == @productInfo.Name)
 				{ active = "active"; }
-				<a href="/lucia/@device/product/@category/@product.Name" class="list-group-item @active">@product.Name</a>
+				<a href="/lucia/@device/product/@category/@product.Name" class="list-group-item @active">@product.NameDisplay</a>
 			}
 		</div>
 	</div>
@@ -39,7 +39,7 @@
 			<div class="caption-full">
 				<h4 class="pull-right">@productInfo.Price 원</h4>
 				<h4>
-					<a href="#">@productInfo.Name</a>
+					<a href="#">@productInfo.NameDisplay</a>
 				</h4>
 				<table class="table table-striped">
 					@*<thead>
@@ -51,15 +51,20 @@
 					<tbody>
 						@foreach (var info in @productInfo.InfoList)
 						{
-							<tr><td>@info.Item1</td><td>@info.Item2</td></tr>
+							if (@info.Item1 != "상품명" && @info.Item1 != "가격")
+							{
+							<tr>@*<td style="width:25%;">@info.Item1</td>*@<td>@info.Item2</td></tr>
+							}
 						}
 					</tbody>
 				</table>
 			</div>
+			<div class="image-list">
 			@foreach (var imageName in @productInfo.ImageList)
 			{
-				<img class="img-responsive product" src="/@rootPath/@imageName" alt="">
+				<a href="/lucia/@imageName"><img class="img-responsive product" src="/@rootPath/@imageName" alt=""></a>
 			}
+			</div>
 		</div>
 	</div>
 
