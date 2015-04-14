@@ -32,7 +32,7 @@ namespace helloJkw
 		public int OtherScore { get; set; }
 		public bool IsHome { get; set; }
 		public bool IsWin { get { return Score > OtherScore; } }
-		public bool IsLose { get { return !IsWin; } }
+		public bool IsLose { get { return Score < OtherScore; } }
 		public bool IsDraw { get { return Score == OtherScore; } }
 	}
 
@@ -94,10 +94,10 @@ namespace helloJkw
 			_seasonList = GetSeasonList(_filepathSeasonInfo);
 			_matchList = GetMatchList(_filepathMatchHistory);
 			_lastUpdateTime = DateTime.Now;
-			Update(0);
+			Update(0, true);
 		}
 
-		public static void Update(int minute = 5)
+		public static void Update(int minute = 5, bool updateOldSeason = false)
 		{
 			if (minute > 0 && DateTime.Now.Subtract(_lastUpdateTime).TotalMinutes < minute)
 				return;
@@ -113,8 +113,21 @@ namespace helloJkw
 				_matchList.AddRange(matchList);
 			}
 			_teamMatchList = _matchList.GetTeamMatchList();
-			foreach (var season in _seasonList)
+
+			if (updateOldSeason)
 			{
+				_standingList.Clear();
+				Parallel.ForEach(_seasonList, season =>
+				{
+					var teamSet = _seasonList.Where(e => e.Year == season.Year).First().LastSeasonRank.Split(',').ToHashSet();
+					_standingList[season.Year] = _teamMatchList.Where(e => e.Date >= season.BeginDate && e.Date <= season.EndDate)
+						.Where(e => teamSet.Contains(e.Team))
+						.GetStandingList();
+				});
+			}
+			else
+			{
+				var season = _seasonList.OrderBy(e => e.Year).Last();
 				var teamSet = _seasonList.Where(e => e.Year == season.Year).First().LastSeasonRank.Split(',').ToHashSet();
 				_standingList[season.Year] = _teamMatchList.Where(e => e.Date >= season.BeginDate && e.Date <= season.EndDate)
 					.Where(e => teamSet.Contains(e.Team))
