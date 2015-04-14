@@ -101,6 +101,7 @@ namespace helloJkw
 		{
 			if (minute > 0 && DateTime.Now.Subtract(_lastUpdateTime).TotalMinutes < minute)
 				return;
+			Logger.Log("KboMatch Update begin");
 			var today = DateTime.Today.ToInt();
 			var beginDate = _matchList.Max(t => t.Date);
 			var endDate = today;
@@ -117,13 +118,13 @@ namespace helloJkw
 			if (updateOldSeason)
 			{
 				_standingList.Clear();
-				Parallel.ForEach(_seasonList, season =>
+				foreach (var season in _seasonList)
 				{
 					var teamSet = _seasonList.Where(e => e.Year == season.Year).First().LastSeasonRank.Split(',').ToHashSet();
 					_standingList[season.Year] = _teamMatchList.Where(e => e.Date >= season.BeginDate && e.Date <= season.EndDate)
 						.Where(e => teamSet.Contains(e.Team))
 						.GetStandingList();
-				});
+				};
 			}
 			else
 			{
@@ -135,6 +136,7 @@ namespace helloJkw
 			}
 
 			SaveMatchList(_filepathMatchHistory);
+			Logger.Log("KboMatch Update end");
 		}
 
 		public static List<Season> GetSeasonList(string filepath)
