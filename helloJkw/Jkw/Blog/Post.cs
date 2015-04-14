@@ -104,8 +104,8 @@ namespace helloJkw
 		{
 			if (html.Length <= 300)
 				return html;
-			var lastP = html.Substring(0, 300).LastIndexOf(@"</p>");
-			return html.Substring(0, lastP + 4);
+			var firstP = html.IndexOf(@"</p>");
+			return html.Substring(0, firstP + 4);
 		}
 	}
 }

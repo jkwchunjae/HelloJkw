@@ -2,6 +2,7 @@
 @{
 	Layout = "Layout.cshtml";
 	var chartObject = @Model.chartObject;
+	var chartMinWidth = Math.Max(500, @Model.DateCount * 5).ToString() + "px";
 }
 
 @section Css
@@ -21,8 +22,10 @@
 		$(function () {
 			$('#kbochart').highcharts({
 				title: {
-					text: 'KBO @chartObject.Year 시즌 게임차 그래프',
-					x: -20 //center
+					//text: 'KBO @chartObject.Year 시즌 게임차 그래프',
+					//x: -20, //center
+					text: '',
+					margin: 0
 				},
 				xAxis: {
 					categories: [@chartObject.DateList]
@@ -33,15 +36,7 @@
 					},
 					reversed: true,
 					min: 0,
-					//plotLines: [{
-					//	value: 0,
-					//	width: 1,
-					//	color: '#808080'
-					//}]
 				},
-				//tooltip: {
-				//	valueSuffix: '°C'
-				//},
 				legend: {
 					layout: 'vertical',
 					align: 'right',
@@ -52,16 +47,32 @@
 				@foreach (var @teamGBInfo in @chartObject.TeamGBInfo)
 				{
 @:{
-	@:name: ' @teamGBInfo.Item1 ',
+	@:name: '@teamGBInfo.Item1',
 	@:data: [@teamGBInfo.Item2]
 @:},
 				} ]
 			});
 		});
 	</script>
-}
 
-<div id="kbochart" style="min-width: 500px; height: 500px; margin: 0 auto"></div>
+	<script type="text/javascript">
+		$("select#seasonSelect option#@chartObject.Year").attr("selected", "selected");
+			
+		$("select#seasonSelect").change(function () {
+			location.href = "/kbochart/" + this.value;
+		});
+	</script>
+}
+<h2>KBO @chartObject.Year 시즌 게임차 그래프</h2>
+
+<select id="seasonSelect">
+	@foreach (var year in @Model.YearList)
+	{
+		<option value="@year" id="@year">@year</option>
+	}
+</select>
+
+<div id="kbochart" style="min-width: @chartMinWidth; height: 500px; margin: 0 auto"></div>
 
 <div id="disqus_thread"></div>
 <script type="text/javascript">

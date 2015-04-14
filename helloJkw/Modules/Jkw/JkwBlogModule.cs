@@ -17,6 +17,7 @@ namespace helloJkw
 			Model.categoryList = BlogManager.CategoryList
 				.OrderByDescending(e => e.Count);
 			Model.tagList = BlogManager.TagList;
+			Model.Title = "jkw's Blog";
 		}
 	}
 
@@ -43,9 +44,11 @@ namespace helloJkw
 #endif
 				string postname = _.postname;
 
-				Model.post = BlogManager.PostList
+				var post = BlogManager.PostList
 					.Where(e => e.Name == postname)
 					.FirstOrDefault();
+				Model.post = post;
+				Model.Title = "jkw's " + post.Title;
 
 				return View["jkwBlogPost", Model];
 			};

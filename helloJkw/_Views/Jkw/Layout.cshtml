@@ -1,10 +1,9 @@
 ﻿@inherits Nancy.ViewEngines.Razor.NancyRazorViewBase<dynamic>
 @{
-	string desc;
-	try { desc = @Model.Desc; } catch { desc = ""; }
 	string title;
 	try { title = @Model.Title; } catch { title = "Hello Jkw!"; }
-	
+	string desc;
+	try { desc = @Model.Desc; } catch { desc = ""; }
 }
 <!DOCTYPE html>
 <html lang="ko">
