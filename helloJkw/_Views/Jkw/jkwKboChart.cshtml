@@ -21,7 +21,7 @@
 		$(function () {
 			$('#kbochart').highcharts({
 				title: {
-					text: 'KBO 2015시즌 게임차 그래프',
+					text: 'KBO @chartObject.Year 시즌 게임차 그래프',
 					x: -20 //center
 				},
 				xAxis: {
@@ -61,7 +61,7 @@
 	</script>
 }
 
-<div id="kbochart" style="min-width: 500px; height: 400px; margin: 0 auto"></div>
+<div id="kbochart" style="min-width: 500px; height: 500px; margin: 0 auto"></div>
 
 <div id="disqus_thread"></div>
 <script type="text/javascript">
@@ -76,3 +76,16 @@
 	})();
 </script>
 <noscript>Please enable JavaScript to view the <a href="https://disqus.com/?ref_noscript" rel="nofollow">comments powered by Disqus.</a></noscript>
+
+<script>
+	(function (i, s, o, g, r, a, m) {
+		i['GoogleAnalyticsObject'] = r; i[r] = i[r] || function () {
+			(i[r].q = i[r].q || []).push(arguments)
+		}, i[r].l = 1 * new Date(); a = s.createElement(o),
+		m = s.getElementsByTagName(o)[0]; a.async = 1; a.src = g; m.parentNode.insertBefore(a, m)
+	})(window, document, 'script', '//www.google-analytics.com/analytics.js', 'ga');
+
+	ga('create', 'UA-49135864-1', 'auto');
+	ga('send', 'pageview');
+
+</script>

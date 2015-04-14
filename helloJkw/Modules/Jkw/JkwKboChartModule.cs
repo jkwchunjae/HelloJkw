@@ -13,12 +13,18 @@ namespace helloJkw.Modules.Jkw
 	{
 		public JkwKboChartModule()
 		{
-			Get["/kbochart/{season}"] = _ =>
+			Get["/kbochart/{season?default}"] = _ =>
 			{
 				dynamic Model = new ExpandoObject();
+				string seasonStr = _.season;
+				if (seasonStr == "reload")
+				{
+					KboMatch.Reload();
+				}
 				KboMatch.Update();
-				string season = _.season;
-				Model.chartObject = KboMatch.GetChartObject(season.ToInt());
+
+				int season = (seasonStr == "default" || !seasonStr.IsInt()) ? KboMatch.RecentSeason : seasonStr.ToInt();
+				Model.chartObject = KboMatch.GetChartObject(season);
 				
 				return View["jkwKboChart", Model];
 			};

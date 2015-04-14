@@ -53,27 +53,46 @@ namespace helloJkw
 		public string AwayResult { get; set; }
 	}
 
+	public class Season
+	{
+		public int Year { get; set; }
+		public int BeginDate { get; set; }
+		public int EndDate { get; set; }
+		public string LastSeasonRank { get; set; }
+	}
+
 	public class ChartObject
 	{
 		//public List<string> Team { get; set; }
 		//public List<string> GBList { get; set; }
 		public List<Tuple<string, string>> TeamGBInfo { get; set; }
 		public string DateList { get; set; }
+		public int Year { get; set; }
 	}
 	#endregion
 
 	public static class KboMatch
 	{
 		static DateTime _lastUpdateTime;
+		static List<Season> _seasonList;
 		static List<Match> _matchList;
 		static List<TeamMatch> _teamMatchList;
 		static Dictionary<int, List<Standing>> _standingList = new Dictionary<int, List<Standing>>();
-		static string _filepath = @"jkw/project/kbo/kbochart/matchHistory.txt";
+
+		static string _filepathMatchHistory = @"jkw/project/kbo/kbochart/matchHistory.txt";
+		static string _filepathSeasonInfo = @"jkw/project/kbo/kbochart/seasonInfo.txt";
+
+		public static int RecentSeason { get { return _matchList.Max(t => t.Date).Year(); } }
 
 		static KboMatch()
 		{
-			_matchList = GetMatchList(_filepath);
+			Reload();
+		}
 
+		public static void Reload()
+		{
+			_seasonList = GetSeasonList(_filepathSeasonInfo);
+			_matchList = GetMatchList(_filepathMatchHistory);
 			_lastUpdateTime = DateTime.Now;
 			Update(0);
 		}
@@ -94,14 +113,35 @@ namespace helloJkw
 				_matchList.AddRange(matchList);
 			}
 			_teamMatchList = _matchList.GetTeamMatchList();
-			_standingList[2015] = _teamMatchList.Where(e => e.Date >= 20150328).GetStandingList();
+			foreach (var season in _seasonList)
+			{
+				var teamSet = _seasonList.Where(e => e.Year == season.Year).First().LastSeasonRank.Split(',').ToHashSet();
+				_standingList[season.Year] = _teamMatchList.Where(e => e.Date >= season.BeginDate && e.Date <= season.EndDate)
+					.Where(e => teamSet.Contains(e.Team))
+					.GetStandingList();
+			}
 
-			SaveMatchList(_filepath);
+			SaveMatchList(_filepathMatchHistory);
 		}
 
+		public static List<Season> GetSeasonList(string filepath)
+		{
+			var seasonInfoJson = JObject.Parse(File.ReadAllText(filepath, Encoding.UTF8));
+
+			return seasonInfoJson["season"].Children()
+				.Select(e => JsonConvert.DeserializeObject<Season>(e.ToString()))
+				.ToList();
+		}
+
+		#region Save MatchList
+		/// <summary>
+		/// MatchList 를 json 형태로 저장
+		/// </summary>
+		/// <param name="filepath"></param>
 		static void SaveMatchList(string filepath)
 		{
 			var matchJsonArray = _matchList
+				.OrderByDescending(e => e.Date)
 				.Select(e => new JObject(
 					new JProperty("Date", e.Date),
 					new JProperty("Away", e.Away),
@@ -113,12 +153,14 @@ namespace helloJkw
 			var matchJsonObject = new JObject(new JProperty("history", matchJsonArray));
 
 			var resultString = matchJsonObject.ToString()
-				.RegexReplace(@",\r\n      ", ", ")
-				.RegexReplace(@"\{\r\n      ", "{")
-				.RegexReplace(@"\r\n    }", "}");
+				.RegexReplace(@"\r", "")
+				.RegexReplace(@",\n      ", ", ")
+				.RegexReplace(@"\{\n      ", "{")
+				.RegexReplace(@"\n    }", "}");
 
 			File.WriteAllText(filepath, resultString);
 		}
+		#endregion
 
 		#region ChartObject
 		/// <summary>
@@ -129,12 +171,14 @@ namespace helloJkw
 		/// <returns></returns>
 		public static ChartObject GetChartObject(int season)
 		{
-			var teamOrder = "삼성,넥센,NC,LG,SK,두산,롯데,KIA,한화,kt".Split(',')
+			//var teamOrder = "삼성,넥센,NC,LG,SK,두산,롯데,KIA,한화,kt".Split(',')
+			if (!_seasonList.Where(e => e.Year == season).Any()) return null;
+			var teamOrder = _seasonList.Where(e => e.Year == season).First().LastSeasonRank.Split(',')
 				.Select((e, i) => new { Team = e, Order = i })
 				.ToDictionary(e => e.Team, e => e.Order);
 			var chartObject = new ChartObject();
 			var standing = _standingList[season];
-			var teamList = standing.Select(e => e.Team).Distinct().OrderBy(e => teamOrder[e]);
+			var teamList = standing.Select(e => e.Team).Distinct().Where(e => teamOrder.ContainsKey(e)).OrderBy(e => teamOrder[e]);
 			chartObject.TeamGBInfo = new List<Tuple<string, string>>();
 			foreach (var team in teamList)
 			{
@@ -144,6 +188,7 @@ namespace helloJkw
 					));
 			}
 			chartObject.DateList = standing.OrderBy(e => e.Date).Select(e => e.Date).Distinct().Select(e => "'{0}/{1}'".With(e.Month(), e.Day())).StringJoin(",");
+			chartObject.Year = season;
 			return chartObject;
 		}
 		#endregion
@@ -160,6 +205,7 @@ namespace helloJkw
 
 			return matchHistoryJson["history"].Children()
 				.Select(e => JsonConvert.DeserializeObject<Match>(e.ToString()))
+				.OrderBy(e => e.Date)
 				.ToList();
 		}
 		#endregion
@@ -222,7 +268,7 @@ namespace helloJkw
 		/// </summary>
 		/// <param name="matchList"></param>
 		/// <returns></returns>
-		public static List<TeamMatch> GetTeamMatchList(this IEnumerable<Match> matchList)
+		static List<TeamMatch> GetTeamMatchList(this IEnumerable<Match> matchList)
 		{
 			var teamMatchList = new List<TeamMatch>();
 			foreach (var match in matchList)
@@ -256,7 +302,7 @@ namespace helloJkw
 		/// </summary>
 		/// <param name="teamMatchList"></param>
 		/// <returns></returns>
-		public static List<Standing> GetStandingList(this IEnumerable<TeamMatch> teamMatchList)
+		static List<Standing> GetStandingList(this IEnumerable<TeamMatch> teamMatchList)
 		{
 			var teamList = teamMatchList.Select(e => e.Team).Distinct().ToList();
 			var dateList = teamMatchList.Select(e => e.Date).Distinct().OrderBy(e => e);
