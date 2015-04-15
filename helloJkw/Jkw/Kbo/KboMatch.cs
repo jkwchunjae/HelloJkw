@@ -108,7 +108,6 @@ namespace helloJkw
 		{
 			if (minute > 0 && DateTime.Now.Subtract(_lastUpdateTime).TotalMinutes < minute)
 				return;
-			Logger.Log("KboMatch Update begin");
 			_lastUpdateTime = DateTime.Now;
 
 			var beginDate = _matchList.Max(t => t.Date);
@@ -128,7 +127,10 @@ namespace helloJkw
 				if (currentMatchList.EqualMatchList(matchList)) continue;
 
 				foreach (var match in currentMatchList)
+				{
+					Logger.Log("Remove match {Date}, {Away}, {Home}".WithVar(match));
 					_matchList.Remove(match);
+				}
 				_matchList.AddRange(matchList);
 				updateSeason = season;
 				updateDate = updateDate == 0 ? date : Math.Min(updateDate, date);
@@ -141,8 +143,6 @@ namespace helloJkw
 				updateSeason.GetStandingList(true, updateDate);
 				SaveMatchList(_filepathMatchHistory);
 			}
-
-			Logger.Log("KboMatch Update end");
 		}
 		#endregion
 

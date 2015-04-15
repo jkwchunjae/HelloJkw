@@ -38,15 +38,20 @@ namespace helloJkw
 			{
 				Logger.Log("Start Lucia Shop");
 				host.Start();
-				Console.ReadLine();
-				Console.ReadLine();
 
 				while (true)
 				{
-					Console.Write("Shutdown helloJkw? (Y/n): ");
+					Console.ReadLine();
+					Console.ReadLine();
+					Console.Write("Command Method : ");
 					var ans = Console.ReadLine();
-					if (ans == "Y")
-						break;
+					if (ans == "quit" || ans == "exit")
+					{
+						Console.Write("Really? (Y/n): ");
+						ans = Console.ReadLine();
+						if (ans == "Y")
+							break;
+					}
 				}
 			}
 		}
