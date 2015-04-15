@@ -367,13 +367,16 @@ namespace helloJkw
 					standing.Lose = yesterday != null ? yesterday.Lose : 0;
 
 					// 최근 기록에서 해당 경기 결과를 반영한다.
-					var curr = currList.Where(t => t.Team == team).FirstOrDefault();
-					standing.Win += (curr != null && curr.IsWin) ? 1 : 0;
-					standing.Draw += (curr != null && curr.IsDraw) ? 1 : 0;
-					standing.Lose += (curr != null && curr.IsLose) ? 1 : 0;
+					// foreach 인 이유는 더블헤더 경기가 있기 때문에!
+					foreach (var curr in currList.Where(t => t.Team == team))
+					{
+						standing.Win += (curr != null && curr.IsWin) ? 1 : 0;
+						standing.Draw += (curr != null && curr.IsDraw) ? 1 : 0;
+						standing.Lose += (curr != null && curr.IsLose) ? 1 : 0;
+					}
 
 					// 승률 = 승 / (승 + 패)  // 무승부는 무시!
-					standing.PCT = ((double)standing.Win / (standing.Win + standing.Lose));
+					standing.PCT = ((double)standing.Win / (standing.Win + standing.Lose + (date.Year() == 2009 ? standing.Draw : 0)));
 
 					currStandingList.Add(standing);
 				}
@@ -390,7 +393,14 @@ namespace helloJkw
 				var rank1 = currStandingList.Where(e => e.Rank == 1).First();
 				foreach (var team in currStandingList)
 				{
-					team.GB = team.Rank == 1 ? 0 : ((rank1.Win - team.Win) - (rank1.Lose - team.Lose)) / 2.0;
+					if (date.Year() == 2009)
+					{
+						team.GB = team.Rank == 1 ? 0 : ((rank1.Win - team.Win) - ((rank1.Lose + rank1.Draw) - (team.Lose + team.Draw))) / 2.0;
+					}
+					else
+					{
+						team.GB = team.Rank == 1 ? 0 : ((rank1.Win - team.Win) - (rank1.Lose - team.Lose)) / 2.0;
+					}
 				}
 				#endregion
 				standingList.AddRange(currStandingList);
