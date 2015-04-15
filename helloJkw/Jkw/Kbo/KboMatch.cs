@@ -109,6 +109,7 @@ namespace helloJkw
 			if (minute > 0 && DateTime.Now.Subtract(_lastUpdateTime).TotalMinutes < minute)
 				return;
 			Logger.Log("KboMatch Update begin");
+			_lastUpdateTime = DateTime.Now;
 
 			var beginDate = _matchList.Max(t => t.Date);
 			var endDate = DateTime.Today.ToInt();
