@@ -98,6 +98,7 @@ namespace helloJkw
 				season.MatchList = null;
 				season.TeamMatchList = null;
 				season.StandingList = null;
+				season.chartObject = null;
 			}
 			_lastUpdateTime = DateTime.Now;
 			Update(0);
@@ -141,6 +142,7 @@ namespace helloJkw
 			{
 				Logger.Log("Update after {updateDate}".WithVar(new { updateDate }));
 				updateSeason.GetStandingList(true, updateDate);
+				updateSeason.chartObject = null;
 				SaveMatchList(_filepathMatchHistory);
 			}
 		}
