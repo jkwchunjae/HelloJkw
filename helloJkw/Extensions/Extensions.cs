@@ -14,7 +14,7 @@ namespace helloJkw
 	{
 		public static string RemovePrefixNumber(this string filename)
 		{
-			return Regex.Replace(filename, @"\d*\.\s", "");
+			return Regex.Replace(filename, @"\d*\.\s*", "");
 		}
 
 		public static ExpandoObject ToExpando(this object anonymousObject)
