@@ -378,8 +378,8 @@ namespace helloJkw
 						standing.Lose += (curr != null && curr.IsLose) ? 1 : 0;
 					}
 
-					// 승률 = 승 / (승 + 패)  // 무승부는 무시!
-					standing.PCT = ((double)standing.Win / (standing.Win + standing.Lose + (date.Year() == 2009 ? standing.Draw : 0)));
+					// 승률 = 승 / (승 + 패)  // 무승부는 무시! (2009년 무승부는 '패' 처리)
+					standing.PCT = (standing.Win == 0)? 0 : ((double)standing.Win / (standing.Win + standing.Lose + (date.Year() == 2009 ? standing.Draw : 0)));
 
 					currStandingList.Add(standing);
 				}
