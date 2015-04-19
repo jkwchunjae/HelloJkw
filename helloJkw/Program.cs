@@ -43,7 +43,7 @@ namespace helloJkw
 				{
 					Console.ReadLine();
 					Console.ReadLine();
-					Console.Write("Command Method : ");
+					Console.Write("Command : ");
 					var ans = Console.ReadLine();
 					if (ans == "quit" || ans == "exit")
 					{
