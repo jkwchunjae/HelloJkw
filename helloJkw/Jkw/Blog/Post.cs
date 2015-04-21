@@ -30,7 +30,15 @@ namespace helloJkw
 		public Post(string filepath)
 		{
 			Filepath = filepath;
-			var text = File.ReadAllText(filepath);
+			//var text = File.ReadAllText(filepath, Encoding.UTF8);
+			string text = string.Empty;
+			using (var inStream = new FileStream(filepath, FileMode.Open, FileAccess.Read, FileShare.ReadWrite))
+			{
+				using (var reader = new StreamReader(inStream))
+				{
+					text = reader.ReadToEnd();
+				}
+			}
 			var filename = Path.GetFileNameWithoutExtension(filepath);
 			Parse(filename, text);
 		}

@@ -26,7 +26,7 @@ namespace helloJkw
 		public JkwBlogHomeModule()
 			:base()
 		{
-			Get["/blog/{getCount?3}"] = _ =>
+			Get["/blog/{getCount?20}"] = _ =>
 			{
 				BlogManager.UpdatePost();
 				string getCount = _.getCount;
