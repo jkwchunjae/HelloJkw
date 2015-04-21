@@ -21,6 +21,7 @@ namespace helloJkw
 		public string Content;
 		public string Html;
 		public string HtmlCut;
+		public bool IsPublish { get; set; }
 
 		/// <summary>
 		/// text원본을 받아 파싱한다.
@@ -49,6 +50,7 @@ namespace helloJkw
 			Html = Content.ToHtml();
 			HtmlCut = Html.CutParagraph();
 			Title = textList.GetValue("@title");
+			IsPublish = textList.GetValue("@isPublish").ToBoolean();
 			Tags = textList.GetValue("@tags").Split(',')
 				.Select(e => e.Trim().SplitUrl())
 				.Select(e => new TagItem { Name = e.Item1.ToLower(), Url = e.Item2.ToLower() })

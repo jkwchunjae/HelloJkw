@@ -36,6 +36,7 @@ namespace helloJkw
 				.Select(filepath => filepath.Replace(@"\", "/"))
 				.Where(filepath => Regex.IsMatch(filepath, pattern))
 				.Select(filepath => new Post(filepath))
+				.Where(e => e.IsPublish)
 				.ToList();
 			DateList = PostList.Select(post => post.Date).Distinct().ToList();
 			CategoryList = PostList.Select(post => new { post.CategoryUrl, post.Category })
