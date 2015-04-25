@@ -1,0 +1,16 @@
+﻿th.standing-pc, td.standing-pc
+{
+	display: none;
+}
+
+@media(min-width:768px) {
+	th.standing-pc, td.standing-pc
+	{
+		display: table-cell;
+	}
+}
+
+/*::selection {
+    text-shadow: none;
+	background-color: #c8c8c8;
+}*/

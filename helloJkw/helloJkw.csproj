@@ -187,6 +187,7 @@
     <Content Include="_Static\css\bootstrap.css" />
     <Content Include="_Static\css\bootstrap.min.css" />
     <Content Include="_Static\css\carousel.css" />
+    <Content Include="_Static\css\jkwKboChart.css" />
     <Content Include="_Static\css\jkwLayout.css" />
     <Content Include="_Static\css\jkwBlogHome.css" />
     <Content Include="_Static\css\luciaProduct.css" />

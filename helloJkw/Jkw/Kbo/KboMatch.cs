@@ -46,11 +46,11 @@ namespace helloJkw
 		public int Draw { get; set; }
 		public int Lose { get; set; }
 		public double PCT { get; set; } // 승률
-		public double GB { get; set; }
-		public string STRK { get; set; }
-		public string Last10 { get; set; }
-		public string HomeResult { get; set; }
-		public string AwayResult { get; set; }
+		public double GB { get; set; } // 게임차
+		public string Last10 { get; set; } // 최근10경기
+		public string STRK { get; set; } // 연속
+		public string HomeResult { get; set; } // 홈 결과
+		public string AwayResult { get; set; } // 원정 결과
 	}
 
 	public class Season
@@ -75,12 +75,12 @@ namespace helloJkw
 
 	public static class KboMatch
 	{
-		static DateTime _lastUpdateTime;
 		static List<Match> _matchList;
 
 		static string _filepathMatchHistory = @"jkw/project/kbo/kbochart/matchHistory.txt";
 		static string _filepathSeasonInfo = @"jkw/project/kbo/kbochart/seasonInfo.txt";
 
+		public static DateTime LastUpdateTime { get; private set; }
 		public static List<Season> SeasonList;
 		public static int RecentSeason { get { return _matchList.Max(t => t.Date).Year(); } }
 
@@ -100,16 +100,16 @@ namespace helloJkw
 				season.StandingList = null;
 				season.chartObject = null;
 			}
-			_lastUpdateTime = DateTime.Now;
+			LastUpdateTime = DateTime.Now;
 			Update(0);
 		}
 
 		#region Update (경기 결과가 변경되면 파일 저장한다.)
 		public static void Update(int minute = 5)
 		{
-			if (minute > 0 && DateTime.Now.Subtract(_lastUpdateTime).TotalMinutes < minute)
+			if (minute > 0 && DateTime.Now.Subtract(LastUpdateTime).TotalMinutes < minute)
 				return;
-			_lastUpdateTime = DateTime.Now;
+			LastUpdateTime = DateTime.Now;
 
 			var beginDate = _matchList.Max(t => t.Date);
 			var endDate = DateTime.Today.ToInt();
@@ -271,6 +271,7 @@ namespace helloJkw
 					return matchList;
 
 				matchList = htmlDoc.DocumentNode.SelectNodes("//div[@class='smsScore']")
+					.Where(e => e.SelectSingleNode("div/strong[@class='flag']/span").InnerText != "경기전")
 					.Select(e =>
 					{
 						var away = e.SelectSingleNode("div[@class='score_wrap']/p[@class='leftTeam']");
