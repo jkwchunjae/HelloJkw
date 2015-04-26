@@ -6,6 +6,7 @@ using Extensions;
 using System.Collections.Generic;
 using System.Text.RegularExpressions;
 using System.Dynamic;
+using helloJkw.Utils;
 
 namespace helloJkw
 {
@@ -17,13 +18,10 @@ namespace helloJkw
 			{
 				LuciaStatic.UpdateLuciaDir();
 				string device = _.device;
+				HitCounter.Hit("lucia/main");
+				Logger.Log("viewLog - lucia/main");
 
 				var mainDirName = LuciaStatic.MainDirName;
-				//var mainImageList = LuciaStatic.LuciaDir[mainDirName].GetFiles()
-				//	.Select(e => Path.GetFileName(e.Name));
-				//var slideImageList = LuciaStatic.LuciaDir[mainDirName]["slide"].GetFiles()
-				//	.Select(e => Path.GetFileName(e.Name));
-
 				dynamic Model = new ExpandoObject();
 
 				Model.rootPath = (device == "m" ? LuciaStatic.RootPathMobile : LuciaStatic.RootPathWeb);
@@ -38,17 +36,6 @@ namespace helloJkw
 					})
 					.Select(e => e.ToExpando());
 
-				//var model = new
-				//{
-				//	rootPath = (device == "m" ? LuciaStatic.RootPathMobile : LuciaStatic.RootPathWeb),
-				//	device = device,
-				//	mainMenu = LuciaStatic.GetMainMenu(),
-				//	//mainDirName,
-				//	//mainImageList,
-				//	//slideImageList,
-				//	//ImageList = mainImageList.Select(e => "{0}/{1}/{2}".With(LuciaStatic.RootPath, mainDirName, Path.GetFileName(e.Name))).ToList(),
-				//	//ImageList = mainImageList.Select(e => Path.GetFileName(e.Name)).ToList()
-				//};
 				return View["luciaHome", Model];
 			};
 		}

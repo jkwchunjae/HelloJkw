@@ -4,16 +4,79 @@
 	var chartObject = @Model.chartObject;
 	var chartMinWidth = Math.Max(500, @Model.DateCount * 5).ToString() + "px";
 }
+<h2>KBO @chartObject.Year 시즌 게임차 그래프</h2>
+
+<select id="seasonSelect">
+	@foreach (var year in @Model.YearList)
+	{
+		<option value="@year" id="@year">@year</option>
+	}
+</select>
+
+<div id="kbochart" style="min-width: @chartMinWidth; height: 500px; margin: 0 auto"></div>
+
+<div>
+	@*<div class="input-group date">
+		<span class="input-group-addon">날짜 설정</span>
+		<input type="text" class="form-control datepicker"/>
+		<span class="input-group-addon"><i class="glyphicon glyphicon-th"></i></span>
+	</div>*@
+	<h3>순위표</h3>
+	<div>
+		<button class="btn btn-info" id="prev-date">이전 날짜</button>
+		<button class="btn btn-info" id="next-date">다음 날짜</button>
+		<button class="btn btn-success" id="pick-date">날짜 선택</button>
+		<button class="btn btn-warning" id="today-date">오늘</button>
+		<div class="datepicker"></div>
+	</div>
+	<table class="table table-striped">
+		<thead class="standing-title">
+			<tr>
+				<th>순위</th>
+				<th>팀명</th>
+				<th>게임</th>
+				<th>승</th>
+				<th>무</th>
+				<th>패</th>
+				<th>승률</th>
+				<th>게임차</th>
+				<th class="standing-pc">최근10경기</th>
+				<th class="standing-pc">연속</th>
+				@*<th class="standing-pc">홈</th>*@
+				@*<th class="standing-pc">방문</th>*@
+			</tr>
+		</thead>
+		<tbody class="standing-list">
+		</tbody>
+	</table>
+	<div>
+		<span id="last-update-time"></span><span> 에 업데이트 하였습니다. (진행중인 경기 점수 반영됨.)</span>
+	</div>
+</div>
+
+<div id="disqus_thread"></div>
 
 @section Css
 {
 	@*<link href="/Static/css/jkwBlogHome.css" rel="stylesheet">*@
 	<link href="/Static/css/jkwKboChart.css" rel="stylesheet">
+	<link href="/Static/bootstrap-datepicker/css/bootstrap-datepicker3.min.css" rel="stylesheet">
+
+	<style type="text/css">
+		h3 {
+			text-align: center;
+		}
+
+		div.datepicker {
+			display: none;
+		}
+	</style>
 }
 
 @section Javascript
 {
-	<script src="/Static/Highcharts-4.1.4/js/highcharts.js"></script>
+	<script src="/Static/Highcharts/js/highcharts.js"></script>
+	<script src="/Static/bootstrap-datepicker/js/bootstrap-datepicker.min.js"></script>
 	<script type="text/javascript">
 		$("nav.navbar").addClass("navbar-shrink");
 		$("li#menu-project").addClass("active");
@@ -46,46 +109,99 @@
 				series: [
 				@foreach (var @teamGBInfo in @chartObject.TeamGBInfo)
 				{
-@:{
-	@:name: '@teamGBInfo.Item1',
-	@:data: [@teamGBInfo.Item2]
-@:},
-				} ]
+					@:{
+						@:name: '@teamGBInfo.Item1',
+						@:data: [@teamGBInfo.Item2]
+					@:},
+				}]
 			});
 		});
 	</script>
 
 	<script type="text/javascript">
 		$("select#seasonSelect option#@chartObject.Year").attr("selected", "selected");
-			
+
 		$("select#seasonSelect").change(function () {
 			location.href = "/kbochart/" + this.value;
 		});
 
-		$.post("/kbochart/standing/@chartObject.Year", function (data) {
-			var result = eval('(' + data + ')');
-			var standingList = result.standing;
-			var tbodyStandingList = $("tbody.standing-list");
-			tbodyStandingList.empty();
-			standingList.forEach(function (standing, index, array) {
-				var tr = document.createElement("tr");
-				$(tr).append($(document.createElement("td")).text(standing.Rank));
-				$(tr).append($(document.createElement("td")).text(standing.Team));
-				$(tr).append($(document.createElement("td")).text(standing.Game));
-				$(tr).append($(document.createElement("td")).text(standing.Win));
-				$(tr).append($(document.createElement("td")).text(standing.Draw));
-				$(tr).append($(document.createElement("td")).text(standing.Lose));
-				$(tr).append($(document.createElement("td")).text(standing.PCT));
-				$(tr).append($(document.createElement("td")).text(standing.GB));
-				$(tr).append($(document.createElement("td")).text(standing.Last10).addClass("standing-pc"));
-				$(tr).append($(document.createElement("td")).text(standing.STRK).addClass("standing-pc"));
-				//$(tr).append($(document.createElement("td")).text(standing.Home).addClass("standing-pc"));
-				//$(tr).append($(document.createElement("td")).text(standing.Away).addClass("standing-pc"));
-				$(tbodyStandingList).append(tr);
-			});
+		$('div.datepicker').datepicker({
+			format: "yyyy-mm-dd",
+			todayBtn: "linked",
+			autoclose: true
+		})
+		.on('changeDate', function (e) {
+			var date = $('div.datepicker').datepicker('getDate');
+			var year = date.getFullYear();
+			var date8 = year + padStr(date.getMonth() + 1) + padStr(date.getDate());
+			$('div.datepicker').css('display', 'none');
 
-			$("span#last-update-time").text(result.updateTime);
+			updateStanding(year, date8);
 		});
+
+		$('button#prev-date').click(function () {
+			var date = $('div.datepicker').datepicker('getDate');
+			var prevDate = new Date(date);
+			prevDate.setDate(date.getDate() - 1);
+			$('div.datepicker').datepicker('setDate', prevDate);
+		});
+
+		$('button#next-date').click(function () {
+			var date = $('div.datepicker').datepicker('getDate');
+			var prevDate = new Date(date);
+			prevDate.setDate(date.getDate() + 1);
+			$('div.datepicker').datepicker('setDate', prevDate);
+		});
+
+		$('button#today-date').click(function () {
+			var date = new Date();
+			$('div.datepicker').datepicker('setDate', date);
+		});
+
+		function padStr(value) {
+			return (value < 10) ? '0' + value : "" + value;
+		}
+
+		function updateStanding(year, date) {
+			$.post("/kbochart/standing/" + year + "/" + date, function (data) {
+				var result = eval('(' + data + ')');
+				var standingList = result.standing;
+				var tbodyStandingList = $("tbody.standing-list");
+				tbodyStandingList.empty();
+				standingList.forEach(function (standing, index, array) {
+					var tr = document.createElement("tr");
+					$(tr).append($(document.createElement("td")).text(standing.Rank));
+					$(tr).append($(document.createElement("td")).text(standing.Team));
+					$(tr).append($(document.createElement("td")).text(standing.Game));
+					$(tr).append($(document.createElement("td")).text(standing.Win));
+					$(tr).append($(document.createElement("td")).text(standing.Draw));
+					$(tr).append($(document.createElement("td")).text(standing.Lose));
+					$(tr).append($(document.createElement("td")).text(standing.PCT));
+					$(tr).append($(document.createElement("td")).text(standing.GB));
+					$(tr).append($(document.createElement("td")).text(standing.Last10).addClass("standing-pc"));
+					$(tr).append($(document.createElement("td")).text(standing.STRK).addClass("standing-pc"));
+					//$(tr).append($(document.createElement("td")).text(standing.Home).addClass("standing-pc"));
+					//$(tr).append($(document.createElement("td")).text(standing.Away).addClass("standing-pc"));
+					$(tbodyStandingList).append(tr);
+				});
+
+				$("span#last-update-time").text(result.updateTime);
+
+				$('h3').text('순위표 (' + date + ')');
+			});
+		}
+
+		$('button#pick-date').click(function () {
+			var datepicker = $('div.datepicker');
+			if ($(datepicker).css('display') != 'none') {
+				$(datepicker).css('display', 'none');
+			}
+			else {
+				$(datepicker).css('display', 'block');
+			}
+		});
+
+		$('div.datepicker').datepicker('setDate', '@Model.LastDate');
 	</script>
 	<script type="text/javascript">
 		/* * * CONFIGURATION VARIABLES * * */
@@ -113,41 +229,3 @@
 
 	</script>
 }
-<h2>KBO @chartObject.Year 시즌 게임차 그래프</h2>
-
-<select id="seasonSelect">
-	@foreach (var year in @Model.YearList)
-	{
-		<option value="@year" id="@year">@year</option>
-	}
-</select>
-
-<div id="kbochart" style="min-width: @chartMinWidth; height: 500px; margin: 0 auto"></div>
-
-<div>
-	<table class="table table-striped">
-		<thead class="standing-title">
-			<tr>
-				<th>순위</th>
-				<th>팀명</th>
-				<th>게임</th>
-				<th>승</th>
-				<th>무</th>
-				<th>패</th>
-				<th>승률</th>
-				<th>게임차</th>
-				<th class="standing-pc">최근10경기</th>
-				<th class="standing-pc">연속</th>
-				@*<th class="standing-pc">홈</th>*@
-				@*<th class="standing-pc">방문</th>*@
-			</tr>
-		</thead>
-		<tbody class="standing-list">
-		</tbody>
-	</table>
-	<div>
-		<span id="last-update-time"></span><span> 에 업데이트 하였습니다. (진행중인 경기 점수 반영됨.)</span>
-	</div>
-</div>
-
-<div id="disqus_thread"></div>

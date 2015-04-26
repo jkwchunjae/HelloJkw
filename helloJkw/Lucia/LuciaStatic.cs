@@ -10,6 +10,8 @@ namespace helloJkw
 {
 	public static class LuciaStatic
 	{
+		static object _updateLock = new object();
+
 		public static string RootPath = @"lucia";
 		public static string RootPathWeb = @"lucia-web";
 		public static string RootPathMobile = @"lucia-mobile";
@@ -27,15 +29,18 @@ namespace helloJkw
 
 		public static LuciaDirInfo UpdateLuciaDir(int minute = 10)
 		{
-			if (DateTime.Now.Subtract(_lastUpdateTime).TotalMinutes < minute)
+			lock (_updateLock)
+			{
+				if (DateTime.Now.Subtract(_lastUpdateTime).TotalMinutes < minute)
+					return LuciaDir;
+				LuciaDir = RootPath.CreateDirInfo();
+				var rootFullPath = Path.GetFullPath(RootPath).Replace(@"\", "/");
+				if (rootFullPath[rootFullPath.Length - 1] != '/') rootFullPath += '/';
+				ImageResizer.SyncImages(sourcePath: rootFullPath, sourceFolder: "/lucia/", targetFolder: "/lucia-web/", optimalWidth: 700, optimalHeight: 600);
+				ImageResizer.SyncImages(sourcePath: rootFullPath, sourceFolder: "/lucia/", targetFolder: "/lucia-mobile/", optimalWidth: 400, optimalHeight: 500);
+				_lastUpdateTime = DateTime.Now;
 				return LuciaDir;
-			LuciaDir = RootPath.CreateDirInfo();
-			var rootFullPath = Path.GetFullPath(RootPath).Replace(@"\", "/");
-			if (rootFullPath[rootFullPath.Length - 1] != '/') rootFullPath += '/';
-			ImageResizer.SyncImages(sourcePath: rootFullPath, sourceFolder: "/lucia/", targetFolder: "/lucia-web/", optimalWidth: 700, optimalHeight: 600);
-			ImageResizer.SyncImages(sourcePath: rootFullPath, sourceFolder: "/lucia/", targetFolder: "/lucia-mobile/", optimalWidth: 400, optimalHeight: 500);
-			_lastUpdateTime = DateTime.Now;
-			return LuciaDir;
+			}
 		}
 
 		public static IEnumerable<string> GetMainMenu()

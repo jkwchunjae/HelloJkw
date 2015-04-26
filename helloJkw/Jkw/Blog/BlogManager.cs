@@ -12,6 +12,8 @@ namespace helloJkw
 {
 	public static class BlogManager
 	{
+		static object _updateLock = new object();
+
 		static DateTime _lastUpdateTime;
 		public static string BlogRootPath = @"jkw/blog/";
 		public static List<Post> PostList;
@@ -28,27 +30,30 @@ namespace helloJkw
 
 		public static void UpdatePost(int minute = 5)
 		{
-			if (minute > 0 && DateTime.Now.Subtract(_lastUpdateTime).TotalMinutes < minute)
-				return ;
-			var path = Path.Combine(Environment.CurrentDirectory, BlogRootPath, "posts");
-			var pattern = @"\/\d{8}\s*\-\s*.+";
-			PostList = Directory.GetFiles(path)
-				.Select(filepath => filepath.Replace(@"\", "/"))
-				.Where(filepath => Regex.IsMatch(filepath, pattern))
-				.Select(filepath => new Post(filepath))
-				.Where(e => e.IsPublish)
-				.ToList();
-			DateList = PostList.Select(post => post.Date).Distinct().ToList();
-			CategoryList = PostList.Select(post => new { post.CategoryUrl, post.Category })
-				.GroupBy(e => e)
-				.Select(e => new CategoryItem { Url = e.Key.CategoryUrl, Name = e.Key.Category, Count = e.Count() })
-				.OrderByDescending(e => e.Count)
-				.ToList();
-			TagList = PostList.SelectMany(post => post.Tags)
-				.GroupBy(e => new { e.Name, e.Url })
-				.Select(e => new TagItem{ Name = e.Key.Name, Url = e.Key.Url, Count = e.Count()})
-				.OrderByDescending(e => e.Count)
-				.ToList();
+			lock (_updateLock)
+			{
+				if (minute > 0 && DateTime.Now.Subtract(_lastUpdateTime).TotalMinutes < minute)
+					return;
+				var path = Path.Combine(Environment.CurrentDirectory, BlogRootPath, "posts");
+				var pattern = @"\/\d{8}\s*\-\s*.+";
+				PostList = Directory.GetFiles(path)
+					.Select(filepath => filepath.Replace(@"\", "/"))
+					.Where(filepath => Regex.IsMatch(filepath, pattern))
+					.Select(filepath => new Post(filepath))
+					.Where(e => e.IsPublish)
+					.ToList();
+				DateList = PostList.Select(post => post.Date).Distinct().ToList();
+				CategoryList = PostList.Select(post => new { post.CategoryUrl, post.Category })
+					.GroupBy(e => e)
+					.Select(e => new CategoryItem { Url = e.Key.CategoryUrl, Name = e.Key.Category, Count = e.Count() })
+					.OrderByDescending(e => e.Count)
+					.ToList();
+				TagList = PostList.SelectMany(post => post.Tags)
+					.GroupBy(e => new { e.Name, e.Url })
+					.Select(e => new TagItem { Name = e.Key.Name, Url = e.Key.Url, Count = e.Count() })
+					.OrderByDescending(e => e.Count)
+					.ToList();
+			}
 		}
 
 		public static IEnumerable<Post> GetLastPosts(int postCount)

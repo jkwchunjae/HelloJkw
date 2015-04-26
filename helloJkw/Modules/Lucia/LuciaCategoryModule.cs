@@ -4,6 +4,8 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Extensions;
+using helloJkw.Utils;
 
 namespace helloJkw
 {
@@ -16,6 +18,8 @@ namespace helloJkw
 				LuciaStatic.UpdateLuciaDir();
 				string device = _.device;
 				string category = _.category;
+				HitCounter.Hit("lucia/category/" + category);
+				Logger.Log("viewLog - lucia/category/" + category);
 
 				try
 				{

@@ -4,8 +4,9 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using Extensions;
 using System.Dynamic;
+using Extensions;
+using helloJkw.Utils;
 
 namespace helloJkw
 {
@@ -28,6 +29,9 @@ namespace helloJkw
 		{
 			Get["/blog/{getCount?20}"] = _ =>
 			{
+				HitCounter.Hit("blog/main");
+				Logger.Log("viewlog - blog/main");
+
 				BlogManager.UpdatePost();
 				string getCount = _.getCount;
 				Model.mainPostList = BlogManager.GetLastPosts(getCount.ToInt());
@@ -43,10 +47,14 @@ namespace helloJkw
 				BlogManager.UpdatePost();
 #endif
 				string postname = _.postname;
+				HitCounter.Hit("blog/" + postname);
 
 				var post = BlogManager.PostList
 					.Where(e => e.Name == postname)
 					.FirstOrDefault();
+				if (post == null)
+					return "worng";
+
 				Model.post = post;
 				Model.Title = "jkw's " + post.Title;
 
@@ -57,6 +65,8 @@ namespace helloJkw
 			{
 				BlogManager.UpdatePost();
 				string category = _.category;
+				HitCounter.Hit("blog/category/" + category);
+				Logger.Log("viewLog - blog/category/" + category);
 
 				Model.postList = BlogManager.PostList
 					.Where(e => e.CategoryUrl == category)
@@ -69,6 +79,8 @@ namespace helloJkw
 			{
 				BlogManager.UpdatePost();
 				string tag = _.tag;
+				HitCounter.Hit("blog/tag/" + tag);
+				Logger.Log("viewLog - blog/tag/" + tag);
 
 				Model.postList = BlogManager
 					.ContainsTagPostList(tag)

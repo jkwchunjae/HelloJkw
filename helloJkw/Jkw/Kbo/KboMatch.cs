@@ -75,6 +75,7 @@ namespace helloJkw
 
 	public static class KboMatch
 	{
+		static object _updateLock = new object();
 		static List<Match> _matchList;
 
 		static string _filepathMatchHistory = @"jkw/project/kbo/kbochart/matchHistory.txt";
@@ -107,43 +108,46 @@ namespace helloJkw
 		#region Update (경기 결과가 변경되면 파일 저장한다.)
 		public static void Update(int minute = 5)
 		{
-			if (minute > 0 && DateTime.Now.Subtract(LastUpdateTime).TotalMinutes < minute)
-				return;
-			LastUpdateTime = DateTime.Now;
-
-			var beginDate = _matchList.Max(t => t.Date);
-			var endDate = DateTime.Today.ToInt();
-			Season updateSeason = null;
-			int updateDate = 0;
-			foreach (var date in beginDate.DateRange(endDate))
+			lock (_updateLock)
 			{
-				var season = SeasonList.Where(e => e.Year == date.Year()).FirstOrDefault();
-				if (season == null) continue;
-				if (date < season.BeginDate || date > season.EndDate) continue;
+				if (minute > 0 && DateTime.Now.Subtract(LastUpdateTime).TotalMinutes < minute)
+					return;
+				LastUpdateTime = DateTime.Now;
 
-				// kbo website 에서 데이터 가져온다.
-				var matchList = GetMatchList(date);
-				// 두 MatchList 가 같다는 뜻은 경기 결과가 변한게 없다는 뜻.
-				var currentMatchList = _matchList.Where(t => t.Date == date).ToList();
-				if (currentMatchList.EqualMatchList(matchList)) continue;
-
-				foreach (var match in currentMatchList)
+				var beginDate = _matchList.Max(t => t.Date);
+				var endDate = DateTime.Today.ToInt();
+				Season updateSeason = null;
+				int updateDate = 0;
+				foreach (var date in beginDate.DateRange(endDate))
 				{
-					Logger.Log("Remove match {Date}, {Away}, {Home}".WithVar(match));
-					_matchList.Remove(match);
-				}
-				_matchList.AddRange(matchList);
-				updateSeason = season;
-				updateDate = updateDate == 0 ? date : Math.Min(updateDate, date);
-			}
+					var season = SeasonList.Where(e => e.Year == date.Year()).FirstOrDefault();
+					if (season == null) continue;
+					if (date < season.BeginDate || date > season.EndDate) continue;
 
-			// MatchList 가 뭔가 바뀐 경우다!
-			if (updateSeason != null)
-			{
-				Logger.Log("Update after {updateDate}".WithVar(new { updateDate }));
-				updateSeason.GetStandingList(true, updateDate);
-				updateSeason.chartObject = null;
-				SaveMatchList(_filepathMatchHistory);
+					// kbo website 에서 데이터 가져온다.
+					var matchList = GetMatchList(date);
+					// 두 MatchList 가 같다는 뜻은 경기 결과가 변한게 없다는 뜻.
+					var currentMatchList = _matchList.Where(t => t.Date == date).ToList();
+					if (currentMatchList.EqualMatchList(matchList)) continue;
+
+					foreach (var match in currentMatchList)
+					{
+						Logger.Log("Remove match {Date}, {Away}, {Home}".WithVar(match));
+						_matchList.Remove(match);
+					}
+					_matchList.AddRange(matchList);
+					updateSeason = season;
+					updateDate = updateDate == 0 ? date : Math.Min(updateDate, date);
+				}
+
+				// MatchList 가 뭔가 바뀐 경우다!
+				if (updateSeason != null)
+				{
+					Logger.Log("Update after {updateDate}".WithVar(new { updateDate }));
+					updateSeason.GetStandingList(true, updateDate);
+					updateSeason.chartObject = null;
+					SaveMatchList(_filepathMatchHistory);
+				}
 			}
 		}
 		#endregion
@@ -166,6 +170,9 @@ namespace helloJkw
 		/// <param name="filepath"></param>
 		static void SaveMatchList(string filepath)
 		{
+#if (DEBUG)
+			return;
+#endif
 			var matchJsonArray = _matchList
 				.OrderByDescending(e => e.Date)
 				.Select(e => new JObject(
@@ -184,7 +191,7 @@ namespace helloJkw
 				.RegexReplace(@"\{\n      ", "{")
 				.RegexReplace(@"\n    }", "}");
 
-			File.WriteAllText(filepath, resultString);
+			File.WriteAllText(filepath, resultString, Encoding.UTF8);
 		}
 		#endregion
 

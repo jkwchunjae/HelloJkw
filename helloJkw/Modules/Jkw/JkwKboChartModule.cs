@@ -5,9 +5,10 @@ using System.Dynamic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using Extensions;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
+using Extensions;
+using helloJkw.Utils;
 
 namespace helloJkw.Modules.Jkw
 {
@@ -30,9 +31,12 @@ namespace helloJkw.Modules.Jkw
 #endif
 
 				int year = (yearStr == "default" || !yearStr.IsInt()) ? KboMatch.RecentSeason : yearStr.ToInt();
+				HitCounter.Hit("kbochart/chart/" + year.ToString());
+				Logger.Log("viewLog - kbochart/chart/" + year.ToString());
 				var chartObject = KboMatch.GetChartObject(year);
 				Model.chartObject = chartObject;
 				Model.DateCount = chartObject.DateList.Split(',').Count();
+				Model.LastDate = KboMatch.SeasonList.Where(e => e.Year == year).Select(e => e.StandingList.Max(t => t.Date)).First().ToDate().ToString("yyyy-MM-dd");
 				Model.YearList = KboMatch.SeasonList.Select(e => e.Year).OrderByDescending(e => e).ToList();
 				Model.Title = "jkw's KBO Chart {Year}".WithVar(new { chartObject.Year });
 				Model.Desc = "KBO {Year} 시즌 게임차 그래프".WithVar(new { chartObject.Year });
@@ -45,11 +49,15 @@ namespace helloJkw.Modules.Jkw
 				string yearStr = _.year;
 				string dateStr = _.date;
 				int year = yearStr == "default" ? KboMatch.RecentSeason : yearStr.ToInt();
-				int date = dateStr == "default" ? KboMatch.SeasonList.Where(e => e.Year == year).Select(e => e.StandingList.Max(t => t.Date)).Max() : dateStr.ToInt();
+				var season = KboMatch.SeasonList.Where(e => e.Year == year).FirstOrDefault();
+				int date = dateStr == "default" ? season.StandingList.Max(t => t.Date) : dateStr.ToInt();
+				HitCounter.Hit("kbochart/standing/" + date.ToString());
+				Logger.Log("viewLog - kbochart/standing/" + date.ToString());
+				// 경기 없는 날은 최근 날짜로 처리
+				date = season.StandingList.Where(e => e.Date <= date).Select(e => e.Date).OrderBy(e => e).LastOrDefault();
+				if (date < season.BeginDate) date = season.BeginDate;
 
-				var standingList = KboMatch.SeasonList.Where(e => e.Year == date.Year())
-					.SelectMany(e => e.StandingList.Where(t => t.Date == date))
-					.ToList();
+				var standingList = season.StandingList.Where(e => e.Date == date).ToList();
 
 				var standingJsonArray = standingList
 					.OrderBy(e => e.Rank)
@@ -70,7 +78,7 @@ namespace helloJkw.Modules.Jkw
 
 				return new JObject(
 					new JProperty("standing", standingJsonArray),
-					new JProperty("updateTime", KboMatch.LastUpdateTime.ToString("yyyy-MM-dd hh:mm:ss"))
+					new JProperty("updateTime", KboMatch.LastUpdateTime.ToString("yyyy-MM-dd HH:mm:ss"))
 					).ToString();
 			};
 		}

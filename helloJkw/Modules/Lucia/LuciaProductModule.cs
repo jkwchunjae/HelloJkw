@@ -5,6 +5,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Extensions;
+using helloJkw.Utils;
 
 namespace helloJkw
 {
@@ -18,6 +19,8 @@ namespace helloJkw
 				string device = _.device;
 				string category = _.category;
 				string productName = _.productName;
+				HitCounter.Hit("lucia/product/{0}/{1}".With(category, productName));
+				Logger.Log("viewLog - lucia/product/{0}/{1}".With(category, productName));
 
 				var productList = LuciaStatic.LuciaDir[category]
 					.GetProductList()
