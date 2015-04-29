@@ -34,13 +34,6 @@
 			<tr>
 				<th>순위</th>
 				<th class="diff-rank diff-rank-1d">-1d</th>
-				<th class="diff-rank diff-rank-3d">-3d</th>
-				<th class="diff-rank diff-rank-7d">-7d</th>
-				<th class="diff-rank diff-rank-2w">-2w</th>
-				<th class="diff-rank diff-rank-1m">-1m</th>
-				<th class="diff-rank diff-rank-2m">-2m</th>
-				<th class="diff-rank diff-rank-1y">-1y</th>
-				<th class="diff-rank diff-rank-2y">-2y</th>
 				<th>팀명</th>
 				<th>게임</th>
 				<th>승</th>
@@ -180,13 +173,6 @@
 					var tr = document.createElement("tr");
 					$(tr).append($(document.createElement("td")).text(standing.Rank));
 					$(tr).append($(document.createElement("td")).text(standing.Diff1d));
-					$(tr).append($(document.createElement("td")).text(standing.Diff3d));
-					$(tr).append($(document.createElement("td")).text(standing.Diff7d));
-					$(tr).append($(document.createElement("td")).text(standing.Diff2w));
-					$(tr).append($(document.createElement("td")).text(standing.Diff1m));
-					$(tr).append($(document.createElement("td")).text(standing.Diff2m));
-					$(tr).append($(document.createElement("td")).text(standing.Diff1y));
-					$(tr).append($(document.createElement("td")).text(standing.Diff2y));
 					$(tr).append($(document.createElement("td")).text(standing.Team));
 					$(tr).append($(document.createElement("td")).text(standing.Game));
 					$(tr).append($(document.createElement("td")).text(standing.Win));

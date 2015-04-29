@@ -12,13 +12,12 @@ using helloJkw.Utils;
 
 namespace helloJkw.Modules.Jkw
 {
-	public class JkwKboChartModule : NancyModule
+	public class JkwKboChartModule : JkwModule
 	{
 		public JkwKboChartModule()
 		{
 			Get["/kbochart/{year?default}"] = _ =>
 			{
-				dynamic Model = new ExpandoObject();
 				string yearStr = _.year;
 				if (yearStr == "reload")
 				{
@@ -30,7 +29,8 @@ namespace helloJkw.Modules.Jkw
 				KboMatch.Update();
 #endif
 
-				int year = (yearStr == "default" || !yearStr.IsInt()) ? KboMatch.RecentSeason : yearStr.ToInt();
+				int year = (yearStr == "default" || !yearStr.IsInt()) ? KboMatch.RecentSeason :yearStr.ToInt();
+				if (!KboMatch.SeasonList.Select(e => e.Year).Contains(year)) year = KboMatch.RecentSeason;
 				HitCounter.Hit("kbochart/chart/" + year.ToString());
 				var chartObject = KboMatch.GetChartObject(year);
 				Model.chartObject = chartObject;
@@ -48,14 +48,13 @@ namespace helloJkw.Modules.Jkw
 				string yearStr = _.year;
 				string dateStr = _.date;
 				int year = yearStr == "default" ? KboMatch.RecentSeason : yearStr.ToInt();
+				if (!KboMatch.SeasonList.Select(e => e.Year).Contains(year)) year = KboMatch.RecentSeason;
 				var season = KboMatch.SeasonList.Where(e => e.Year == year).FirstOrDefault();
 				int date = dateStr == "default" ? season.StandingList.Max(t => t.Date) : dateStr.ToInt();
 				HitCounter.Hit("kbochart/standing/" + date.ToString());
-				// 경기 없는 날은 최근 날짜로 처리
-				date = season.StandingList.Where(e => e.Date <= date).Select(e => e.Date).OrderBy(e => e).LastOrDefault();
-				if (date < season.BeginDate) date = season.BeginDate;
 
-				var standingList = season.StandingList.Where(e => e.Date == date).ToList();
+				var standingList = season.GetStandingList(date);
+				standingList.CalcDiffRank(KboMatch.SeasonList);
 
 				var standingJsonArray = standingList
 					.OrderBy(e => e.Rank)
@@ -71,7 +70,18 @@ namespace helloJkw.Modules.Jkw
 						new JProperty("Last10", e.Last10),
 						new JProperty("STRK", e.STRK),
 						new JProperty("Home", e.HomeResult),
-						new JProperty("Away", e.AwayResult)
+						new JProperty("Away", e.AwayResult),
+
+						new JProperty("Diff1d", e.Diff1d),
+						new JProperty("Diff3d", e.Diff3d),
+						new JProperty("Diff7d", e.Diff7d),
+						new JProperty("Diff2w", e.Diff2w),
+						new JProperty("Diff1m", e.Diff1m),
+						new JProperty("Diff2m", e.Diff2m),
+						new JProperty("Diff1y", e.Diff1y),
+						new JProperty("Diff2y", e.Diff2y),
+
+						new JProperty("tmp", "tmp")
 						));
 
 				return new JObject(

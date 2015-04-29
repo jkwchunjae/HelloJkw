@@ -3,21 +3,6 @@
     Layout = "Layout.cshtml";
 }
 
-@section Css
-{
-	<link href="/Static/css/jkwBlogHome.css" rel="stylesheet">
-	<link href="/Static/css/prism.css" rel="stylesheet">
-}
-
-@section Javascript
-{
-    <script src="/Static/js/prism.js"></script>
-	<script type="text/javascript">
-		$("nav.navbar").addClass("navbar-shrink");
-		$("li#menu-blog").addClass("active");
-	</script>
-}
-
 <div class="container" id="top-post">
 	<div class="col-md-9" id="posts">
 		@RenderBody()
@@ -39,3 +24,23 @@
 </div>
 
 <hr class="post-main" />
+
+@section Css
+{
+	<link href="/Static/css/jkwBlogHome.css" rel="stylesheet">
+	<link href="/Static/css/prism.css" rel="stylesheet">
+}
+
+@section Javascript
+{
+	<script src="/Static/js/prism.js"></script>
+	<script type="text/javascript">
+		$("nav.navbar").addClass("navbar-shrink");
+		$("li#menu-blog").addClass("active");
+	</script>
+}
+
+@section JavascriptRelease
+{
+
+}

@@ -10,9 +10,8 @@ using helloJkw.Utils;
 
 namespace helloJkw
 {
-	public class JkwBlogModule : NancyModule
+	public class JkwBlogModule : JkwModule
 	{
-		public dynamic Model = new ExpandoObject();
 		public JkwBlogModule()
 		{
 			Model.categoryList = BlogManager.CategoryList

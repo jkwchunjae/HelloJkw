@@ -79,7 +79,7 @@
 			</div>
 			<div class="row text-center">
 				<div class="col-md-4">
-					<a href="/kbochart/2015" class="fa-stack fa-4x">
+					<a href="/kbochart" class="fa-stack fa-4x">
 						<i class="fa fa-circle fa-stack-2x text-primary"></i>
 						<i class="fa fa-line-chart fa-stack-1x fa-inverse"></i>
 					</a>
@@ -461,6 +461,8 @@
 	@*<script src="/Static/Agency/js/contact_me.js"></script>*@
 	<!-- Custom Theme JavaScript -->
 	<script src="/Static/Agency/js/agency.js"></script>
+	@if (!@Model.isDebug)
+	{
 	<script>
 		(function (i, s, o, g, r, a, m) {
 			i['GoogleAnalyticsObject'] = r; i[r] = i[r] || function () {
@@ -472,5 +474,6 @@
 		ga('create', 'UA-49135864-2', 'auto');
 		ga('send', 'pageview');
 	</script>
+	}
 </body>
 </html>

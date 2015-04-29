@@ -7,10 +7,25 @@ using System.Text;
 using System.Threading.Tasks;
 using Extensions;
 using helloJkw.Utils;
+using System.Dynamic;
 
 namespace helloJkw
 {
-	public class JkwHomeModule : NancyModule
+	public class JkwModule : NancyModule
+	{
+		public dynamic Model = new ExpandoObject();
+
+		public JkwModule()
+		{
+#if (DEBUG)
+			Model.isDebug = true;
+#else
+			Model.isDebug = false;
+#endif
+		}
+	}
+
+	public class JkwHomeModule : JkwModule
 	{
 		public JkwHomeModule()
 		{
@@ -27,13 +42,9 @@ namespace helloJkw
 						thumbnail = Path.GetFileName(Directory.GetFiles(path, "*thumbnail*").FirstOrDefault()),
 					}.ToExpando());
 
-				var rnd = new Random((int)DateTime.Now.Ticks);
-				var model = new
-				{
-					BackGroundFileName = Path.GetFileName(files[rnd.Next(files.Count())]), 
-					games = games
-				};
-				return View["jkwHome", model];
+				Model.BackGroundFileName = Path.GetFileName(files.GetRandom());
+				Model.games = games;
+				return View["jkwHome", Model];
 			};
 		}
 	}

@@ -36,35 +36,6 @@ namespace helloJkw
 		public bool IsDraw { get { return Score == OtherScore; } }
 	}
 
-	public class Standing
-	{
-		public int Season { get; set; }
-		public int Date { get; set; }
-		public string Team { get; set; }
-		public int Rank { get; set; }
-		public int Win { get; set; }
-		public int Draw { get; set; }
-		public int Lose { get; set; }
-		public double PCT { get; set; } // 승률
-		public double GB { get; set; } // 게임차
-		public string Last10 { get; set; } // 최근10경기
-		public string STRK { get; set; } // 연속
-		public string HomeResult { get; set; } // 홈 결과
-		public string AwayResult { get; set; } // 원정 결과
-	}
-
-	public class Season
-	{
-		public int Year { get; set; }
-		public int BeginDate { get; set; }
-		public int EndDate { get; set; }
-		public string LastSeasonRank { get; set; }
-		public ChartObject chartObject { get; set; }
-		public List<Standing> StandingList { get; set; }
-		public List<Match> MatchList { get; set; }
-		public List<TeamMatch> TeamMatchList { get; set; }
-	}
-
 	public class ChartObject
 	{
 		public List<Tuple<string, string>> TeamGBInfo { get; set; }
@@ -76,7 +47,7 @@ namespace helloJkw
 	public static class KboMatch
 	{
 		static object _updateLock = new object();
-		static List<Match> _matchList;
+		public static List<Match> _matchList { get; private set; }
 
 		static string _filepathMatchHistory = @"jkw/project/kbo/kbochart/matchHistory.txt";
 		static string _filepathSeasonInfo = @"jkw/project/kbo/kbochart/seasonInfo.txt";
@@ -206,28 +177,7 @@ namespace helloJkw
 		{
 			var season = SeasonList.Where(e => e.Year == year).FirstOrDefault();
 			if (season == null) season = SeasonList.Last();
-			if (season.chartObject == null)
-			{
-				var teamOrder = season.LastSeasonRank.Split(',')
-					.Select((e, i) => new { Team = e, Order = i })
-					.ToDictionary(e => e.Team, e => e.Order);
-				var standing = season.GetStandingList();
-				var teamList = standing.Select(e => e.Team).Distinct().Where(e => teamOrder.ContainsKey(e)).OrderBy(e => teamOrder[e]);
-
-				var chartObject = new ChartObject();
-				chartObject.TeamGBInfo = new List<Tuple<string, string>>();
-				foreach (var team in teamList)
-				{
-					chartObject.TeamGBInfo.Add(
-						Tuple.Create(team,
-						standing.Where(e => e.Team == team).OrderBy(e => e.Date).Select(e => e.GB.ToString()).StringJoin(",")
-						));
-				}
-				chartObject.DateList = standing.OrderBy(e => e.Date).Select(e => e.Date).Distinct().Select(e => "'{0}/{1}'".With(e.Month(), e.Day())).StringJoin(",");
-				chartObject.Year = season.Year;
-				season.chartObject = chartObject;
-			}
-			return season.chartObject;
+			return season.GetChartObject(beginDate, endDate);
 		}
 		#endregion
 
@@ -307,7 +257,7 @@ namespace helloJkw
 		/// </summary>
 		/// <param name="matchList"></param>
 		/// <returns></returns>
-		static List<TeamMatch> GetTeamMatchList(this IEnumerable<Match> matchList)
+		public static List<TeamMatch> GetTeamMatchList(this IEnumerable<Match> matchList)
 		{
 			var teamMatchList = new List<TeamMatch>();
 			foreach (var match in matchList)
@@ -343,7 +293,7 @@ namespace helloJkw
 		/// </summary>
 		/// <param name="teamMatchList"></param>
 		/// <returns></returns>
-		static List<Standing> GetStandingList(this IEnumerable<TeamMatch> teamMatchList, int updateDate = 0)
+		public static List<Standing> GetStandingList(this IEnumerable<TeamMatch> teamMatchList, int updateDate = 0)
 		{
 			Season season = SeasonList.Where(e => e.Year == updateDate.Year()).FirstOrDefault();
 			List<Standing> standingList = (season == null || season.StandingList == null) ? new List<Standing>() : season.StandingList;
@@ -418,39 +368,6 @@ namespace helloJkw
 			}
 
 			return standingList.OrderBy(e => e.Date).ThenBy(e => e.Rank).ToList();
-		}
-		#endregion
-
-		#region Season.Get XXXXX
-		public static List<Standing> GetStandingList(this Season season, bool isUpdate = false, int updateDate = 0)
-		{
-			if (season.StandingList == null || isUpdate)
-			{
-				season.StandingList = season.GetTeamMatchList(isUpdate).GetStandingList(updateDate);
-			}
-			return season.StandingList;
-		}
-
-		public static List<TeamMatch> GetTeamMatchList(this Season season, bool isUpdate = false)
-		{
-			if (season.TeamMatchList == null || isUpdate)
-			{
-				season.TeamMatchList = season.GetMatchList(isUpdate).GetTeamMatchList();
-			}
-			return season.TeamMatchList;
-		}
-
-		public static List<Match> GetMatchList(this Season season, bool isUpdate = false)
-		{
-			if (season.MatchList == null || isUpdate)
-			{
-				var teamSet = season.LastSeasonRank.Split(',').Select(e => e.Trim()).ToHashSet();
-				season.MatchList = _matchList
-					.Where(e => e.Date >= season.BeginDate && e.Date <= season.EndDate)
-					.Where(e => teamSet.Contains(e.Home) && teamSet.Contains(e.Away))
-					.ToList();
-			}
-			return season.MatchList;
 		}
 		#endregion
 
