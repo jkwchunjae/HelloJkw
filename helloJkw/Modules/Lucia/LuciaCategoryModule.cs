@@ -19,7 +19,6 @@ namespace helloJkw
 				string device = _.device;
 				string category = _.category;
 				HitCounter.Hit("lucia/category/" + category);
-				Logger.Log("viewLog - lucia/category/" + category);
 
 				try
 				{

@@ -7,6 +7,7 @@ using System.Threading.Tasks;
 using Newtonsoft.Json.Linq;
 using System.IO;
 using Newtonsoft.Json;
+using Extensions;
 
 namespace helloJkw.Utils
 {
@@ -35,6 +36,7 @@ namespace helloJkw.Utils
 
 		public static void Hit(string key)
 		{
+			Logger.Log("ViewLog: " + key);
 			lock (_hitDic)
 			{
 				if (!_hitDic.ContainsKey(key))
@@ -53,8 +55,7 @@ namespace helloJkw.Utils
 		static void Save(int saveMinute = 5)
 		{
 #if (DEBUG)
-			return;
-#endif
+#else
 			lock (_hitDic)
 			{
 				if (saveMinute > 0 && DateTime.Now.Subtract(_lastSaveTime).TotalMinutes < saveMinute)
@@ -72,6 +73,7 @@ namespace helloJkw.Utils
 
 				File.WriteAllText(_path, hitJsonObject.ToString(), Encoding.UTF8);
 			}
+#endif
 		}
 	}
 }

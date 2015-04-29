@@ -19,7 +19,6 @@ namespace helloJkw
 				LuciaStatic.UpdateLuciaDir();
 				string device = _.device;
 				HitCounter.Hit("lucia/main");
-				Logger.Log("viewLog - lucia/main");
 
 				var mainDirName = LuciaStatic.MainDirName;
 				dynamic Model = new ExpandoObject();

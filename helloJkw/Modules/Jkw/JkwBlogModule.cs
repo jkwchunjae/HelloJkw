@@ -30,7 +30,6 @@ namespace helloJkw
 			Get["/blog/{getCount?20}"] = _ =>
 			{
 				HitCounter.Hit("blog/main");
-				Logger.Log("viewlog - blog/main");
 
 				BlogManager.UpdatePost();
 				string getCount = _.getCount;
@@ -47,7 +46,7 @@ namespace helloJkw
 				BlogManager.UpdatePost();
 #endif
 				string postname = _.postname;
-				HitCounter.Hit("blog/" + postname);
+				HitCounter.Hit("blog/post/" + postname);
 
 				var post = BlogManager.PostList
 					.Where(e => e.Name == postname)
@@ -66,7 +65,6 @@ namespace helloJkw
 				BlogManager.UpdatePost();
 				string category = _.category;
 				HitCounter.Hit("blog/category/" + category);
-				Logger.Log("viewLog - blog/category/" + category);
 
 				Model.postList = BlogManager.PostList
 					.Where(e => e.CategoryUrl == category)
@@ -80,7 +78,6 @@ namespace helloJkw
 				BlogManager.UpdatePost();
 				string tag = _.tag;
 				HitCounter.Hit("blog/tag/" + tag);
-				Logger.Log("viewLog - blog/tag/" + tag);
 
 				Model.postList = BlogManager
 					.ContainsTagPostList(tag)

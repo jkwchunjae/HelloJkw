@@ -6,6 +6,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Extensions;
+using helloJkw.Utils;
 
 namespace helloJkw
 {
@@ -15,6 +16,7 @@ namespace helloJkw
 		{
 			Get["/"] = _ =>
 			{
+				HitCounter.Hit("hellojkw home");
 				var files = Directory.GetFiles(@"Static/Agency/img/bg/", "*");
 				var gameRoot = @"jkw/games";
 				var games = Directory.GetDirectories(gameRoot)

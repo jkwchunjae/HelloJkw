@@ -32,7 +32,6 @@ namespace helloJkw.Modules.Jkw
 
 				int year = (yearStr == "default" || !yearStr.IsInt()) ? KboMatch.RecentSeason : yearStr.ToInt();
 				HitCounter.Hit("kbochart/chart/" + year.ToString());
-				Logger.Log("viewLog - kbochart/chart/" + year.ToString());
 				var chartObject = KboMatch.GetChartObject(year);
 				Model.chartObject = chartObject;
 				Model.DateCount = chartObject.DateList.Split(',').Count();
@@ -52,7 +51,6 @@ namespace helloJkw.Modules.Jkw
 				var season = KboMatch.SeasonList.Where(e => e.Year == year).FirstOrDefault();
 				int date = dateStr == "default" ? season.StandingList.Max(t => t.Date) : dateStr.ToInt();
 				HitCounter.Hit("kbochart/standing/" + date.ToString());
-				Logger.Log("viewLog - kbochart/standing/" + date.ToString());
 				// 경기 없는 날은 최근 날짜로 처리
 				date = season.StandingList.Where(e => e.Date <= date).Select(e => e.Date).OrderBy(e => e).LastOrDefault();
 				if (date < season.BeginDate) date = season.BeginDate;
