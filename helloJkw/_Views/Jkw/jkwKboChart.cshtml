@@ -179,14 +179,14 @@
 				standingList.forEach(function (standing, index, array) {
 					var tr = document.createElement("tr");
 					$(tr).append($(document.createElement("td")).text(standing.Rank));
-					$(tr).append($(document.createElement("td")).text(standing.Diff1d));
-					$(tr).append($(document.createElement("td")).text(standing.Diff3d));
-					$(tr).append($(document.createElement("td")).text(standing.Diff7d));
-					$(tr).append($(document.createElement("td")).text(standing.Diff2w));
-					$(tr).append($(document.createElement("td")).text(standing.Diff1m));
-					$(tr).append($(document.createElement("td")).text(standing.Diff2m));
-					$(tr).append($(document.createElement("td")).text(standing.Diff1y));
-					$(tr).append($(document.createElement("td")).text(standing.Diff2y));
+					$(tr).append($(document.createElement("td")).text(standing.Diff1d).addClass("diff-rank").addClass("diff-rank-1d"));
+					$(tr).append($(document.createElement("td")).text(standing.Diff3d).addClass("diff-rank").addClass("diff-rank-3d"));
+					$(tr).append($(document.createElement("td")).text(standing.Diff7d).addClass("diff-rank").addClass("diff-rank-7d"));
+					$(tr).append($(document.createElement("td")).text(standing.Diff2w).addClass("diff-rank").addClass("diff-rank-2w"));
+					$(tr).append($(document.createElement("td")).text(standing.Diff1m).addClass("diff-rank").addClass("diff-rank-1m"));
+					$(tr).append($(document.createElement("td")).text(standing.Diff2m).addClass("diff-rank").addClass("diff-rank-2m"));
+					$(tr).append($(document.createElement("td")).text(standing.Diff1y).addClass("diff-rank").addClass("diff-rank-1y"));
+					$(tr).append($(document.createElement("td")).text(standing.Diff2y).addClass("diff-rank").addClass("diff-rank-2y"));
 					$(tr).append($(document.createElement("td")).text(standing.Team));
 					$(tr).append($(document.createElement("td")).text(standing.Game));
 					$(tr).append($(document.createElement("td")).text(standing.Win));

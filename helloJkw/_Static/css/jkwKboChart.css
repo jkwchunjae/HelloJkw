@@ -1,5 +1,8 @@
-﻿th.standing-pc, td.standing-pc
-{
+﻿th.standing-pc, td.standing-pc {
+	display: none;
+}
+
+.diff-rank {
 	display: none;
 }
 
@@ -7,6 +10,10 @@
 	th.standing-pc, td.standing-pc
 	{
 		display: table-cell;
+	}
+
+	.diff-rank {
+		display: none;
 	}
 }
 
