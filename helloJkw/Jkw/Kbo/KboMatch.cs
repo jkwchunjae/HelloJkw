@@ -38,9 +38,10 @@ namespace helloJkw
 
 	public class ChartObject
 	{
-		public List<Tuple<string, string>> TeamGBInfo { get; set; }
-		public string DateList { get; set; }
 		public int Year { get; set; }
+		public string DateList { get; set; }
+		public List<Tuple<string, string>> TeamGBInfo { get; set; }
+		public double MaximumGB { get; set; }
 	}
 	#endregion
 

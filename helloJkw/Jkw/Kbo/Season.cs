@@ -83,6 +83,7 @@ namespace helloJkw
 				}
 				chartObject.DateList = standing.OrderBy(e => e.Date).Select(e => e.Date).Distinct().Select(e => "'{0}/{1}'".With(e.Month(), e.Day())).StringJoin(",");
 				chartObject.Year = season.Year;
+				chartObject.MaximumGB = standing.Max(t => t.GB);
 				season.chartObject = chartObject;
 			}
 			return season.chartObject;

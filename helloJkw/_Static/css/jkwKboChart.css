@@ -1,14 +1,55 @@
-﻿th.standing-pc, td.standing-pc {
+﻿h3 {
+	text-align: center;
+}
+
+div.datepicker {
+	display: none;
+}
+
+th.standing-pc, td.standing-pc {
 	display: none;
 }
 
 .diff-rank {
 	display: none;
+	text-align: center;
+}
+
+.diff-rank-rank {
+	color: #5a5555;
+	font-size: 12px;
+}
+
+span.rank-arrow {
+	padding-left: 10px;
+	background-repeat: no-repeat;
+	background-position: left;
+}
+
+span.rank-arrow-up {
+	/*background-image: url('http://cdn.gamemeca.com/design/images/common/arrow_red_up.gif');*/
+	background-image: url('/Static/image/kbochart/arrow_red_up.gif');
+}
+
+span.rank-arrow-down {
+	/*background-image: url('http://cdn.gamemeca.com/design/images/common/arrow_blue_down.gif');*/
+	background-image: url('/Static/image/kbochart/arrow_blue_down.gif');
+}
+
+th.align-right, td.align-right {
+	text-align: right;
+}
+
+th.align-center, td.align-center {
+	text-align: center;
+}
+
+div#standing a {
+	color: black;
 }
 
 @media(min-width:768px) {
-	th.standing-pc, td.standing-pc
-	{
+	th.standing-pc, td.standing-pc {
 		display: table-cell;
 	}
 

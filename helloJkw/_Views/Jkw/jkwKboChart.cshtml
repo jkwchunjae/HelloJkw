@@ -3,6 +3,8 @@
 	Layout = "Layout.cshtml";
 	var chartObject = @Model.chartObject;
 	var chartMinWidth = Math.Max(500, @Model.DateCount * 5).ToString() + "px";
+	//int chartMaxHeight = (int)((chartObject.MaximumGB - 0.5) / 2.0) * 2 + 4;
+	//int chartMaxHeight = 10;
 }
 <h2>KBO @chartObject.Year 시즌 게임차 그래프</h2>
 
@@ -15,7 +17,7 @@
 
 <div id="kbochart" style="min-width: @chartMinWidth; height: 500px; margin: 0 auto"></div>
 
-<div>
+<div id="standing">
 	@*<div class="input-group date">
 		<span class="input-group-addon">날짜 설정</span>
 		<input type="text" class="form-control datepicker"/>
@@ -23,33 +25,56 @@
 	</div>*@
 	<h3>순위표</h3>
 	<div>
-		<button class="btn btn-info" id="prev-date">이전 날짜</button>
-		<button class="btn btn-info" id="next-date">다음 날짜</button>
-		<button class="btn btn-success" id="pick-date">날짜 선택</button>
-		<button class="btn btn-warning" id="today-date">오늘</button>
-		<div class="datepicker"></div>
+		<div class="row">
+			<div class="col-md-3">
+				<div class="input-group">
+					<span class="input-group-addon" id="select-diff-rank-label">
+						순위 비교 기준
+						@*<a href="#" class="glyphicon glyphicon-question-sign"></a>*@
+					</span>
+					<select id="select-diff-rank" class="form-control" aria-describedby="select-diff-rank-label">
+						@*<option value="none">순위 비교</option>*@
+						<option value="1d">어제</option>
+						<option value="3d">3일전</option>
+						<option value="7d">7일전</option>
+						<option value="2w">14일전</option>
+						<option value="1m">1달전</option>
+						<option value="2m">2달전</option>
+						<option value="1y" selected="selected">작년 시즌</option>
+						<option value="2y">제작년 시즌</option>
+					</select>
+				</div>
+			</div>
+			<div class="col-md-7">
+				<button class="btn btn-info" id="prev-date">이전 날짜</button>
+				<button class="btn btn-info" id="next-date">다음 날짜</button>
+				<button class="btn btn-success" id="pick-date">날짜 선택</button>
+				<button class="btn btn-warning" id="today-date">오늘</button>
+			</div>
+		</div>
 	</div>
+	<div class="datepicker"></div>
 	<table class="table table-striped">
 		<thead class="standing-title">
 			<tr>
-				<th>순위</th>
-				<th class="diff-rank diff-rank-1d">-1d</th>
-				<th class="diff-rank diff-rank-3d">-3d</th>
-				<th class="diff-rank diff-rank-7d">-7d</th>
-				<th class="diff-rank diff-rank-2w">-2w</th>
-				<th class="diff-rank diff-rank-1m">-1m</th>
-				<th class="diff-rank diff-rank-2m">-2m</th>
-				<th class="diff-rank diff-rank-1y">-1y</th>
-				<th class="diff-rank diff-rank-2y">-2y</th>
-				<th>팀명</th>
-				<th>게임</th>
-				<th>승</th>
-				<th>무</th>
-				<th>패</th>
-				<th>승률</th>
-				<th>게임차</th>
-				<th class="standing-pc">최근10경기</th>
-				<th class="standing-pc">연속</th>
+				<th class="align-center" colspan="2">순위</th>
+				<th class="diff-rank diff-rank-1d">어제</th>
+				<th class="diff-rank diff-rank-3d">3일전</th>
+				<th class="diff-rank diff-rank-7d">7일전</th>
+				<th class="diff-rank diff-rank-2w">14일전</th>
+				<th class="diff-rank diff-rank-1m">1달전</th>
+				<th class="diff-rank diff-rank-2m">2달전</th>
+				<th class="diff-rank diff-rank-1y">작년 시즌</th>
+				<th class="diff-rank diff-rank-2y">제작년 시즌</th>
+				<th class="align-center">팀명</th>
+				<th class="align-right">게임</th>
+				<th class="align-right">승</th>
+				<th class="align-right">무</th>
+				<th class="align-right">패</th>
+				<th class="align-right">승률</th>
+				<th class="align-right">게임차</th>
+				<th class="align-center standing-pc">최근10경기</th>
+				<th class="align-center standing-pc">연속</th>
 				@*<th class="standing-pc">홈</th>*@
 				@*<th class="standing-pc">방문</th>*@
 			</tr>
@@ -66,28 +91,24 @@
 
 @section Css
 {
-	@*<link href="/Static/css/jkwBlogHome.css" rel="stylesheet">*@
 	<link href="/Static/css/jkwKboChart.css" rel="stylesheet">
 	<link href="/Static/bootstrap-datepicker/css/bootstrap-datepicker3.min.css" rel="stylesheet">
-
-	<style type="text/css">
-		h3 {
-			text-align: center;
-		}
-
-		div.datepicker {
-			display: none;
-		}
-	</style>
 }
 
 @section Javascript
 {
 	<script src="/Static/Highcharts/js/highcharts.js"></script>
 	<script src="/Static/bootstrap-datepicker/js/bootstrap-datepicker.min.js"></script>
+	<script src="/Static/js/jkwKboChart.js"></script>
+
 	<script type="text/javascript">
-		$("nav.navbar").addClass("navbar-shrink");
-		$("li#menu-project").addClass("active");
+		$('select#seasonSelect option#@chartObject.Year').attr('selected', 'selected');
+
+	</script>
+
+	<script type="text/javascript">
+		$('nav.navbar').addClass('navbar-shrink');
+		$('li#menu-project').addClass('active');
 
 
 		$(function () {
@@ -107,6 +128,7 @@
 					},
 					reversed: true,
 					min: 0,
+					tickInterval: 2
 				},
 				legend: {
 					layout: 'vertical',
@@ -124,100 +146,6 @@
 				}]
 			});
 		});
-	</script>
-
-	<script type="text/javascript">
-		$("select#seasonSelect option#@chartObject.Year").attr("selected", "selected");
-
-		$("select#seasonSelect").change(function () {
-			location.href = "/kbochart/" + this.value;
-		});
-
-		$('div.datepicker').datepicker({
-			format: "yyyy-mm-dd",
-			todayBtn: "linked",
-			autoclose: true
-		})
-		.on('changeDate', function (e) {
-			var date = $('div.datepicker').datepicker('getDate');
-			var year = date.getFullYear();
-			var date8 = year + padStr(date.getMonth() + 1) + padStr(date.getDate());
-			$('div.datepicker').css('display', 'none');
-
-			updateStanding(year, date8);
-		});
-
-		$('button#prev-date').click(function () {
-			var date = $('div.datepicker').datepicker('getDate');
-			var prevDate = new Date(date);
-			prevDate.setDate(date.getDate() - 1);
-			$('div.datepicker').datepicker('setDate', prevDate);
-		});
-
-		$('button#next-date').click(function () {
-			var date = $('div.datepicker').datepicker('getDate');
-			var prevDate = new Date(date);
-			prevDate.setDate(date.getDate() + 1);
-			$('div.datepicker').datepicker('setDate', prevDate);
-		});
-
-		$('button#today-date').click(function () {
-			var date = new Date();
-			$('div.datepicker').datepicker('setDate', date);
-		});
-
-		function padStr(value) {
-			return (value < 10) ? '0' + value : "" + value;
-		}
-
-		function updateStanding(year, date) {
-			$.post("/kbochart/standing/" + year + "/" + date, function (data) {
-				var result = eval('(' + data + ')');
-				var standingList = result.standing;
-				var tbodyStandingList = $("tbody.standing-list");
-				tbodyStandingList.empty();
-				standingList.forEach(function (standing, index, array) {
-					var tr = document.createElement("tr");
-					$(tr).append($(document.createElement("td")).text(standing.Rank));
-					$(tr).append($(document.createElement("td")).text(standing.Diff1d).addClass("diff-rank").addClass("diff-rank-1d"));
-					$(tr).append($(document.createElement("td")).text(standing.Diff3d).addClass("diff-rank").addClass("diff-rank-3d"));
-					$(tr).append($(document.createElement("td")).text(standing.Diff7d).addClass("diff-rank").addClass("diff-rank-7d"));
-					$(tr).append($(document.createElement("td")).text(standing.Diff2w).addClass("diff-rank").addClass("diff-rank-2w"));
-					$(tr).append($(document.createElement("td")).text(standing.Diff1m).addClass("diff-rank").addClass("diff-rank-1m"));
-					$(tr).append($(document.createElement("td")).text(standing.Diff2m).addClass("diff-rank").addClass("diff-rank-2m"));
-					$(tr).append($(document.createElement("td")).text(standing.Diff1y).addClass("diff-rank").addClass("diff-rank-1y"));
-					$(tr).append($(document.createElement("td")).text(standing.Diff2y).addClass("diff-rank").addClass("diff-rank-2y"));
-					$(tr).append($(document.createElement("td")).text(standing.Team));
-					$(tr).append($(document.createElement("td")).text(standing.Game));
-					$(tr).append($(document.createElement("td")).text(standing.Win));
-					$(tr).append($(document.createElement("td")).text(standing.Draw));
-					$(tr).append($(document.createElement("td")).text(standing.Lose));
-					$(tr).append($(document.createElement("td")).text(standing.PCT));
-					$(tr).append($(document.createElement("td")).text(standing.GB));
-					$(tr).append($(document.createElement("td")).text(standing.Last10).addClass("standing-pc"));
-					$(tr).append($(document.createElement("td")).text(standing.STRK).addClass("standing-pc"));
-					//$(tr).append($(document.createElement("td")).text(standing.Home).addClass("standing-pc"));
-					//$(tr).append($(document.createElement("td")).text(standing.Away).addClass("standing-pc"));
-					$(tbodyStandingList).append(tr);
-				});
-
-				$("span#last-update-time").text(result.updateTime);
-
-				$('h3').text('순위표 (' + date + ')');
-			});
-		}
-
-		$('button#pick-date').click(function () {
-			var datepicker = $('div.datepicker');
-			if ($(datepicker).css('display') != 'none') {
-				$(datepicker).css('display', 'none');
-			}
-			else {
-				$(datepicker).css('display', 'block');
-			}
-		});
-
-		$('div.datepicker').datepicker('setDate', '@Model.LastDate');
 	</script>
 }
 

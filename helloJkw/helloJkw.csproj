@@ -165,8 +165,6 @@
   </ItemGroup>
   <ItemGroup>
     <Content Include="_Static\Agency\css\agency.css" />
-    <Content Include="_Static\Agency\css\bootstrap.css" />
-    <Content Include="_Static\Agency\css\bootstrap.min.css" />
     <Content Include="_Static\Agency\font-awesome\css\font-awesome.css" />
     <Content Include="_Static\Agency\font-awesome\css\font-awesome.min.css" />
     <Content Include="_Static\Agency\font-awesome\fonts\fontawesome-webfont.svg" />
@@ -181,14 +179,11 @@
     <Content Include="_Static\Agency\img\header-bg.jpg" />
     <Content Include="_Static\Agency\img\map-image.png" />
     <Content Include="_Static\Agency\js\agency.js" />
-    <Content Include="_Static\Agency\js\bootstrap.js" />
-    <Content Include="_Static\Agency\js\bootstrap.min.js" />
     <Content Include="_Static\Agency\js\cbpAnimatedHeader.js" />
     <Content Include="_Static\Agency\js\cbpAnimatedHeader.min.js" />
     <Content Include="_Static\Agency\js\classie.js" />
     <Content Include="_Static\Agency\js\contact_me.js" />
     <Content Include="_Static\Agency\js\jqBootstrapValidation.js" />
-    <Content Include="_Static\Agency\js\jquery.js" />
     <Content Include="_Static\bootstrap-datepicker\css\bootstrap-datepicker.css" />
     <Content Include="_Static\bootstrap-datepicker\css\bootstrap-datepicker.min.css" />
     <Content Include="_Static\bootstrap-datepicker\css\bootstrap-datepicker.standalone.css" />
@@ -398,8 +393,6 @@
     <Content Include="_Static\image\jssor\loading2.gif" />
     <Content Include="_Static\image\jssor\play.png" />
     <Content Include="_Static\image\jssor\t01.png" />
-    <Content Include="_Static\js\bootstrap.js" />
-    <Content Include="_Static\js\bootstrap.min.js" />
     <Content Include="_Static\js\jssor\jquery-1.9.1.min.js" />
     <Content Include="_Static\js\jssor\jssor.js" />
     <Content Include="_Static\js\jssor\jssor.player.ytiframe.js" />
@@ -408,7 +401,7 @@
     <Content Include="_Static\js\jssor\jssor.slider.js" />
     <Content Include="_Static\js\jssor\jssor.slider.min.js" />
     <Content Include="_Static\js\jssor\jssor.slider.mini.js" />
-    <Content Include="_Static\js\npm.js" />
+    <Content Include="_Static\js\jkwKboChart.js" />
     <Content Include="_Static\js\slide.js" />
     <Content Include="_Static\nancy-logo.png" />
   </ItemGroup>

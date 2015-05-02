@@ -55,6 +55,8 @@ namespace helloJkw.Modules.Jkw
 
 				var standingList = season.GetStandingList(date);
 				standingList.CalcDiffRank(KboMatch.SeasonList);
+				standingList.CalcLast10(season.TeamMatchList);
+				standingList.CalcSTRK(season.TeamMatchList);
 
 				var standingJsonArray = standingList
 					.OrderBy(e => e.Rank)
@@ -66,7 +68,7 @@ namespace helloJkw.Modules.Jkw
 						new JProperty("Draw", e.Draw),
 						new JProperty("Lose", e.Lose),
 						new JProperty("PCT", e.PCT.Round(3).ToString("0.000")),
-						new JProperty("GB", e.GB),
+						new JProperty("GB", e.GB.ToString("0.0")),
 						new JProperty("Last10", e.Last10),
 						new JProperty("STRK", e.STRK),
 						new JProperty("Home", e.HomeResult),
