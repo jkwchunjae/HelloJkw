@@ -34,14 +34,14 @@
 					</span>
 					<select id="select-diff-rank" class="form-control" aria-describedby="select-diff-rank-label">
 						@*<option value="none">순위 비교</option>*@
-						<option value="1d">어제</option>
-						<option value="3d">3일전</option>
-						<option value="7d">7일전</option>
-						<option value="2w">14일전</option>
-						<option value="1m">1달전</option>
-						<option value="2m">2달전</option>
-						<option value="1y" selected="selected">작년 시즌</option>
-						<option value="2y">제작년 시즌</option>
+						<option value="1d" id="option-1d">어제</option>
+						<option value="3d" id="option-3d">3일전</option>
+						<option value="7d" id="option-7d">7일전</option>
+						<option value="2w" id="option-2w">14일전</option>
+						<option value="1m" id="option-1m">1달전</option>
+						<option value="2m" id="option-2m">2달전</option>
+						<option value="1y" id="option-1y">작년 시즌</option>
+						<option value="2y" id="option-2y">제작년 시즌</option>
 					</select>
 				</div>
 			</div>
@@ -88,6 +88,19 @@
 </div>
 
 <div id="disqus_thread"></div>
+<script type="text/javascript">
+	/* * * CONFIGURATION VARIABLES * * */
+	var disqus_shortname = 'hellojkw';
+
+	/* * * DON'T EDIT BELOW THIS LINE * * */
+	(function () {
+		var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+		dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
+		(document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+	})();
+</script>
+<noscript>Please enable JavaScript to view the <a href="https://disqus.com/?ref_noscript" rel="nofollow">comments powered by Disqus.</a></noscript>
+
 
 @section Css
 {
@@ -112,6 +125,7 @@
 
 
 		$(function () {
+			$('option#option-7d').attr('selected', 'selected');
 			$('#kbochart').highcharts({
 				title: {
 					//text: 'KBO @chartObject.Year 시즌 게임차 그래프',
@@ -151,19 +165,6 @@
 
 @section JavascriptRelease
 {
-	<script type="text/javascript">
-		/* * * CONFIGURATION VARIABLES * * */
-		var disqus_shortname = 'hellojkw';
-
-		/* * * DON'T EDIT BELOW THIS LINE * * */
-		(function () {
-			var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
-			dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
-			(document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
-		})();
-	</script>
-	<noscript>Please enable JavaScript to view the <a href="https://disqus.com/?ref_noscript" rel="nofollow">comments powered by Disqus.</a></noscript>
-
 	<script>
 		(function (i, s, o, g, r, a, m) {
 			i['GoogleAnalyticsObject'] = r; i[r] = i[r] || function () {

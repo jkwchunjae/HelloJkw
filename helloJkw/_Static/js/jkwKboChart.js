@@ -74,7 +74,7 @@ function updateStanding(year, date) {
 		standingList.forEach(function (standing, index, array) {
 			var tr = document.createElement('tr');
 			$(tr).append($(document.createElement('td')).text(standing.Rank).addClass('align-center'));
-			$(tr).append($(document.createElement('td')).append(makeDiffRankElement(standing.Diff1y)).attr('id', 'diff-rank-innercell'));
+			$(tr).append($(document.createElement('td')).append(makeDiffRankElement(standing.Diff7d)).attr('id', 'diff-rank-innercell'));
 			$(tr).append($(document.createElement('td')).append(makeDiffRankElement(standing.Diff1d)).addClass('diff-rank').addClass('diff-rank-1d'));
 			$(tr).append($(document.createElement('td')).append(makeDiffRankElement(standing.Diff3d)).addClass('diff-rank').addClass('diff-rank-3d'));
 			$(tr).append($(document.createElement('td')).append(makeDiffRankElement(standing.Diff7d)).addClass('diff-rank').addClass('diff-rank-7d'));
