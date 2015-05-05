@@ -1,5 +1,10 @@
-﻿a {
-	color: gray;
+﻿h1.blog-home-title a {
+	color: #333;
+}
+
+.post a {
+	color: #a92b2b;
+	font-weight: bold;
 }
 
 a:hover, a:focus, a:active {
@@ -31,6 +36,7 @@ p.post-content
 
 div#category-list a.btn
 {
+	margin-bottom: 5px;
 }
 
 div#category-list span.category-count
@@ -49,9 +55,10 @@ div#tag-list a.btn
 }
 
 @media(min-width:768px) {
-	article.post h2.post-title {
+	article.post h1.post-title {
 		display: inline;
 		margin-right: 10px;
+		font-size: 30px;
 	}
 
 	div.post-content {
