@@ -82,7 +82,13 @@ namespace helloJkw
 				.Select(e => new { Win = e.Sum(t => (t.IsWin ? 1 : 0)), Draw = e.Sum(t => (t.IsDraw ? 1 : 0)), Lose = e.Sum(t => (t.IsLose ? 1 : 0)) })
 				.First();
 
-			standing.Last10 = "{Win}승 {Draw}무 {Lose}패".WithVar(result);
+			var last10 = new List<string>();
+			standing.Last10 = "";
+			if (result.Win > 0) standing.Last10 += " {0}승".With(result.Win);
+			if (result.Draw > 0) standing.Last10 += " {0}무".With(result.Draw);
+			if (result.Lose > 0) standing.Last10 += " {0}패".With(result.Lose);
+
+			standing.Last10 = standing.Last10.Trim();
 		}
 
 		public static void CalcLast10(this IEnumerable<Standing> standingList, IEnumerable<TeamMatch> teamMatchList)
