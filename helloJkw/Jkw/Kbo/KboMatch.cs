@@ -127,11 +127,13 @@ namespace helloJkw
 		#region SeasonList (from json file)
 		public static List<Season> GetSeasonList(string filepath)
 		{
-			var seasonInfoJson = JObject.Parse(File.ReadAllText(filepath, Encoding.UTF8));
+			var seasonInfoJson = File.ReadAllText(filepath, Encoding.UTF8);
+			return JsonConvert.DeserializeObject<List<Season>>(seasonInfoJson);
+			//var seasonInfoJson = JObject.Parse(File.ReadAllText(filepath, Encoding.UTF8));
 
-			return seasonInfoJson["season"].Children()
-				.Select(e => JsonConvert.DeserializeObject<Season>(e.ToString()))
-				.ToList();
+			//return seasonInfoJson["season"].Children()
+			//	.Select(e => JsonConvert.DeserializeObject<Season>(e.ToString()))
+			//	.ToList();
 		}
 		#endregion
 
@@ -155,13 +157,13 @@ namespace helloJkw
 					new JProperty("HomeScore", e.HomeScore)
 					));
 
-			var matchJsonObject = new JObject(new JProperty("history", matchJsonArray));
+			//var matchJsonObject = new JObject(new JProperty("history", matchJsonArray));
 
-			var resultString = matchJsonObject.ToString()
+			var resultString = matchJsonArray.ToString()
 				.RegexReplace(@"\r", "")
-				.RegexReplace(@",\n      ", ", ")
-				.RegexReplace(@"\{\n      ", "{")
-				.RegexReplace(@"\n    }", "}");
+				.RegexReplace(@",\n    ", ", ")
+				.RegexReplace(@"\{\n    ", "{")
+				.RegexReplace(@"\n  }", "}");
 
 			File.WriteAllText(filepath, resultString, Encoding.UTF8);
 		}
@@ -190,12 +192,14 @@ namespace helloJkw
 		/// <returns></returns>
 		public static List<Match> GetMatchList(string filepath)
 		{
-			var matchHistoryJson = JObject.Parse(File.ReadAllText(filepath, Encoding.UTF8));
+			var matchHistoryJson = File.ReadAllText(filepath, Encoding.UTF8);
 
-			return matchHistoryJson["history"].Children()
-				.Select(e => JsonConvert.DeserializeObject<Match>(e.ToString()))
-				.OrderBy(e => e.Date)
-				.ToList();
+			return JsonConvert.DeserializeObject<List<Match>>(matchHistoryJson);
+
+			//return matchHistoryJson["history"].Children()
+			//	.Select(e => JsonConvert.DeserializeObject<Match>(e.ToString()))
+			//	.OrderBy(e => e.Date)
+			//	.ToList();
 		}
 		#endregion
 
