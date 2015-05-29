@@ -30,7 +30,11 @@ namespace helloJkw
 			{
 				HitCounter.Hit("blog/main");
 
+#if DEBUG
+				BlogManager.UpdatePost(0);
+#else
 				BlogManager.UpdatePost();
+#endif
 				string getCount = _.getCount;
 				Model.mainPostList = BlogManager.GetLastPosts(getCount.ToInt());
 
