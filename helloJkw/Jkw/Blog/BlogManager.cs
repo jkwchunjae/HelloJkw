@@ -44,6 +44,8 @@ namespace helloJkw
 #else
 					.Where(e => e.IsPublish)
 #endif
+					.OrderByDescending(e => e.Date)
+					.ThenByDescending(e => e.Title)
 					.ToList();
 				DateList = PostList.Select(post => post.Date).Distinct().ToList();
 				CategoryList = PostList.Select(post => new { post.CategoryUrl, post.Category })
