@@ -35,6 +35,35 @@
 </div>
 <hr />
 
+@section Javascript
+{
+	<script type="text/javascript">
+		$('.answer').css('display', 'none');
+
+		var Qmark = document.createElement('span');
+		$(Qmark).css({ 'font-size': '30px', 'color': '#444' })
+			.text('Q.');
+		$('.question').prepend(Qmark);
+		var showButton = document.createElement('button');
+		$(showButton)
+			.text('정답보기')
+			.css('display', 'block')
+			.addClass('btn').addClass('btn-danger')
+			.on('click', function () {
+				var id = $(this).parent().attr('id');
+				id = id.replace('question', 'answer');
+				$('#' + id).css('display', 'block');
+				$(this).css('display', 'none');
+			});
+		$('.question').append(showButton);
+
+		var Amark = document.createElement('span');
+		$(Amark).css({ 'font-size': '30px', 'color': '#444' })
+			.text('A.');
+		$('.answer').prepend(Amark);
+	</script>
+}
+
 @section JavascriptRelease
 {
 }
