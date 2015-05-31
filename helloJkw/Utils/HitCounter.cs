@@ -13,6 +13,7 @@ namespace helloJkw.Utils
 {
 	class HitClass
 	{
+		public int Date { get; set; }
 		public string Key { get; set; }
 		public long Hit { get; set; }
 	}
@@ -21,28 +22,29 @@ namespace helloJkw.Utils
 	{
 		static DateTime _lastSaveTime;
 		static string _path = "jkw/db/hit.txt";
-		static Dictionary<string, long> _hitDic;
+		static Dictionary<Tuple<int, string>, long> _hitDic;
 
 		static HitCounter()
 		{
 			_lastSaveTime = DateTime.Now;
-			var hitJson = JObject.Parse(File.ReadAllText(_path, Encoding.UTF8));
+			var hitJson = File.ReadAllText(_path, Encoding.UTF8);
 
-			_hitDic = hitJson["hit"].Children()
-				.Select(e => JsonConvert.DeserializeObject<HitClass>(e.ToString()))
-				.GroupBy(e => new { e.Key })
-				.ToDictionary(e => e.Key.Key, e => e.Max(t => t.Hit));
+			_hitDic = JsonConvert.DeserializeObject<List<HitClass>>(hitJson)
+				.GroupBy(e => new { e.Date, e.Key })
+				.ToDictionary(e => Tuple.Create(e.Key.Date, e.Key.Key), e => e.Max(t => t.Hit));
 		}
 
 		public static void Hit(string key)
 		{
+			int date = DateTime.Today.ToInt();
 			Logger.Log("ViewLog: " + key);
 			lock (_hitDic)
 			{
-				if (!_hitDic.ContainsKey(key))
-					_hitDic.Add(key, 0L);
+				var tuple = Tuple.Create(date, key);
+				if (!_hitDic.ContainsKey(tuple))
+					_hitDic.Add(tuple, 0L);
 
-				_hitDic[key]++;
+				_hitDic[tuple]++;
 			}
 
 #if (DEBUG)
@@ -62,16 +64,14 @@ namespace helloJkw.Utils
 					return;
 				_lastSaveTime = DateTime.Now;
 
-				var hitJsonArray = _hitDic
-					.OrderByDescending(e => e.Value)
-					.Select(e => new JObject(
-						new JProperty("Key", e.Key),
-						new JProperty("Hit", e.Value)
-					));
+				var jsonHit = JsonConvert.SerializeObject(
+					_hitDic
+						.Select(e => new { Date = e.Key.Item1, Key = e.Key.Item2, Hit = e.Value })
+						.OrderByDescending(e => e.Date)
+						.ThenByDescending(e => e.Hit)
+						);
 
-				var hitJsonObject = new JObject(new JProperty("hit", hitJsonArray));
-
-				File.WriteAllText(_path, hitJsonObject.ToString(), Encoding.UTF8);
+				File.WriteAllText(_path, jsonHit, Encoding.UTF8);
 			}
 #endif
 		}

@@ -195,11 +195,6 @@ namespace helloJkw
 			var matchHistoryJson = File.ReadAllText(filepath, Encoding.UTF8);
 
 			return JsonConvert.DeserializeObject<List<Match>>(matchHistoryJson);
-
-			//return matchHistoryJson["history"].Children()
-			//	.Select(e => JsonConvert.DeserializeObject<Match>(e.ToString()))
-			//	.OrderBy(e => e.Date)
-			//	.ToList();
 		}
 		#endregion
 
