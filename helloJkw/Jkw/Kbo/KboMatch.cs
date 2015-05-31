@@ -147,23 +147,8 @@ namespace helloJkw
 #if (DEBUG)
 			return;
 #endif
-			var matchJsonArray = _matchList
-				.OrderByDescending(e => e.Date)
-				.Select(e => new JObject(
-					new JProperty("Date", e.Date),
-					new JProperty("Away", e.Away),
-					new JProperty("Home", e.Home),
-					new JProperty("AwayScore", e.AwayScore),
-					new JProperty("HomeScore", e.HomeScore)
-					));
-
-			//var matchJsonObject = new JObject(new JProperty("history", matchJsonArray));
-
-			var resultString = matchJsonArray.ToString()
-				.RegexReplace(@"\r", "")
-				.RegexReplace(@",\n    ", ", ")
-				.RegexReplace(@"\{\n    ", "{")
-				.RegexReplace(@"\n  }", "}");
+			var resultString = JsonConvert.SerializeObject(_matchList.OrderByDescending(e => e.Date))
+				.RegexReplace(@"\}\,", "},\n  ");
 
 			File.WriteAllText(filepath, resultString, Encoding.UTF8);
 		}

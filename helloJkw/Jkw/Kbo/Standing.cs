@@ -104,9 +104,9 @@ namespace helloJkw
 		#region 연속
 		public static void CalcSTRK(this Standing standing, IEnumerable<TeamMatch> teamMatchList)
 		{
-			var lastMatch = teamMatchList.Last();
+			var lastMatch = teamMatchList.Where(e => e.Date <= standing.Date).Last();
 			int cnt = 0;
-			foreach (var match in teamMatchList.Reverse())
+			foreach (var match in teamMatchList.OrderByDescending(e => e.Date))
 			{
 				if (!(lastMatch.IsWin == match.IsWin && lastMatch.IsDraw == match.IsDraw && lastMatch.IsLose == match.IsLose))
 					break;
