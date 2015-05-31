@@ -28,6 +28,7 @@ namespace helloJkw
 				Model.mainMenu = LuciaStatic.GetMainMenu();
 				Model.categorys = LuciaStatic.LuciaDir.GetSubDirList()
 					.Where(e => !e.FolderName.Contains("main"))
+					.Where(e => e.GetProductList().Count() > 0)
 					.Select(e => new
 					{
 						Name = e.FolderName.RemovePrefixNumber(),
