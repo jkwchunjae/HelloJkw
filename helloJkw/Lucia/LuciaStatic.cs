@@ -12,9 +12,9 @@ namespace helloJkw
 	{
 		static object _updateLock = new object();
 
-		public static string RootPath = @"lucia/lucia";
-		public static string RootPathWeb = @"lucia/lucia-web";
-		public static string RootPathMobile = @"lucia/lucia-mobile";
+		public static string RootPath = @"lucia";
+		public static string RootPathWeb = @"lucia-web";
+		public static string RootPathMobile = @"lucia-mobile";
 		public static LuciaDirInfo LuciaDir;
 
 		private static DateTime _lastUpdateTime;
@@ -36,8 +36,8 @@ namespace helloJkw
 				LuciaDir = RootPath.CreateDirInfo();
 				var rootFullPath = Path.GetFullPath(RootPath).Replace(@"\", "/");
 				if (rootFullPath[rootFullPath.Length - 1] != '/') rootFullPath += '/';
-				//ImageResizer.SyncImages(sourcePath: rootFullPath, sourceFolder: "/lucia/", targetFolder: "/lucia-web/", optimalWidth: 700, optimalHeight: 600);
-				//ImageResizer.SyncImages(sourcePath: rootFullPath, sourceFolder: "/lucia/", targetFolder: "/lucia-mobile/", optimalWidth: 400, optimalHeight: 500);
+				ImageResizer.SyncImages(sourcePath: rootFullPath, sourceFolder: "/lucia/", targetFolder: "/lucia-web/", optimalWidth: 700, optimalHeight: 600);
+				ImageResizer.SyncImages(sourcePath: rootFullPath, sourceFolder: "/lucia/", targetFolder: "/lucia-mobile/", optimalWidth: 400, optimalHeight: 500);
 				_lastUpdateTime = DateTime.Now;
 				return LuciaDir;
 			}
