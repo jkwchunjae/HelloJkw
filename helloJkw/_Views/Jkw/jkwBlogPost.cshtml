@@ -38,29 +38,41 @@
 @section Javascript
 {
 	<script type="text/javascript">
-		$('.answer').css('display', 'none');
+		$('.problem div:nth-child(1)').addClass('question');
+		$('.problem div:nth-child(2)').addClass('answer');
 
-		var Qmark = document.createElement('span');
-		$(Qmark).css({ 'font-size': '30px', 'color': '#444' })
-			.text('Q.');
-		$('.question').prepend(Qmark);
+		// 정답 보기 버튼
 		var showButton = document.createElement('button');
 		$(showButton)
 			.text('정답보기')
 			.css('display', 'block')
 			.addClass('btn').addClass('btn-danger')
 			.on('click', function () {
-				var id = $(this).parent().attr('id');
-				id = id.replace('question', 'answer');
-				$('#' + id).css('display', 'block');
+				var answer = $(this).parent().siblings('.answer');
+				$(answer).css('display', 'block');
 				$(this).css('display', 'none');
 			});
 		$('.question').append(showButton);
 
-		var Amark = document.createElement('span');
-		$(Amark).css({ 'font-size': '30px', 'color': '#444' })
-			.text('A.');
-		$('.answer').prepend(Amark);
+		var problemMark = { 'font-size': '25px', 'color': '#444' };
+
+		// Qn. 문제 번호 표시
+		$('.question').each(function (index) {
+			var Qmark = document.createElement('span');
+			//$(Qmark).css({ 'font-size': '25px', 'color': '#444' })
+			$(Qmark).css(problemMark)
+				.html('Q<sub>' + (index + 1) + '</sub>.');
+			$(this).prepend(Qmark);
+		});
+
+		// An. 정답 번호 표시
+		$('.answer').each(function (index) {
+			var Amark = document.createElement('span');
+			//$(Amark).css({ 'font-size': '25px', 'color': '#444' })
+			$(Amark).css(problemMark)
+				.html('A<sub>' + (index + 1) + '</sub>.');
+			$(this).css('display', 'none').prepend(Amark);
+		})
 	</script>
 }
 
