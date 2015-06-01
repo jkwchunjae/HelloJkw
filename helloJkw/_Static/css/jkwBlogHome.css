@@ -54,6 +54,17 @@ div#tag-list a.btn
 	margin-top: 3px;
 }
 
+.markProblem
+{
+	font-size: 25px;
+	color: #444;
+}
+
+.markA
+{
+	cursor: pointer;
+}
+
 @media(min-width:768px) {
 	article.post h1.post-title {
 		display: inline;
