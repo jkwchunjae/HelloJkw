@@ -6,16 +6,6 @@
 	string category = @Model.category;
 }
 
-@section Css
-{
-	<link href="/Static/css/luciaDefault.css" rel="stylesheet" />
-	<link href="/Static/css/luciaCategory.css" rel="stylesheet" />
-}
-
-@section Javascript
-{
-}
-
 <div class="container">
 	@*<div class="row">
 		<div class="col-md-12 col-xs-12">*@
@@ -24,7 +14,7 @@
 				{
 				<div class="col-sm-4 col-lg-4 col-md-4">
 					<div class="thumbnail">
-						<a href="/lucia/@device/product/@category/@product.Name"><img src="/@rootPath/@product.MainImage" alt=""></a>
+						<a href="/lucia/@device/product/@category/@product.Name"><img src="/@rootPath/@product.MainImage" alt="@product.NameDisplay"></a>
 						<div class="caption">
 							<h4 class="pull-right">@product.Price 원</h4>
 							<h4>
@@ -39,8 +29,29 @@
 						</div>
 					</div>
 				</div>
-				}	
+				}
+				@foreach (var image in @Model.imageList)
+				{
+					<div class="col-sm-4 col-lg-4 col-md-4">
+						<div class="thumbnail">
+							<a target="_blank" href="/lucia/@image" title="클릭하면 새창으로 큰 그림을 볼 수 있습니다. (데이터 사용 주의)"><img src="/@rootPath/@image" class="popup" /></a>
+							<span class="mobile mobile-block">
+							크게보려면 그림을 터치하세요! (데이터 사용 주의)
+							</span>
+						</div>
+					</div>
+				}
 			</div>
 		@*</div>
 	</div>*@
 </div>
+
+@section Css
+{
+	<link href="/Static/css/luciaDefault.css" rel="stylesheet" />
+	<link href="/Static/css/luciaCategory.css" rel="stylesheet" />
+}
+
+@section Javascript
+{
+}

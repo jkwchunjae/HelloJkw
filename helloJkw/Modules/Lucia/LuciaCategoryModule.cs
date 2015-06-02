@@ -25,6 +25,9 @@ namespace helloJkw
 					var productList = LuciaStatic.LuciaDir[category]
 						.GetProductList()
 						.Select(e => e.ToExpando());
+					var imageList = LuciaStatic.LuciaDir[category]
+						.GetFiles()
+						.Select(e => e.FullName.Replace('\\', '/').RegexReplace(@".*/lucia/", ""));
 
 					var model = new
 					{
@@ -33,6 +36,7 @@ namespace helloJkw
 						mainMenu = LuciaStatic.GetMainMenu(),
 						category,
 						productList,
+						imageList,
 					};
 					return View["luciaCategory", model];
 				}
