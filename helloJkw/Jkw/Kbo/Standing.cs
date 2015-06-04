@@ -77,7 +77,10 @@ namespace helloJkw
 		#region 최근 10경기
 		public static void CalcLast10(this Standing standing, IEnumerable<TeamMatch> teamMatchList)
 		{
-			var result = teamMatchList.Reverse().Take(10)
+			var result = teamMatchList
+				.Where(e => e.Date <= standing.Date)
+				.OrderByDescending(e => e.Date)
+				.Take(10)
 				.GroupBy(e => 1)
 				.Select(e => new { Win = e.Sum(t => (t.IsWin ? 1 : 0)), Draw = e.Sum(t => (t.IsDraw ? 1 : 0)), Lose = e.Sum(t => (t.IsLose ? 1 : 0)) })
 				.First();
@@ -104,9 +107,10 @@ namespace helloJkw
 		#region 연속
 		public static void CalcSTRK(this Standing standing, IEnumerable<TeamMatch> teamMatchList)
 		{
-			var lastMatch = teamMatchList.Where(e => e.Date <= standing.Date).Last();
+			var orderedTeamMatchList = teamMatchList.Where(e => e.Date <= standing.Date).OrderByDescending(e => e.Date);
+			var lastMatch = orderedTeamMatchList.First();
 			int cnt = 0;
-			foreach (var match in teamMatchList.OrderByDescending(e => e.Date))
+			foreach (var match in orderedTeamMatchList)
 			{
 				if (!(lastMatch.IsWin == match.IsWin && lastMatch.IsDraw == match.IsDraw && lastMatch.IsLose == match.IsLose))
 					break;

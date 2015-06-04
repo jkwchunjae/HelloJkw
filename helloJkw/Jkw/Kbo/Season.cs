@@ -57,6 +57,7 @@ namespace helloJkw
 				season.MatchList = KboMatch._matchList
 					.Where(e => e.Date >= season.BeginDate && e.Date <= season.EndDate)
 					.Where(e => teamSet.Contains(e.Home) && teamSet.Contains(e.Away))
+					.OrderByDescending(e => e.Date)
 					.ToList();
 			}
 			return season.MatchList;

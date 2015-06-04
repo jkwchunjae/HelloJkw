@@ -266,7 +266,7 @@ namespace helloJkw
 					IsHome = true
 				});
 			}
-			return teamMatchList;
+			return teamMatchList.OrderByDescending(e => e.Date).ToList();
 		}
 		#endregion
 
