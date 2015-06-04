@@ -63,7 +63,9 @@ namespace helloJkw
 				.Select(e => e.Trim().SplitUrl())
 				.Select(e => new TagItem { Name = e.Item1.ToLower(), Url = e.Item2.ToLower() })
 				.ToList();
-			Category = CategoryUrl = textList.GetValue("@category");
+			var categoryTuple = textList.GetValue("@category").Trim().SplitUrl();
+			Category = categoryTuple.Item1;
+			CategoryUrl = categoryTuple.Item2;
 
 			var categoryPattern = @"(.*)\((.*)\)";
 			if (Regex.IsMatch(Category, categoryPattern))
