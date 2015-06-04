@@ -393,6 +393,7 @@
     <Content Include="_Static\image\jssor\loading2.gif" />
     <Content Include="_Static\image\jssor\play.png" />
     <Content Include="_Static\image\jssor\t01.png" />
+    <Content Include="_Static\js\jkwBlogPost.js" />
     <Content Include="_Static\js\jssor\jquery-1.9.1.min.js" />
     <Content Include="_Static\js\jssor\jssor.js" />
     <Content Include="_Static\js\jssor\jssor.player.ytiframe.js" />

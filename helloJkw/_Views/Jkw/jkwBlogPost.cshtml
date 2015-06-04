@@ -37,45 +37,7 @@
 
 @section Javascript
 {
-	<script type="text/javascript">
-		$('.problem div:nth-child(1)').addClass('question');
-		$('.problem div:nth-child(2)').addClass('answer');
-
-		// 정답 보기 버튼
-		var showButton = document.createElement('button');
-		$(showButton)
-			.text('정답보기')
-			.css('display', 'block')
-			.addClass('btn').addClass('btn-danger')
-			.on('click', function () {
-				var answer = $(this).parent().siblings('.answer');
-				$(answer).css('display', 'block');
-				$(this).css('display', 'none');
-			});
-		$('.question').append(showButton);
-
-		var problemMark = { 'font-size': '25px', 'color': '#444' };
-
-		// Qn. 문제 번호 표시
-		$('.question').each(function (index) {
-			var markQ = document.createElement('span');
-			$(markQ).addClass('markProblem').addClass('markQ')
-				.html('Q<sub>' + (index + 1) + '</sub>.');
-			$(this).prepend(markQ);
-		});
-
-		// An. 정답 번호 표시
-		$('.answer').each(function (index) {
-			var markA = document.createElement('span');
-			$(markA).addClass('markProblem').addClass('markA')
-				.on('click', function () { // An. 을 누르면 정답이 숨겨지도록!
-					$(this).parent().css('display', 'none');
-					$(this).parent().siblings('.question').children('button').css('display', 'block');
-				})
-				.html('A<sub>' + (index + 1) + '</sub>.');
-			$(this).css('display', 'none').prepend(markA);
-		})
-	</script>
+	<script type="text/javascript" src="/Static/js/jkwBlogPost.js"></script>
 }
 
 @section JavascriptRelease
