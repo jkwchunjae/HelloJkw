@@ -111,10 +111,10 @@ $(document).ready(function () {
 				var button = $(message).find('button');
 				$(button).removeClass('btn-warning').addClass('btn-success').text('정답입니다!');
 				$(message).fadeIn(function () {
-						window.setTimeout(function () {
-							$(message).fadeOut(showSolution);
-						}, 1000);
-					});
+					window.setTimeout(function () {
+						$(message).fadeOut(showSolution);
+					}, 1000);
+				});
 			};
 			var fail = function () {
 				var button = $(message).find('button');
