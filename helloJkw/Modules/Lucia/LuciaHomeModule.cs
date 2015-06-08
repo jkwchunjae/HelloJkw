@@ -28,11 +28,11 @@ namespace helloJkw
 				Model.mainMenu = LuciaStatic.GetMainMenu();
 				Model.categorys = LuciaStatic.LuciaDir.GetSubDirList()
 					.Where(e => !e.FolderName.Contains("main"))
-					.Where(e => e.GetProductList().Count() > 0)
+					.Where(e => e.GetProductList().Count() > 0 || e.GetFiles().Count() > 0)
 					.Select(e => new
 					{
 						Name = e.FolderName.RemovePrefixNumber(),
-						MainImage = e.GetProductList().GetRandom().MainImage
+						MainImage = e.GetProductList().Count() > 0 ? e.GetProductList().GetRandom().MainImage : e.GetFiles().GetRandom().FullName.Replace('\\', '/').RegexReplace(@".*/lucia/", "")
 					})
 					.Select(e => e.ToExpando());
 
