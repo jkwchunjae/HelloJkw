@@ -57,8 +57,19 @@ namespace helloJkw
 				if (post == null)
 					return "worng";
 
+				var categoryList = BlogManager.PostList
+					.Where(e => e.CategoryUrl == post.CategoryUrl)
+					.OrderBy(e => e.Date)
+					.ThenBy(e => e.Name)
+					.Select((e, i) => new { Index = i, Post = e })
+					.ToList();
+
+				var postIndex = categoryList.Where(e => e.Post.Name == post.Name).First().Index;
+
 				Model.post = post;
 				Model.Title = "jkw's " + post.Title;
+				Model.PrevPost = postIndex == 0 ? null : categoryList[postIndex - 1].Post;
+				Model.NextPost = postIndex == categoryList.Count() - 1 ? null : categoryList[postIndex + 1].Post;
 
 				return View["jkwBlogPost", Model];
 			};
@@ -71,7 +82,8 @@ namespace helloJkw
 
 				Model.postList = BlogManager.PostList
 					.Where(e => e.CategoryUrl == category)
-					.OrderByDescending(e => e.Date);
+					.OrderByDescending(e => e.Date)
+					.ThenByDescending(e => e.Name);
 
 				return View["jkwBlogCategory", Model];
 			};
@@ -84,7 +96,8 @@ namespace helloJkw
 
 				Model.postList = BlogManager
 					.ContainsTagPostList(tag)
-					.OrderByDescending(e => e.Date);
+					.OrderByDescending(e => e.Date)
+					.ThenByDescending(e => e.Name);
 
 				return View["jkwBlogTag", Model];
 			};

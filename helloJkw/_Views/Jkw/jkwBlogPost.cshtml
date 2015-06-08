@@ -2,6 +2,8 @@
 @{
 	Layout = "LayoutBlog.cshtml";
 	var post = @Model.post;
+	var prevPost = @Model.PrevPost;
+	var nextPost = @Model.NextPost;
 }
 
 <div class="row">
@@ -14,6 +16,30 @@
 		}
 		<time class="post-datetime" datetime="@string.Format("{0:yyyy-MM-dd}", @post.Date)">@string.Format("{0:yyyy.MM.dd}", @post.Date)</time>
 		<div class="post-content">@Html.Raw(@post.Html)</div>
+		<div>
+			<div>
+				<span>이전글: </span>
+				@if (@prevPost == null)
+				{
+					<span>이전글이 없습니다.</span>
+				}
+				else
+				{
+					<span><a href="/blog/post/@prevPost.Name">@prevPost.Title</a></span>
+				}
+			</div>
+			<div>
+				<span>다음글: </span>
+				@if (@nextPost == null)
+				{
+					<span>다음글이 없습니다.</span>
+				}
+				else
+				{
+					<span><a href="/blog/post/@nextPost.Name">@nextPost.Title</a></span>
+				}
+			</div>
+		</div>
 		@foreach (var tag in @post.Tags)
 		{
 			<span class="post-tag label label-success"><a href="/blog/tag/@tag.Url">@tag.Name</a></span>
