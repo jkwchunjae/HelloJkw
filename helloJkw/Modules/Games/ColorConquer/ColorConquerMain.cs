@@ -7,14 +7,14 @@ using System.Threading.Tasks;
 
 namespace helloJkw
 {
-	public class ColorConquerMain : NancyModule
+	public class ColorConquerMain : JkwModule
 	{
 		public ColorConquerMain()
 		{
 			Get["/games/ColorConquer"] = _ =>
 				{
 					//return "test";
-					return View["colorConquerMain"];
+					return View["colorConquerMain", Model];
 				};
 		}
 	}

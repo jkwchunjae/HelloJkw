@@ -1,1 +1,49 @@
-﻿Color Conquer main page.
+﻿@inherits Nancy.ViewEngines.Razor.NancyRazorViewBase<dynamic>
+@{
+	Layout = "Layout.cshtml";
+}
+
+<div>
+	test
+	<input type="text" id="text-message"/>
+	<button class="btn" id="btn-send">전송!</button>
+</div>
+
+@section Css
+{
+}
+
+@section Javascript
+{
+<script type="text/javascript">
+	$("nav.navbar").addClass("navbar-shrink");
+	$("li#menu-games").addClass("active");
+
+	$(document).ready(function () {
+		var ws = new WebSocket("ws://localhost:5519/colorconquer");
+
+		ws.onopen = function (e) {
+		};
+
+		ws.onmessage = function (e) {
+			alert(e.data);
+		};
+
+		ws.onerror = function (e) {
+			alert(e.message);
+		};
+
+		ws.onclose = function (e) {
+			alert(e.code);
+		};
+
+		$("#btn-send").click(function () {
+			ws.send($("#text-message").val());
+		});
+	});
+</script>
+}
+
+@section JavascriptRelease
+{
+}
