@@ -31,7 +31,7 @@ namespace helloJkw
 		{
 			Get["/"] = _ =>
 			{
-				HitCounter.Hit("hellojkw home");
+				//HitCounter.Hit("hellojkw home");
 				var files = Directory.GetFiles(@"Static/Agency/img/bg/", "*");
 				var gameRoot = @"jkw/games";
 				var games = Directory.GetDirectories(gameRoot)
