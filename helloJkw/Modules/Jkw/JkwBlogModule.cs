@@ -46,6 +46,7 @@ namespace helloJkw
 			Get["/blog/manage"] = _ =>
 			{
 #if DEBUG
+				BlogManager.UpdatePost(0);
 				var post = BlogManager.PostList
 					.OrderByDescending(e => e.Filepath);
 				Model.post = post;
@@ -55,9 +56,56 @@ namespace helloJkw
 #endif
 			};
 
+			Post["/blog/new/{date}/{name}/{title}"] = _ =>
+			{
+#if DEBUG
+				BlogManager.UpdatePost(0);
+
+				try
+				{
+					int date = ((string)_.date).ToInt();
+					string postName = _.name;
+					string postTitle = _.title;
+
+					if (date == 0 || postName == null || postTitle == null || postName == "" || postTitle == "")
+						return "wrong";
+
+					var postPath = Environment.CurrentDirectory + @"/jkw/blog/posts";
+					var filename = "{0}-{1}.txt".With(date, postName);
+					var filePath = "{postPath}/{filename}.txt".WithVar(new { postPath, filename });
+					filePath.Dump();
+
+					string template = @"@title : 제목입력
+
+@category : Test
+
+@tags : test
+
+@isPublish : false
+
+@content
+임시 작성 포스트
+";
+
+					if (!File.Exists(filePath))
+						File.WriteAllText(filePath, template, Encoding.UTF8);
+
+					var winword = Process.Start("winword.exe", filePath);
+				}
+				catch (Exception ex)
+				{
+					Logger.Log(ex);
+				}
+				return "success";
+#else
+				return "wrong";
+#endif
+			};
+
 			Post["/blog/edit/{postname}"] = _ =>
 			{
 #if DEBUG
+				BlogManager.UpdatePost(0);
 				string filename = _.postname; // yyyyMMdd-name
 				var post = BlogManager.PostList
 					.Where(e => e.Filepath.Contains(filename))
@@ -67,7 +115,6 @@ namespace helloJkw
 
 				var postPath = Environment.CurrentDirectory + @"/jkw/blog/posts";
 				var filePath = "{postPath}/{filename}.txt".WithVar(new {postPath, filename});
-				filePath.Dump();
 
 				try
 				{

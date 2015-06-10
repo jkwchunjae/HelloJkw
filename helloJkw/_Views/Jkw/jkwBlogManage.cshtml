@@ -3,22 +3,34 @@
     Layout = "LayoutBlog.cshtml";
 }
 
-<a class="btn btn-success post-new" href="#">글쓰기</a>
-
 <ul id="post-list">
+	<li>
+		<div class="row">
+			<form class="col-md-9 col-xs-10 post">
+				<span class="filename">
+					<input type="text" class="form-control" id="new-post-date" value="@DateTime.Today.ToString("yyyyMMdd")" placeholder="yyyymmdd"/>
+					<input type="text" class="form-control" id="new-post-name" placeholder="파일명이 될 영문"/>
+				</span>
+				<span class="post-title">
+					<input type="text" class="form-control" id="new-post-title" placeholder="화면에 보여질 한글"/>
+				</span>
+			</form>
+			<div class="col-md-3 col-xs-2">
+				<a class="btn btn-success post-new" href="#">글쓰기</a>
+			</div>
+		</div>
+	</li>
 @foreach (var post in @Model.post)
 {
 	<li>
-		<div class="post">
-			<div class="row">
-				<div class="col-md-9 col-xs-10">
-					<span class="filename"><a href="/blog/post/@post.Name">@post.Date.ToString("yyyyMMdd")-@post.Name</a></span>
-					<span class="post-title"><a href="/blog/post/@post.Name">@post.Title</a></span>
-				</div>
-				<div class="col-md-3 col-xs-2">
-					<a class="btn btn-warning post-edit" href="#">수정</a>
-					<a class="btn btn-danger post-delete" href="#">삭제</a>
-				</div>
+		<div class="row">
+			<div class="col-md-9 col-xs-10 post">
+				<span class="filename"><a href="/blog/post/@post.Name">@post.Date.ToString("yyyyMMdd")-@post.Name</a></span>
+				<span class="post-title"><a href="/blog/post/@post.Name">@post.Title</a></span>
+			</div>
+			<div class="col-md-3 col-xs-2">
+				<a class="btn btn-warning post-edit" href="#">수정</a>
+				<a class="btn btn-danger post-delete" href="#">삭제</a>
 			</div>
 		</div>
 	</li>
@@ -29,6 +41,16 @@
 {
 	<script type="text/javascript">
 		$(document).ready(function () {
+			$('a.post-new').click(function () {
+				date = $('input#new-post-date').val();
+				name = $('input#new-post-name').val();
+				title = $('input#new-post-title').val();
+				alert(date);
+				$.post('/blog/new/' + date + '/' + name + '/' + title, function (data) {
+					alert(data);
+				});
+			});
+
 			$('a.post-edit').click(function () {
 				var post = $(this).parent().parent().parent();
 				var filename = $(post).find('.filename').text();
@@ -41,7 +63,28 @@
 @section Css
 {
 	<style type="text/css">
-		div.post span {
+		form span {
+			padding-bottom: 10px;
+		}
+
+		form input.form-control {
+			display: inline-block;
+			width: initial;
+		}
+
+		input#new-post-date {
+			width: 19.3%;
+		}
+
+		input#new-post-name {
+			width: 80%;
+		}
+
+		input#new-post-title {
+			width: 100%;
+		}
+
+		div.row span {
 			display: block;
 		}
 
@@ -51,7 +94,7 @@
 		}
 
 		ul#post-list li:hover {
-			background-color: #ccc;
+			background-color: #efeb98;
 		}
 	</style>
 }
