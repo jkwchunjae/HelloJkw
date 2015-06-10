@@ -122,6 +122,7 @@
     <None Include="_Static\js\jssor\jssor.slider.mini.compress.bat" />
     <None Include="_Views\Games\colorConquerMain.cshtml" />
     <None Include="_Views\Jkw\jkwBlogCategory.cshtml" />
+    <None Include="_Views\Jkw\jkwBlogManage.cshtml" />
     <None Include="_Views\Jkw\jkwBlogHome.cshtml" />
     <None Include="_Views\Jkw\jkwBlogPost.cshtml" />
     <None Include="_Views\Jkw\jkwBlogTag.cshtml" />

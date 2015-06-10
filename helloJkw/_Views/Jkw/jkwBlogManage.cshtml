@@ -1,0 +1,57 @@
+﻿@inherits Nancy.ViewEngines.Razor.NancyRazorViewBase<dynamic>
+@{
+    Layout = "LayoutBlog.cshtml";
+}
+
+<a class="btn btn-success post-new" href="#">글쓰기</a>
+
+<ul id="post-list">
+@foreach (var post in @Model.post)
+{
+	<li>
+		<div class="post">
+			<div class="row">
+				<div class="col-md-9 col-xs-10">
+					<span class="filename"><a href="/blog/post/@post.Name">@post.Date.ToString("yyyyMMdd")-@post.Name</a></span>
+					<span class="post-title"><a href="/blog/post/@post.Name">@post.Title</a></span>
+				</div>
+				<div class="col-md-3 col-xs-2">
+					<a class="btn btn-warning post-edit" href="#">수정</a>
+					<a class="btn btn-danger post-delete" href="#">삭제</a>
+				</div>
+			</div>
+		</div>
+	</li>
+}
+</ul>
+
+@section Javascript
+{
+	<script type="text/javascript">
+		$(document).ready(function () {
+			$('a.post-edit').click(function () {
+				var post = $(this).parent().parent().parent();
+				var filename = $(post).find('.filename').text();
+				$.post('/blog/edit/' + filename);
+			});
+		});
+	</script>
+}
+
+@section Css
+{
+	<style type="text/css">
+		div.post span {
+			display: block;
+		}
+
+		ul#post-list li {
+			list-style: none;
+			padding: 5px;
+		}
+
+		ul#post-list li:hover {
+			background-color: #ccc;
+		}
+	</style>
+}
