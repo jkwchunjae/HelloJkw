@@ -23,6 +23,8 @@ namespace helloJkw
 		public string HtmlCut;
 		public bool IsPublish { get; set; }
 
+		public string Raw { get; private set; }
+
 		/// <summary>
 		/// text원본을 받아 파싱한다.
 		/// </summary>
@@ -36,7 +38,7 @@ namespace helloJkw
 			{
 				using (var reader = new StreamReader(inStream))
 				{
-					text = reader.ReadToEnd();
+					Raw = text = reader.ReadToEnd();
 				}
 			}
 			var filename = Path.GetFileNameWithoutExtension(filepath);

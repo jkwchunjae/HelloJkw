@@ -18,6 +18,13 @@
 			@*<span class="post-tag label label-success"><a href="/blog/tag/@tag.Url">@tag.Name</a></span>*@
 		}
 		<time class="post-datetime" datetime="@string.Format("{0:yyyy-MM-dd}", @post.Date)">@string.Format("{0:yyyy.MM.dd}", @post.Date)</time>
+		@if (@Model.isDebug)
+		{
+			<div class="raw">
+				<button class="btn">Raw</button>
+				<div class="post-raw"><pre class="post-raw">@post.Raw</pre></div>
+			</div>
+		}
 		<div class="post-content">@Html.Raw(@post.Html)</div>
 		<div>
 			<div>
@@ -67,6 +74,21 @@
 @section Javascript
 {
 	<script type="text/javascript" src="/Static/js/jkwBlogPost.js"></script>
+	@if (@Model.isDebug)
+	{
+	<script type="text/javascript">
+		$(document).ready(function () {
+			$('.post-raw').css('display', 'none');
+			$('div.raw button').click(function () {
+				if ($('.post-raw').css('display') == 'none') {
+					$('.post-raw').css('display', 'block');
+				} else {
+					$('.post-raw').css('display', 'none');
+				}
+			});
+		});
+	</script>
+	}
 }
 
 @section JavascriptRelease

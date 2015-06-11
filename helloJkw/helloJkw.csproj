@@ -55,6 +55,7 @@
     <Compile Include="Lucia\LuciaDirInfo.cs" />
     <Compile Include="Lucia\LuciaStatic.cs" />
     <Compile Include="Modules\Games\ColorConquer\ColorConquerMain.cs" />
+    <Compile Include="Modules\Jkw\JkwBlogManageModule.cs" />
     <Compile Include="Modules\Jkw\JkwBlogModule.cs" />
     <Compile Include="Modules\Jkw\JkwHomeModule.cs" />
     <Compile Include="Modules\Jkw\JkwKboChartModule.cs" />
