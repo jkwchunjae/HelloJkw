@@ -72,11 +72,11 @@
 				var date = $('input#new-post-date').val();
 				var name = $('input#new-post-name').val().trim();
 				if (name == '') {
-					showAlert('파일명을 입력하세요.');
+					showAlert('파일이름을 입력하세요.');
 					$('input#new-post-name').focus();
 					return;
 				} else if (name.indexOf(' ') >= 0) {
-					showAlert('파일명은 공백없이 써주세요.');
+					showAlert('파일이름에 공백을 없애주세요.');
 					$('input#new-post-name').focus();
 					return;
 				}
@@ -138,6 +138,10 @@
 					var newFileName = $(this).val().trim();
 
 					if (newFileName.indexOf(' ') >= 0) {
+						showAlert('파일이름에 공백이 있습니다.');
+						return;
+					} else if (oldFileName == newFileName) {
+						showAlert('파일이름이 변하지 않았습니다.');
 						return;
 					}
 
@@ -146,7 +150,7 @@
 						$(oldName).css('display', 'block');
 						$(newName).css('display', 'none');
 
-						showAlert('파일명이 수정되었습니다.');
+						showAlert('파일이름이 수정되었습니다.');
 					});
 				}
 			});
@@ -179,6 +183,7 @@
 			height: 70px;
 
 			background-color: #f0ad4e;
+			cursor: pointer;
 
 			text-align: center;
 			color: white;
