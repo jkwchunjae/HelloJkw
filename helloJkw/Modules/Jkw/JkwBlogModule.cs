@@ -38,7 +38,7 @@ namespace helloJkw
 				BlogManager.UpdatePost();
 #endif
 				string getCount = _.getCount;
-				Model.mainPostList = BlogManager.GetLastPosts(getCount.ToInt());
+				Model.postList = BlogManager.GetLastPosts(getCount.ToInt());
 
 				return View["jkwBlogHome", Model];
 			};
@@ -87,7 +87,7 @@ namespace helloJkw
 					.OrderByDescending(e => e.Date)
 					.ThenByDescending(e => e.Name);
 
-				return View["jkwBlogCategory", Model];
+				return View["jkwBlogHome", Model];
 			};
 
 			Get["/blog/tag/{tag}"] = _ =>
@@ -101,7 +101,7 @@ namespace helloJkw
 					.OrderByDescending(e => e.Date)
 					.ThenByDescending(e => e.Name);
 
-				return View["jkwBlogTag", Model];
+				return View["jkwBlogHome", Model];
 			};
 		}
 	}

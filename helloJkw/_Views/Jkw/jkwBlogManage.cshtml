@@ -3,19 +3,23 @@
     Layout = "LayoutBlog.cshtml";
 }
 
+<div class="fixed-alert">
+	테스트 메세지
+</div>
+
 <ul id="post-list">
 	<li>
 		<div class="row">
-			<form class="col-md-9 col-xs-10 post">
+			<form class="col-md-9 col-xs-9 post">
 				<span class="filename">
 					<input type="text" class="form-control" id="new-post-date" value="@DateTime.Today.ToString("yyyyMMdd")" placeholder="yyyymmdd"/>
-					<input type="text" class="form-control" id="new-post-name" placeholder="파일명이 될 영문" value="blog-new-test"/>
+					<input type="text" class="form-control" id="new-post-name" placeholder="파일명이 될 영문"/>
 				</span>
 				@*<span class="post-title">
 					<input type="text" class="form-control" id="new-post-title" placeholder="화면에 보여질 한글" value="블로그 글쓰기 테스트"/>
 				</span>*@
 			</form>
-			<div class="col-md-3 col-xs-2">
+			<div class="col-md-3 col-xs-3">
 				<a class="btn btn-success post-new" href="#">글쓰기</a>
 			</div>
 		</div>
@@ -24,12 +28,12 @@
 {
 	<li>
 		<div class="row">
-			<div class="col-md-9 col-xs-10 post">
+			<div class="col-md-9 col-xs-9 post">
 				<span class="post-title"><a href="/blog/post/@post.Name">@post.Title</a></span>
 				<span class="filename old-name">@post.Date.ToString("yyyyMMdd")-@post.Name</span>
 				<input class="form-control new-name"/>
 			</div>
-			<div class="col-md-3 col-xs-2">
+			<div class="col-md-3 col-xs-3">
 				<a class="btn btn-warning post-edit" href="#">수정</a>
 				<a class="btn btn-danger post-delete-modal" href="#">삭제</a>
 			</div>
@@ -65,12 +69,19 @@
 	<script type="text/javascript">
 		$(document).ready(function () {
 			$('a.post-new').click(function () {
-				date = $('input#new-post-date').val();
-				name = $('input#new-post-name').val();
-				//title = $('input#new-post-title').val();
-				var url = '/blog/new/' + date + '/' + name;
-				//var url = '/blog/new/' + date + '/' + name + '/' + title;
-				$.post(url);
+				var date = $('input#new-post-date').val();
+				var name = $('input#new-post-name').val().trim();
+				if (name == '') {
+					showAlert('파일명을 입력하세요.');
+					$('input#new-post-name').focus();
+					return;
+				} else if (name.indexOf(' ') >= 0) {
+					showAlert('파일명은 공백없이 써주세요.');
+					$('input#new-post-name').focus();
+					return;
+				}
+					
+				$.post('/blog/new/' + date + '/' + name);
 			});
 
 			$('a.post-edit').click(function () {
@@ -93,9 +104,11 @@
 				var modalContent = $(this).parent().parent();
 				var filename = $(modalContent).find('.filename').text();
 				$.post('/blog/delete/' + filename, function (data) {
-					var result = document.createElement('p');
-					$(result).addClass('delete-result').text(data);
-					$('.modal .modal-body').append(result);
+					$('.modal').modal('hide');
+					showAlert(data);
+					//var result = document.createElement('p');
+					//$(result).addClass('delete-result').text(data);
+					//$('.modal .modal-body').append(result);
 				});
 			});
 
@@ -132,8 +145,23 @@
 						$(oldName).text(data);
 						$(oldName).css('display', 'block');
 						$(newName).css('display', 'none');
+
+						showAlert('파일명이 수정되었습니다.');
 					});
 				}
+			});
+
+			var showAlert = function (message) {
+				$('div.fixed-alert').text(message).slideDown();
+				window.setTimeout(closeAlert, 2000);
+			}
+
+			var closeAlert = function () {
+				$('div.fixed-alert').slideUp();
+			}
+
+			$('div.fixed-alert').click(function () {
+				closeAlert();
 			});
 		});
 	</script>
@@ -142,6 +170,24 @@
 @section Css
 {
 	<style type="text/css">
+		div.fixed-alert {
+			z-index: 2000;
+			position: fixed;
+			top: 0;
+			left: 0;
+			right: 0;
+			height: 70px;
+
+			background-color: #f0ad4e;
+
+			text-align: center;
+			color: white;
+			font-size: 20pt;
+			padding-top: 10px;
+
+			display: none;
+		}
+
 		form span {
 			padding-bottom: 10px;
 		}
@@ -152,11 +198,11 @@
 		}
 
 		input#new-post-date {
-			width: 19.3%;
+			width: 17%;
 		}
 
 		input#new-post-name {
-			width: 80%;
+			width: 75%;
 		}
 
 		input#new-post-title {

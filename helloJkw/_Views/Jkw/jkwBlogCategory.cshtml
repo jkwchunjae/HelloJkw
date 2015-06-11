@@ -22,6 +22,19 @@
 
 @section Javascript
 {
+<script type="text/javascript">
+	$(document).ready(function () {
+		$('.post-content').each(function () {
+			var post = $(this).parent();
+			var text = $(this).text();
+			var a = document.createElement('a');
+			$(a).attr('href', $(post).find('h1 a').attr('href'))
+				.css({ 'color': '#444', 'font-weight': 'initial' })
+				.text(text);
+			$(this).text('').append(a);
+		});
+	});
+</script>
 }
 
 @section Css
