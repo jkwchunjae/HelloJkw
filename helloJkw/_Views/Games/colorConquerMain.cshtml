@@ -35,7 +35,7 @@
 
 		var Log = function (message) {
 			var p = document.createElement('p');
-			$(p).text('recv: ' + message);
+			$(p).text(message);
 			$('#console').prepend(p);
 		}
 
@@ -45,28 +45,22 @@
 				UserName: 'TestName'
 			};
 			var data = JSON.stringify(message);
-			Log(data);
+			Log('send: ' + data);
 			ws.send(data);
 		};
 
 		ws.onmessage = function (e) {
-			Log(e.data);
+			Log('recv: ' + e.data);
 			var obj = JSON.parse(e.data);
 			processPacket(obj);
 		};
 
 		ws.onerror = function (e) {
-			var p = document.createElement('p');
-			$(p).text('error: ' + e.message);
-			$('#console').prepend(p);
-			//alert('error: ' + e.message);
+			Log('error: ' + e.message);
 		};
 
 		ws.onclose = function (e) {
-			var p = document.createElement('p');
-			$(p).text('close: ' + e.message);
-			$('#console').prepend(p);
-			//alert('close: ' + e.code);
+			Log('close: ' + e.code);
 		};
 
 		$("#create-room").click(function () {
@@ -89,6 +83,7 @@
 					RequestRoomList();
 					break;
 				case 'ResultRoomList':
+					ResultRoomList(obj.data);
 					break;
 			}
 		}
@@ -100,7 +95,7 @@
 			sendMessage(obj);
 		}
 
-		var ResultRoomList = function (obj) {
+		var ResultRoomList = function (data) {
 			
 		}
 	});
