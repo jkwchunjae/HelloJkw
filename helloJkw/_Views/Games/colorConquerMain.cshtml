@@ -4,13 +4,23 @@
 }
 
 <div>
-	test
-	<input type="text" id="text-message"/>
-	<button class="btn" id="btn-send">전송!</button>
+	<input type="text" id="new-room-name" />
+	<button class="btn btn-success" id="create-room">방 만들기</button>
+</div>
+<div id="console">
+
 </div>
 
 @section Css
 {
+<style type="text/css">
+	#console {
+		position: fixed;
+		top: 80px;
+		left: 10px;
+		z-index: -1;
+	}
+</style>
 }
 
 @section Javascript
@@ -20,26 +30,79 @@
 	$("li#menu-games").addClass("active");
 
 	$(document).ready(function () {
-		var ws = new WebSocket("ws://localhost:5519/colorconquer");
+		var ws = new WebSocket("ws://localhost:55591/colorconquer");
+		//var ws = new WebSocket("ws://hellojkw.com:55591/colorconquer");
+
+		var Log = function (message) {
+			var p = document.createElement('p');
+			$(p).text('recv: ' + message);
+			$('#console').prepend(p);
+		}
 
 		ws.onopen = function (e) {
+			var message = {
+				packetType: 'TryEnterChannel',
+				UserName: 'TestName'
+			};
+			var data = JSON.stringify(message);
+			Log(data);
+			ws.send(data);
 		};
 
 		ws.onmessage = function (e) {
-			alert(e.data);
+			Log(e.data);
+			var obj = JSON.parse(e.data);
+			processPacket(obj);
 		};
 
 		ws.onerror = function (e) {
-			alert(e.message);
+			var p = document.createElement('p');
+			$(p).text('error: ' + e.message);
+			$('#console').prepend(p);
+			//alert('error: ' + e.message);
 		};
 
 		ws.onclose = function (e) {
-			alert(e.code);
+			var p = document.createElement('p');
+			$(p).text('close: ' + e.message);
+			$('#console').prepend(p);
+			//alert('close: ' + e.code);
 		};
 
-		$("#btn-send").click(function () {
-			ws.send($("#text-message").val());
+		$("#create-room").click(function () {
+			var roomName = $('#new-room-name').val();
+			var obj = {
+				packetType: 'TryCreateRoom',
+				RoomName: roomName
+			};
+			sendMessage(obj);
 		});
+
+		var sendMessage = function (obj) {
+			var data = JSON.stringify(obj);
+			ws.send(data);
+		}
+
+		var processPacket = function (obj) {
+			switch (obj.packetType) {
+				case 'ResultEnterChannel':
+					RequestRoomList();
+					break;
+				case 'ResultRoomList':
+					break;
+			}
+		}
+
+		var RequestRoomList = function () {
+			var obj = {
+				packetType: 'RequestRoomList'
+			};
+			sendMessage(obj);
+		}
+
+		var ResultRoomList = function (obj) {
+			
+		}
 	});
 </script>
 }
