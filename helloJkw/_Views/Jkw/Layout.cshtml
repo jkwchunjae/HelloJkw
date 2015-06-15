@@ -87,12 +87,15 @@
 	<script src="/Static/bootstrap/js/bootstrap.min.js"></script>
 	@RenderSection("Javascript")
 	<script type="text/javascript">
+		var alertNumber;
 		var showAlert = function (message) {
 			$('div.fixed-alert').text(message).slideDown();
-			window.setTimeout(closeAlert, 2000);
+			alertNumber = Math.random();
+			window.setTimeout(closeAlert, 2000, alertNumber);
 		}
 
-		var closeAlert = function () {
+		var closeAlert = function (validNumber) {
+			if (alertNumber != validNumber) return;
 			$('div.fixed-alert').slideUp();
 		}
 
