@@ -2,6 +2,25 @@
 	padding-top: 50px;
 }
 
+div.fixed-alert {
+	z-index: 2000;
+	position: fixed;
+	top: 0;
+	left: 0;
+	right: 0;
+	height: 70px;
+
+	background-color: #f0ad4e;
+	cursor: pointer;
+
+	text-align: center;
+	color: white;
+	font-size: 20pt;
+	padding-top: 10px;
+
+	display: none;
+}
+
 @media(min-width:768px) {
 	div#layout-content{
 		padding-top: 90px;

@@ -3,9 +3,27 @@
 	Layout = "Layout.cshtml";
 }
 
-<div>
-	<input type="text" id="new-room-name" />
-	<button class="btn btn-success" id="create-room">방 만들기</button>
+<div ng-app="test-app" ng-controller="test-controller">
+	<div class="place form-inline" id="login">
+		<label class="sr-only" for="userName">이름</label>
+		<input type="text" id="userName" class="form-control" ng-model="userName" placeholder="이름"/>
+		<button class="btn btn-success" id="login" ng-click="login(userName)">채널 입장</button>
+	</div>
+	<div class="place" id="channel">
+		<div class="form-inline" id="new-room">
+			<input type="text" class="form-control" id="new-room-name" placeholder="방 제목"/>
+			<button class="btn btn-success" id="create-room">방 만들기</button>
+		</div>
+		<ul id="room-list">
+			<li class="room" ng-repeat="room in roomList">
+				<div class="room-name">{{room.RoomName}}</div>
+				<button class="btn btn-info btn-sm enter-room" ng-click="enterRoom(room.RoomName)">참여!</button>
+			</li>
+		</ul>
+	</div>
+	<div class="place" id="room">
+		<p class="room-name">{{RoomName}}</p>
+	</div>
 </div>
 <div id="console">
 
@@ -17,8 +35,12 @@
 	#console {
 		position: fixed;
 		top: 80px;
-		left: 10px;
+		left: 60%;
 		z-index: -1;
+	}
+
+	.place {
+		display: none;
 	}
 </style>
 }
@@ -29,7 +51,38 @@
 	$("nav.navbar").addClass("navbar-shrink");
 	$("li#menu-games").addClass("active");
 
-	$(document).ready(function () {
+	var app = angular.module('test-app', []);
+	app.controller('test-controller', function ($scope) {
+		var changeUserPlace = function (place) {
+			$('.place').css('display', 'none');
+			$('#' + place).css('display', 'block');
+		};
+
+		$scope.login = function (userName) {
+			if (userName == '') {
+				showAlert('이름을 입력하세요.');
+				$('input#userName').focus();
+				return;
+			}
+			var message = {
+				packetType: 'TryEnterChannel',
+				UserName: userName
+			};
+			var data = JSON.stringify(message);
+			Log('send: ' + data);
+			ws.send(data);
+		}
+
+		$scope.enterRoom = function (roomName) {
+			var message = {
+				packetType: 'TryEnterRoom',
+				RoomName: roomName
+			};
+			var data = JSON.stringify(message);
+			Log('send: ' + data);
+			ws.send(data);
+		};
+
 		var ws = new WebSocket("ws://localhost:55591/colorconquer");
 		//var ws = new WebSocket("ws://hellojkw.com:55591/colorconquer");
 
@@ -37,16 +90,11 @@
 			var p = document.createElement('p');
 			$(p).text(message);
 			$('#console').prepend(p);
-		}
+		};
 
 		ws.onopen = function (e) {
-			var message = {
-				packetType: 'TryEnterChannel',
-				UserName: 'TestName'
-			};
-			var data = JSON.stringify(message);
-			Log('send: ' + data);
-			ws.send(data);
+			changeUserPlace('login');
+			$scope.login('User' + Math.round(Math.random() * 1000));
 		};
 
 		ws.onmessage = function (e) {
@@ -75,29 +123,60 @@
 		var sendMessage = function (obj) {
 			var data = JSON.stringify(obj);
 			ws.send(data);
-		}
+		};
 
 		var processPacket = function (obj) {
 			switch (obj.packetType) {
 				case 'ResultEnterChannel':
-					RequestRoomList();
+					ResultEnterChannel(obj.data);
 					break;
 				case 'ResultRoomList':
 					ResultRoomList(obj.data);
 					break;
+				case 'ResultEnterRoom':
+					ResultEnterRoom(obj.data);
+					break;
 			}
-		}
+		};
 
 		var RequestRoomList = function () {
 			var obj = {
 				packetType: 'RequestRoomList'
 			};
 			sendMessage(obj);
-		}
+		};
+
+		var ResultEnterChannel = function (data) {
+			if (data.result == 'true') {
+				changeUserPlace('channel');
+				showAlert(data.UserName + '님 안녕하세요!');
+				RequestRoomList();
+			} else {
+				showAlert('채널 입장에 실패하였습니다.')
+			}
+		};
 
 		var ResultRoomList = function (data) {
-			
-		}
+			$scope.roomList = [];
+			$.each(data, function (index, room) {
+				$scope.roomList.push({ RoomName: room.RoomName });
+			});
+			$scope.$apply();
+		};
+
+		var ResultEnterRoom = function (data) {
+			if (data.result == 'true') {
+				changeUserPlace('room');
+				$scope.RoomName = data.RoomName;
+				$scope.$apply();
+				showAlert(data.RoomName + '방에 입장하였습니다.');
+			} else {
+				showAlert('방 입장에 실패하였습니다.');
+			}
+		};
+	});
+
+	$(document).ready(function () {
 	});
 </script>
 }

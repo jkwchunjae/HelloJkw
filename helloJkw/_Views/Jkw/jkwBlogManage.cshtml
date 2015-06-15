@@ -3,10 +3,6 @@
     Layout = "LayoutBlog.cshtml";
 }
 
-<div class="fixed-alert">
-	테스트 메세지
-</div>
-
 <ul id="post-list">
 	<li>
 		<div class="row">
@@ -154,19 +150,6 @@
 					});
 				}
 			});
-
-			var showAlert = function (message) {
-				$('div.fixed-alert').text(message).slideDown();
-				window.setTimeout(closeAlert, 2000);
-			}
-
-			var closeAlert = function () {
-				$('div.fixed-alert').slideUp();
-			}
-
-			$('div.fixed-alert').click(function () {
-				closeAlert();
-			});
 		});
 	</script>
 }
@@ -174,24 +157,6 @@
 @section Css
 {
 	<style type="text/css">
-		div.fixed-alert {
-			z-index: 2000;
-			position: fixed;
-			top: 0;
-			left: 0;
-			right: 0;
-			height: 70px;
-
-			background-color: #f0ad4e;
-			cursor: pointer;
-
-			text-align: center;
-			color: white;
-			font-size: 20pt;
-			padding-top: 10px;
-
-			display: none;
-		}
 
 		form span {
 			padding-bottom: 10px;
