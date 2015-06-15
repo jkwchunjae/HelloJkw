@@ -16,13 +16,27 @@
 		</div>
 		<ul id="room-list">
 			<li class="room" ng-repeat="room in roomList">
-				<div class="room-name">{{room.RoomName}}</div>
-				<button class="btn btn-info btn-sm enter-room" ng-click="enterRoom(room.RoomName)">참여!</button>
+				<div class="room-name">{{room.roomName}}</div>
+				<button class="btn btn-info btn-sm enter-room" ng-click="enterRoom(room.roomName)">참여!</button>
 			</li>
 		</ul>
 	</div>
 	<div class="place" id="room">
-		<p class="room-name">{{RoomName}}</p>
+		<p class="room-name">{{roomName}}</p>
+		<button class="btn btn-default" ng-click="leaveRoom(roomName)">나가기</button>
+		<div class="form-inline">
+			<input type="number" class="form-control" id="size" ng-model="size" placeholder="게임판의 크기" />
+			<input type="number" class="form-control" id="countColor" ng-model="countColor" placeholder="게임의색 종류" />
+			<button class="btn btn-default" ng-click="startGame()">게임시작</button>
+		</div>
+		<div id="game-board">
+		</div>
+		<ul id="user-list">
+			<li class="user" ng-repeat="user in userList">
+				<span class="glyphicon glyphicon-user" aria-hidden="true"></span>
+				{{user.userName}}
+			</li>
+		</ul>
 	</div>
 </div>
 <div id="console">
@@ -36,6 +50,7 @@
 		position: fixed;
 		top: 80px;
 		left: 60%;
+		width: 35%;
 		z-index: -1;
 	}
 
@@ -66,21 +81,33 @@
 			}
 			var message = {
 				packetType: 'TryEnterChannel',
-				UserName: userName
+				userName: userName
 			};
-			var data = JSON.stringify(message);
-			Log('send: ' + data);
-			ws.send(data);
+			sendMessage(message);
 		}
 
 		$scope.enterRoom = function (roomName) {
 			var message = {
 				packetType: 'TryEnterRoom',
-				RoomName: roomName
+				roomName: roomName
 			};
-			var data = JSON.stringify(message);
-			Log('send: ' + data);
-			ws.send(data);
+			sendMessage(message);
+		};
+
+		$scope.leaveRoom = function (roomName) {
+			var message = {
+				packetType: 'TryLeaveRoom'
+			};
+			sendMessage(message);
+		};
+
+		$scope.startGame = function () {
+			var message = {
+				packetType: 'TryStartGame',
+				size: $scope.size,
+				countColor: $scope.countColor
+			};
+			sendMessage(message);
 		};
 
 		var ws = new WebSocket("ws://localhost:55591/colorconquer");
@@ -90,6 +117,12 @@
 			var p = document.createElement('p');
 			$(p).text(message);
 			$('#console').prepend(p);
+		};
+
+		var sendMessage = function (obj) {
+			var data = JSON.stringify(obj);
+			Log('send: ' + data);
+			ws.send(data);
 		};
 
 		ws.onopen = function (e) {
@@ -115,13 +148,14 @@
 			var roomName = $('#new-room-name').val();
 			var obj = {
 				packetType: 'TryCreateRoom',
-				RoomName: roomName
+				roomName: roomName
 			};
 			sendMessage(obj);
 		});
 
 		var sendMessage = function (obj) {
 			var data = JSON.stringify(obj);
+			Log('send: ' + data);
 			ws.send(data);
 		};
 
@@ -136,6 +170,14 @@
 				case 'ResultEnterRoom':
 					ResultEnterRoom(obj.data);
 					break;
+				case 'ResultLeaveRoom':
+					ResultLeaveRoom(obj.data);
+				case 'UserList':
+					RecvUserList(obj.data);
+					break;
+				case 'ResultStartGame':
+					ResultStartGame(obj.data);
+					break;
 			}
 		};
 
@@ -147,31 +189,54 @@
 		};
 
 		var ResultEnterChannel = function (data) {
-			if (data.result == 'true') {
-				changeUserPlace('channel');
-				showAlert(data.UserName + '님 안녕하세요!');
-				RequestRoomList();
-			} else {
+			if (data.result == 'false') {
 				showAlert('채널 입장에 실패하였습니다.')
+				return;
 			}
+			changeUserPlace('channel');
+			showAlert(data.userName + '님 안녕하세요!');
+			RequestRoomList();
 		};
 
 		var ResultRoomList = function (data) {
 			$scope.roomList = [];
 			$.each(data, function (index, room) {
-				$scope.roomList.push({ RoomName: room.RoomName });
+				$scope.roomList.push({ roomName: room.roomName });
 			});
 			$scope.$apply();
 		};
 
 		var ResultEnterRoom = function (data) {
-			if (data.result == 'true') {
-				changeUserPlace('room');
-				$scope.RoomName = data.RoomName;
-				$scope.$apply();
-				showAlert(data.RoomName + '방에 입장하였습니다.');
-			} else {
+			if (data.result == 'false') {
 				showAlert('방 입장에 실패하였습니다.');
+				return;
+			}
+			changeUserPlace('room');
+			$scope.roomName = data.roomName;
+			$scope.$apply();
+			showAlert(data.roomName + '방에 입장하였습니다.');
+		};
+
+		var ResultLeaveRoom = function (data) {
+			if (data.result == 'false') {
+				showAlert('방 나가기에 실패하였습니다.');
+				return;
+			}
+			ResultEnterChannel(data);
+		};
+
+		var RecvUserList = function (data) {
+			$scope.userList = [];
+			$.each(data, function (index, user) {
+				$scope.userList.push({ userName: user.userName });
+			});
+			$scope.$apply();
+		};
+
+		var ResultStartGame = function (data) {
+			if (data.result == 'false') {
+				showAlert('게임 시작이 실패하였습니다.');
+				return;
 			}
 		};
 	});
