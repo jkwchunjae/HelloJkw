@@ -16,7 +16,7 @@
 				</span>*@
 			</form>
 			<div class="col-md-3 col-xs-3">
-				<a class="btn btn-success post-new" href="#">글쓰기</a>
+				<button class="btn btn-success post-new">글쓰기</button>
 			</div>
 		</div>
 	</li>
@@ -30,8 +30,8 @@
 				<input class="form-control new-name"/>
 			</div>
 			<div class="col-md-3 col-xs-3">
-				<a class="btn btn-warning post-edit" href="#">수정</a>
-				<a class="btn btn-danger post-delete-modal" href="#">삭제</a>
+				<button class="btn btn-warning post-edit">수정</button>
+				<button class="btn btn-danger post-delete-modal">삭제</button>
 			</div>
 		</div>
 	</li>
@@ -64,7 +64,7 @@
 {
 	<script type="text/javascript">
 		$(document).ready(function () {
-			$('a.post-new').click(function () {
+			$('button.post-new').click(function () {
 				var date = $('input#new-post-date').val();
 				var name = $('input#new-post-name').val().trim();
 				if (name == '') {
@@ -80,13 +80,13 @@
 				$.post('/blog/new/' + date + '/' + name);
 			});
 
-			$('a.post-edit').click(function () {
+			$('button.post-edit').click(function () {
 				var post = $(this).parent().parent().parent();
 				var filename = $(post).find('.filename').text();
 				$.post('/blog/edit/' + filename);
 			});
 
-			$('a.post-delete-modal').click(function () {
+			$('button.post-delete-modal').click(function () {
 				var post = $(this).parent().parent().parent();
 				var filename = $(post).find('.filename').text();
 				var postTitle = $(post).find('.post-title').text();
