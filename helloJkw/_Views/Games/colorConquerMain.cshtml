@@ -3,7 +3,7 @@
 	Layout = "Layout.cshtml";
 }
 
-<div ng-app="test-app" ng-controller="test-controller">
+<div ng-app="app-color-conquer" ng-controller="controller-color-conquer">
 	<div class="place form-inline" id="login">
 		<label class="sr-only" for="userName">이름</label>
 		<input type="text" id="userName" class="form-control" ng-model="userName" placeholder="이름"/>
@@ -66,8 +66,8 @@
 	$("nav.navbar").addClass("navbar-shrink");
 	$("li#menu-games").addClass("active");
 
-	var app = angular.module('test-app', []);
-	app.controller('test-controller', function ($scope) {
+	var app = angular.module('app-color-conquer', []);
+	app.controller('controller-color-conquer', function ($scope) {
 		var changeUserPlace = function (place) {
 			$('.place').css('display', 'none');
 			$('#' + place).css('display', 'block');
