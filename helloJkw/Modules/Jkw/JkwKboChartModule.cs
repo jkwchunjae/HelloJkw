@@ -5,6 +5,7 @@ using System.Dynamic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Collections.Concurrent;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using Extensions;
@@ -12,6 +13,15 @@ using helloJkw.Utils;
 
 namespace helloJkw.Modules.Jkw
 {
+	public static class KboChartCache
+	{
+		public static ConcurrentDictionary<int, dynamic> ChartViewCache = new ConcurrentDictionary<int, dynamic>();
+		public static ConcurrentDictionary<int, DateTime> LastChartViewTime = new ConcurrentDictionary<int, DateTime>();
+
+		public static ConcurrentDictionary<int, string> StandingJsonCache = new ConcurrentDictionary<int, string>();
+		public static ConcurrentDictionary<int, DateTime> LastStandingJsonTime = new ConcurrentDictionary<int, DateTime>();
+	}
+
 	public class JkwKboChartModule : JkwModule
 	{
 		public JkwKboChartModule()
@@ -19,27 +29,33 @@ namespace helloJkw.Modules.Jkw
 			Get["/kbochart/{year?default}"] = _ =>
 			{
 				string yearStr = _.year;
-				if (yearStr == "reload")
+
+				int year = (yearStr == "default" || !yearStr.IsInt()) ? KboCenter.RecentSeason :yearStr.ToInt();
+				if (!KboCenter.SeasonList.Select(e => e.Year).Contains(year)) year = KboCenter.RecentSeason;
+				HitCounter.Hit("kbochart/chart/" + year.ToString());
+
+				dynamic tmpModel;
+				if (KboChartCache.ChartViewCache.TryGetValue(year, out tmpModel))
 				{
-					KboMatch.Reload();
+					if (DateTime.Now.Subtract(KboChartCache.LastChartViewTime[year]).TotalMinutes < 3.0)
+						return View["jkwKboChart", tmpModel];
 				}
 #if (DEBUG)
-				KboMatch.Update(1000);
+				KboCenter.Update(0);
 #else
-				KboMatch.Update();
+				KboCenter.Update();
 #endif
 
-				int year = (yearStr == "default" || !yearStr.IsInt()) ? KboMatch.RecentSeason :yearStr.ToInt();
-				if (!KboMatch.SeasonList.Select(e => e.Year).Contains(year)) year = KboMatch.RecentSeason;
-				HitCounter.Hit("kbochart/chart/" + year.ToString());
-				var chartObject = KboMatch.GetChartObject(year);
+				var chartObject = KboCenter.GetChartObject(year);
 				Model.chartObject = chartObject;
 				Model.DateCount = chartObject.DateList.Split(',').Count();
-				Model.LastDate = KboMatch.SeasonList.Where(e => e.Year == year).Select(e => e.StandingList.Max(t => t.Date)).First().ToDate().ToString("yyyy-MM-dd");
-				Model.YearList = KboMatch.SeasonList.Select(e => e.Year).OrderByDescending(e => e).ToList();
+				Model.LastDate = KboCenter.SeasonList.Where(e => e.Year == year).Select(e => e.StandingList.Max(t => t.Date)).First().ToDate().ToString("yyyy-MM-dd");
+				Model.YearList = KboCenter.SeasonList.Select(e => e.Year).OrderByDescending(e => e).ToList();
 				Model.Title = "jkw's KBO Chart {Year}".WithVar(new { chartObject.Year });
 				Model.Desc = "KBO {Year} 시즌 게임차 그래프".WithVar(new { chartObject.Year });
-				
+
+				KboChartCache.ChartViewCache.TryAdd(year, Model);
+				KboChartCache.LastChartViewTime.TryAdd(year, DateTime.Now);
 				return View["jkwKboChart", Model];
 			};
 
@@ -47,16 +63,23 @@ namespace helloJkw.Modules.Jkw
 			{
 				string yearStr = _.year;
 				string dateStr = _.date;
-				int year = yearStr == "default" ? KboMatch.RecentSeason : yearStr.ToInt();
-				if (!KboMatch.SeasonList.Select(e => e.Year).Contains(year)) year = KboMatch.RecentSeason;
-				var season = KboMatch.SeasonList.Where(e => e.Year == year).FirstOrDefault();
+				int year = yearStr == "default" ? KboCenter.RecentSeason : yearStr.ToInt();
+				if (!KboCenter.SeasonList.Select(e => e.Year).Contains(year)) year = KboCenter.RecentSeason;
+				var season = KboCenter.SeasonList.Where(e => e.Year == year).FirstOrDefault();
 				int date = dateStr == "default" ? season.StandingList.Max(t => t.Date) : dateStr.ToInt();
 				HitCounter.Hit("kbochart/standing/" + date.ToString());
 
-				var standingList = season.GetStandingList(date);
-				standingList.CalcDiffRank(KboMatch.SeasonList);
-				standingList.CalcLast10(season.TeamMatchList);
-				standingList.CalcSTRK(season.TeamMatchList);
+				string json;
+				if (KboChartCache.StandingJsonCache.TryGetValue(date, out json))
+				{
+					if (DateTime.Now.Subtract(KboChartCache.LastStandingJsonTime[date]).TotalMinutes < 3.0)
+						return json;
+				}
+
+				var standingList = season.GetLastStanding(date);
+				//standingList.CalcDiffRank(KboCenter.SeasonList);
+				//standingList.CalcLast10(season.TeamMatchList);
+				//standingList.CalcSTRK(season.TeamMatchList);
 
 				var standingJsonArray = standingList
 					.OrderBy(e => e.Rank)
@@ -86,10 +109,14 @@ namespace helloJkw.Modules.Jkw
 						new JProperty("tmp", "tmp")
 						));
 
-				return new JObject(
+				json = new JObject(
 					new JProperty("standing", standingJsonArray),
-					new JProperty("updateTime", KboMatch.LastUpdateTime.ToString("yyyy-MM-dd HH:mm:ss"))
+					new JProperty("updateTime", KboCenter.LastUpdateTime.ToString("yyyy-MM-dd HH:mm:ss"))
 					).ToString();
+
+				KboChartCache.StandingJsonCache.TryAdd(date, json);
+				KboChartCache.LastStandingJsonTime.TryAdd(date, DateTime.Now);
+				return json;
 			};
 		}
 	}

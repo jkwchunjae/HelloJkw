@@ -42,7 +42,7 @@ namespace helloJkw
 			try
 			{
 				var diffSeason = seasonList.Where(e => e.Year == diffDate.Year()).First();
-				var diffStanding = diffSeason.GetStandingList(diffDate).Where(e => e.Team == standing.Team).First();
+				var diffStanding = diffSeason.GetLastStanding(diffDate).Where(e => e.Team == standing.Team).First();
 				return standing.Rank - diffStanding.Rank;
 			}
 			catch

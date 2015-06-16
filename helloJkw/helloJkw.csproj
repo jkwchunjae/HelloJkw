@@ -48,7 +48,9 @@
     <Compile Include="Extensions\IntHelper.cs" />
     <Compile Include="Jkw\Blog\BlogManager.cs" />
     <Compile Include="Jkw\Blog\Post.cs" />
-    <Compile Include="Jkw\Kbo\KboMatch.cs" />
+    <Compile Include="Jkw\Kbo\KboCenter.cs" />
+    <Compile Include="Jkw\Kbo\KboDataManager.cs" />
+    <Content Include="Jkw\Kbo\KboMatch.cs" />
     <Compile Include="Jkw\Kbo\Season.cs" />
     <Compile Include="Jkw\Kbo\Standing.cs" />
     <Compile Include="Lucia\ImageResizer.cs" />

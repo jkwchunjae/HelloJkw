@@ -34,6 +34,8 @@ namespace helloJkw
 			LuciaStatic.LuciaDir = LuciaStatic.RootPath.CreateDirInfo();
 			LuciaStatic.UpdateLuciaDir(0);
 
+			KboCenter.Load();
+
 			using (var host = new NancyHost(new Uri("http://localhost:" + port)))
 			{
 				Logger.Log("Start Lucia Shop");

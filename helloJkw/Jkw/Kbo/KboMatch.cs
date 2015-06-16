@@ -10,7 +10,7 @@ using Extensions;
 using System.Net;
 using HtmlAgilityPack;
 
-namespace helloJkw
+namespace helloJkw.Test
 {
 	#region Classes
 	public class Match
@@ -147,10 +147,13 @@ namespace helloJkw
 #if (DEBUG)
 			return;
 #endif
-			var resultString = JsonConvert.SerializeObject(_matchList.OrderByDescending(e => e.Date))
-				.RegexReplace(@"\}\,", "},\n  ");
+			lock (_updateLock)
+			{
+				var resultString = JsonConvert.SerializeObject(_matchList.OrderByDescending(e => e.Date))
+					.RegexReplace(@"\}\,", "},\n  ");
 
-			File.WriteAllText(filepath, resultString, Encoding.UTF8);
+				File.WriteAllText(filepath, resultString, Encoding.UTF8);
+			}
 		}
 		#endregion
 
@@ -178,7 +181,6 @@ namespace helloJkw
 		public static List<Match> GetMatchList(string filepath)
 		{
 			var matchHistoryJson = File.ReadAllText(filepath, Encoding.UTF8);
-
 			return JsonConvert.DeserializeObject<List<Match>>(matchHistoryJson);
 		}
 		#endregion
