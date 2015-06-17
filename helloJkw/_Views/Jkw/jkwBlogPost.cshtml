@@ -21,7 +21,8 @@
 		@if (@Model.isDebug)
 		{
 			<div class="raw">
-				<button class="btn">Raw</button>
+				<button class="btn" id="raw">Raw</button>
+				<button class="btn btn-warning" id="edit" data-post-name="@string.Format("{0:yyyyMMdd}", @post.Date)-@post.Name">수정</button>
 				<div class="post-raw"><pre class="post-raw">@post.Raw</pre></div>
 			</div>
 		}
@@ -79,12 +80,16 @@
 	<script type="text/javascript">
 		$(document).ready(function () {
 			$('.post-raw').css('display', 'none');
-			$('div.raw button').click(function () {
+			$('div.raw button#raw').click(function () {
 				if ($('.post-raw').css('display') == 'none') {
 					$('.post-raw').css('display', 'block');
 				} else {
 					$('.post-raw').css('display', 'none');
 				}
+			});
+
+			$('div.raw button#edit').click(function () {
+				$.post('/blog/edit/' + $(this).attr('data-post-name'));
 			});
 		});
 	</script>
