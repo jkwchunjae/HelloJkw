@@ -121,7 +121,7 @@ namespace helloJkw
 			lock (_updateLock)
 			{
 				var resultString = JsonConvert.SerializeObject(matchList.OrderByDescending(e => e.Date))
-					.RegexReplace(@"\}\,", "},\n  ");
+					.RegexReplace(@"\}\,", "},\r\n  ");
 
 				File.WriteAllText(filepath, resultString, Encoding.UTF8);
 			}
