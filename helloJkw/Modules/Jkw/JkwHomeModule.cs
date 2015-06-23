@@ -33,7 +33,7 @@ namespace helloJkw
 			After += ctx =>
 			{
 				SetSession(ctx);
-				context.Response.WithCookie("session_id", session.SessionId);
+				ctx.Response.WithCookie("session_id", session.SessionId);
 			};
 		}
 
