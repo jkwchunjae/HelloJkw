@@ -14,6 +14,8 @@ namespace helloJkw
 	public class JkwModule : NancyModule
 	{
 		public dynamic Model = new ExpandoObject();
+		public string sessionId = null;
+		public Session session = null;
 
 		public JkwModule()
 		{
@@ -22,6 +24,38 @@ namespace helloJkw
 #else
 			Model.isDebug = false;
 #endif
+			Before += ctx =>
+			{
+				SetSession(ctx);
+				return null;
+			};
+
+			After += ctx =>
+			{
+				SetSession(ctx);
+			};
+		}
+
+		public void SetSession(NancyContext context)
+		{
+			sessionId = Request.GetSessionId();
+			session = SessionManager.GetSession(sessionId);
+
+			if (session.IsExpired)
+			{
+				session.Logout();
+			}
+			else
+			{
+				session.RefreshExpire();
+			}
+			Model.isLogin = session.IsLogin;
+			if (session.IsLogin)
+			{
+				Model.user = session.User;
+			}
+
+			context.Response.WithCookie("session_id", session.SessionId);
 		}
 	}
 

@@ -56,6 +56,12 @@
     <Compile Include="Lucia\ImageResizer.cs" />
     <Compile Include="Lucia\LuciaDirInfo.cs" />
     <Compile Include="Lucia\LuciaStatic.cs" />
+    <Compile Include="Modules\Authentication\OAuthServer.cs" />
+    <Compile Include="Modules\Authentication\Session.cs" />
+    <Compile Include="Modules\Authentication\SessionManager.cs" />
+    <Compile Include="Modules\Authentication\User.cs" />
+    <Compile Include="Modules\Authentication\UserDatabase.cs" />
+    <Compile Include="Modules\Authentication\UserManager.cs" />
     <Compile Include="Modules\Games\ColorConquer\ColorConquerMain.cs" />
     <Compile Include="Modules\Jkw\JkwBlogManageModule.cs" />
     <Compile Include="Modules\Jkw\JkwBlogModule.cs" />
