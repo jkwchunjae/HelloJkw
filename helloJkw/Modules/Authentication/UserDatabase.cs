@@ -43,7 +43,7 @@ namespace helloJkw
 			{
 				var json = JsonConvert.SerializeObject(_userDic.Select(e => e.Value));
 #if DEBUG
-//#else
+#else
 				File.WriteAllText(filepath, json, Encoding.UTF8);
 #endif
 			}
