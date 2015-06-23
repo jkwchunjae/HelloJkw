@@ -4,6 +4,8 @@
 	try { title = @Model.Title; } catch { title = "Hello Jkw!"; }
 	string desc;
 	try { desc = @Model.Desc; } catch { desc = ""; }
+	string redirectUrl = Model.isDebug ? "http://localhost/login" : "http://hellojkw.com/login";
+	string loginUrl = "https://accounts.google.com/o/oauth2/auth?client_id=381224079549-pmkekmoko01ss0uqle22q0btsam7nluh.apps.googleusercontent.com&redirect_uri=" + redirectUrl + "&scope=https://www.googleapis.com/auth/plus.login&response_type=code";
 }
 <!DOCTYPE html>
 <html lang="ko">
@@ -21,6 +23,7 @@
 	<link href="/Static/css/jkwLayout.css" rel="stylesheet" />
 	@RenderSection("Css")
 	<!-- Custom Fonts -->
+	<link href="/Static/Agency/font-awesome/css/font-awesome.min.css" rel="stylesheet" type="text/css">
 	<link href="http://fonts.googleapis.com/css?family=Montserrat:400,700" rel="stylesheet" type="text/css">
 	<link href='http://fonts.googleapis.com/css?family=Kaushan+Script' rel='stylesheet' type='text/css'>
 	<link href='http://fonts.googleapis.com/css?family=Droid+Serif:400,700,400italic,700italic' rel='stylesheet' type='text/css'>
@@ -57,6 +60,18 @@
 					<li id="menu-blog"> <a class="page-scroll" href="/blog">Blog</a> </li>
 					<li id="menu-games"> <a class="page-scroll" href="/#games">Games</a> </li>
 					<li id="menu-about"> <a class="page-scroll" href="/#about">About</a> </li>
+					@if (@Model.isLogin)
+					{
+						<li id="menu-login">
+							<a class="" style="padding-top:0;padding-bottom:0;cursor:pointer;">
+								<img src="@Model.user.ImageUrl" title="@Model.user.Name" alt="@Model.user.Name" class="img-circle navbar-user-image" />
+							</a>
+						</li>
+					}
+					else
+					{
+						<li id="menu-login"><a class="page-scroll" href="@loginUrl">Login</a></li>
+					}
 				</ul>
 			</div>
 			<!-- /.navbar-collapse -->
@@ -87,6 +102,8 @@
 	<script src="/Static/bootstrap/js/bootstrap.min.js"></script>
 	@RenderSection("Javascript")
 	<script type="text/javascript">
+		$("nav.navbar").addClass("navbar-shrink");
+
 		var alertNumber;
 		var showAlert = function (message) {
 			$('div.fixed-alert').text(message).slideDown();

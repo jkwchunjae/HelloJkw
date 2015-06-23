@@ -25,4 +25,9 @@ div.fixed-alert {
 	div#layout-content{
 		padding-top: 90px;
 	}
+
+	img.navbar-user-image {
+		width: 40px;
+		height: 40px;
+	}
 }
