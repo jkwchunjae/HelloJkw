@@ -55,7 +55,10 @@ namespace helloJkw
 				Model.user = session.User;
 			}
 
-			context.Response.WithCookie("session_id", session.SessionId);
+			if (context.Response != null)
+			{
+				context.Response.WithCookie("session_id", session.SessionId);
+			}
 		}
 	}
 

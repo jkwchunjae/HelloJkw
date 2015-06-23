@@ -56,6 +56,7 @@
     <Compile Include="Lucia\ImageResizer.cs" />
     <Compile Include="Lucia\LuciaDirInfo.cs" />
     <Compile Include="Lucia\LuciaStatic.cs" />
+    <Compile Include="Modules\Authentication\LoginModule.cs" />
     <Compile Include="Modules\Authentication\OAuthServer.cs" />
     <Compile Include="Modules\Authentication\Session.cs" />
     <Compile Include="Modules\Authentication\SessionManager.cs" />
@@ -137,6 +138,7 @@
     <None Include="_Views\Jkw\jkwBlogTag.cshtml" />
     <None Include="_Views\Jkw\jkwHome.cshtml" />
     <None Include="_Views\Jkw\jkwKboChart.cshtml" />
+    <None Include="_Views\Jkw\beforeHome.cshtml" />
     <None Include="_Views\Jkw\Layout.cshtml" />
     <None Include="_Views\Jkw\LayoutBlog.cshtml" />
     <None Include="_Views\Lucia\luciaCategory.cshtml" />

@@ -1,0 +1,109 @@
+﻿@inherits Nancy.ViewEngines.Razor.NancyRazorViewBase<dynamic>
+@{
+	string title;
+	try { title = @Model.Title; }
+	catch { title = "Hello Jkw!"; }
+	string desc;
+	try { desc = @Model.Desc; }
+	catch { desc = ""; }
+}
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+	<meta charset="utf-8">
+	<meta http-equiv="X-UA-Compatible" content="IE=edge">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<meta name="author" content="jkw">
+	<meta name="description" content="@desc">
+	<meta http-equiv="refresh" content="0;URL=/" />
+	<title>@title</title>
+	<!-- Bootstrap Core CSS -->
+	<link href="/Static/bootstrap/css/bootstrap.min.css" rel="stylesheet">
+	<!-- Custom CSS -->
+	<link href="/Static/Agency/css/agency.css" rel="stylesheet" />
+	<link href="/Static/css/jkwLayout.css" rel="stylesheet" />
+	<!-- Custom Fonts -->
+	<link href="http://fonts.googleapis.com/css?family=Montserrat:400,700" rel="stylesheet" type="text/css">
+	<link href='http://fonts.googleapis.com/css?family=Kaushan+Script' rel='stylesheet' type='text/css'>
+	<link href='http://fonts.googleapis.com/css?family=Droid+Serif:400,700,400italic,700italic' rel='stylesheet' type='text/css'>
+	<link href='http://fonts.googleapis.com/css?family=Roboto+Slab:400,100,300,700' rel='stylesheet' type='text/css'>
+	<!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
+	<!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
+	<!--[if lt IE 9]>
+		<script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
+		<script src="https://oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js"></script>
+	<![endif]-->
+	<!-- Angular -->
+	<script src="/Static/js/angular.min.js"></script>
+</head>
+<body id="page-top" class="index">
+	<!-- Navigation -->
+	<nav class="navbar navbar-default navbar-fixed-top">
+		<div class="container">
+			<!-- Brand and toggle get grouped for better mobile display -->
+			<div class="navbar-header page-scroll">
+				<button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1">
+					<span class="sr-only">Toggle navigation</span>
+					<span class="icon-bar"></span>
+					<span class="icon-bar"></span>
+					<span class="icon-bar"></span>
+				</button>
+				<a class="navbar-brand page-scroll" href="/#page-top">Hello Jkw!</a>
+			</div>
+			<!-- Collect the nav links, forms, and other content for toggling -->
+			<div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
+				<ul class="nav navbar-nav navbar-right">
+					<li class="hidden"> <a href="/#page-top"></a> </li>
+					<li id="menu-project"> <a class="page-scroll" href="/#projects">Projects</a> </li>
+					<li id="menu-blog"> <a class="page-scroll" href="/blog">Blog</a> </li>
+					<li id="menu-games"> <a class="page-scroll" href="/#games">Games</a> </li>
+					<li id="menu-about"> <a class="page-scroll" href="/#about">About</a> </li>
+				</ul>
+			</div>
+			<!-- /.navbar-collapse -->
+		</div>
+		<!-- /.container-fluid -->
+	</nav>
+
+	<div class="fixed-alert">
+	</div>
+
+	<div class="container" id="layout-content">
+		로그인 리다이렉트 화면입니다. 홈으로 이동하지 않으면 <a href="/" style="color:blue;text-decoration:underline;">여기</a>를 눌러주세요.
+	</div>
+
+	<footer>
+		<div class="container">
+			<div class="row">
+				<div class="col-md-4">
+					<span class="copyright">Copyright &copy; Hello Jkw 2015</span>
+				</div>
+			</div>
+		</div>
+	</footer>
+	<!-- jQuery -->
+	<script src="/Static/js/jquery-2.1.3.min.js"></script>
+	<!-- Bootstrap Core JavaScript -->
+	<script src="/Static/bootstrap/js/bootstrap.min.js"></script>
+	<script type="text/javascript">
+		$("nav.navbar").addClass("navbar-shrink");
+		$("li#menu-blog").addClass("active");
+
+		var alertNumber;
+		var showAlert = function (message) {
+			$('div.fixed-alert').text(message).slideDown();
+			alertNumber = Math.random();
+			window.setTimeout(closeAlert, 2000, alertNumber);
+		}
+
+		var closeAlert = function (validNumber) {
+			if (alertNumber != validNumber) return;
+			$('div.fixed-alert').slideUp();
+		}
+
+		$('div.fixed-alert').click(function () {
+			closeAlert();
+		});
+	</script>
+</body>
+</html>
