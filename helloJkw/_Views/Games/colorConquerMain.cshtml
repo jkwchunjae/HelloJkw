@@ -1,6 +1,7 @@
 ﻿@inherits Nancy.ViewEngines.Razor.NancyRazorViewBase<dynamic>
 @{
 	Layout = "Layout.cshtml";
+	string serverAddress = Model.isDebug ? "ws://localhost:55591/colorconquer" : "ws://hellojkw.com:55591/colorconquer";
 }
 
 <div class="playground" ng-app="app-color-conquer" ng-controller="controller-color-conquer">
@@ -110,8 +111,7 @@
 			sendMessage(message);
 		};
 
-		var ws = new WebSocket("ws://localhost:55591/colorconquer");
-		//var ws = new WebSocket("ws://hellojkw.com:55591/colorconquer");
+		var ws = new WebSocket("@serverAddress");
 
 		var Log = function (message) {
 			var p = document.createElement('p');
