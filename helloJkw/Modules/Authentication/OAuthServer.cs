@@ -93,6 +93,7 @@ namespace helloJkw
 
 				var response = (HttpWebResponse) await request.GetResponseAsync();
 				json = await new StreamReader(response.GetResponseStream()).ReadToEndAsync();
+				Logger.Log(json);
 			}
 			catch (Exception ex)
 			{
