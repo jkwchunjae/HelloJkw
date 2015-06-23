@@ -3,7 +3,7 @@
 	Layout = "Layout.cshtml";
 }
 
-<div ng-app="app-color-conquer" ng-controller="controller-color-conquer">
+<div class="playground" ng-app="app-color-conquer" ng-controller="controller-color-conquer">
 	<div class="place form-inline" id="login">
 		<label class="sr-only" for="userName">이름</label>
 		<input type="text" id="userName" class="form-control" ng-model="userName" placeholder="이름"/>
@@ -137,6 +137,9 @@
 		};
 
 		ws.onerror = function (e) {
+			$('div.playground').css('display', 'none');
+			$('div#console').hide();
+			showAlert('준비중입니다.');
 			Log('error: ' + e.message);
 		};
 
