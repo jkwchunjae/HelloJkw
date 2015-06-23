@@ -33,6 +33,7 @@ namespace helloJkw
 			After += ctx =>
 			{
 				SetSession(ctx);
+				context.Response.WithCookie("session_id", session.SessionId);
 			};
 		}
 
@@ -53,11 +54,6 @@ namespace helloJkw
 			if (session.IsLogin)
 			{
 				Model.user = session.User;
-			}
-
-			if (context.Response != null)
-			{
-				context.Response.WithCookie("session_id", session.SessionId);
 			}
 		}
 	}
