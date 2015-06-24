@@ -51,7 +51,7 @@ namespace helloJkw
 		{
 			try
 			{
-				var imagesPath = @"jkw/db/img";
+				var imagesPath = @"Static/image/user-image-sample";
 				_images = Directory.GetFiles(imagesPath).ToList();
 				_images = _images
 					.Select(e => e.Replace(@"\", "/").RegexReplace(@".*?/*" + imagesPath, "/" + imagesPath))
