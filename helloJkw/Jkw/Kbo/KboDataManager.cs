@@ -117,7 +117,7 @@ namespace helloJkw
 		{
 #if (DEBUG)
 			return;
-#endif
+#else
 			lock (_updateLock)
 			{
 				var resultString = JsonConvert.SerializeObject(matchList.OrderByDescending(e => e.Date))
@@ -125,6 +125,7 @@ namespace helloJkw
 
 				File.WriteAllText(filepath, resultString, Encoding.UTF8);
 			}
+#endif
 		}
 		#endregion
 	}
