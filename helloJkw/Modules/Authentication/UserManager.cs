@@ -21,16 +21,16 @@ namespace helloJkw
 			return null;
 		}
 
-		public static bool Login(dynamic accountInfo, out User user)
+		public static User Login(dynamic accountInfo)
 		{
+			#region Get Id and user info
 			#region get Id, cutting id error
 			string id = accountInfo.id;
 			if (id == null)
 			{
 				// id는 꼭 있어야 하는 정보이다.
 				// 없으면 실패로 처리하자.
-				user = null;
-				return false;
+				throw new InValidAccountIdException();
 			}
 			#endregion
 
@@ -39,25 +39,22 @@ namespace helloJkw
 			string userName = accountInfo.nickname != null ? accountInfo.nickname : accountInfo.displayname;
 			
 			string imageUrl;
-			try { imageUrl = ((string)accountInfo.image1.url).RegexReplace(@"\?.*", ""); }
+			try { imageUrl = ((string)accountInfo.image.url).RegexReplace(@"\?.*", ""); }
 			catch { imageUrl = null; }
 			#endregion
+			#endregion
 
-			#region request register
+			#region check register
 			if (!UserDatabase.IsRegister(id))
 			{
-				if (!UserDatabase.Register(id, userName, imageUrl))
-				{
-					user = null;
-					return false;
-				}
+				throw new NotRegisteredUserException();
 			}
 			#endregion
 
 			#region add user
 			if (!_userDic.ContainsKey(id))
 				_userDic.TryAdd(id, UserDatabase.GetUser(id));
-			user = GetUser(id);
+			User user = GetUser(id);
 			#endregion
 
 			#region update user info
@@ -69,7 +66,49 @@ namespace helloJkw
 
 			user.LastLogin = DateTime.Now;
 			UserDatabase.Save();
-			return true;
+			return user;
+		}
+
+		public static User Login(User user)
+		{
+			if (!_userDic.ContainsKey(user.Id))
+				_userDic.TryAdd(user.Id, user);
+
+			user.LastLogin = DateTime.Now;
+			UserDatabase.Save();
+			return user;
+		}
+
+		public static User Register(dynamic accountInfo)
+		{
+			#region Get Id and user info
+			#region get Id, cutting id error
+			string id = accountInfo.id;
+			if (id == null)
+			{
+				// id는 꼭 있어야 하는 정보이다.
+				// 없으면 실패로 처리하자.
+				throw new InValidAccountIdException();
+			}
+			#endregion
+
+			#region parsing user info
+			// nickName 이 없으면 displayName 이라도..
+			string userName = accountInfo.nickname != null ? accountInfo.nickname : accountInfo.displayname;
+
+			string imageUrl;
+			try { imageUrl = ((string)accountInfo.image.url).RegexReplace(@"\?.*", ""); }
+			catch { imageUrl = null; }
+			#endregion
+			#endregion
+
+			#region register
+			User user = UserDatabase.Register(id, userName, imageUrl);
+			#endregion
+
+			Login(user);
+
+			return user;
 		}
 
 		public static void Logout(User user)

@@ -1,0 +1,46 @@
+﻿@inherits Nancy.ViewEngines.Razor.NancyRazorViewBase<dynamic>
+@{
+	Layout = "Layout.cshtml";
+	string redirectUrl = Model.isDebug ? "http://localhost/oauth/login" : "http://hellojkw.com/oauth/login";
+	string loginUrl = "https://accounts.google.com/o/oauth2/auth?client_id=381224079549-pmkekmoko01ss0uqle22q0btsam7nluh.apps.googleusercontent.com&redirect_uri=" + redirectUrl + "&scope=https://www.googleapis.com/auth/plus.login&response_type=code";
+	redirectUrl = Model.isDebug ? "http://localhost/oauth/register" : "http://hellojkw.com/oauth/register";
+	string registerUrl = "https://accounts.google.com/o/oauth2/auth?client_id=381224079549-pmkekmoko01ss0uqle22q0btsam7nluh.apps.googleusercontent.com&redirect_uri=" + redirectUrl + "&scope=https://www.googleapis.com/auth/plus.login&response_type=code";
+}
+
+<h2>Hello Jkw 와 함께하세요!</h2>
+
+<p>
+	클릭 한번으로 회원이 될 수 있습니다.
+	<br />
+	현재 로그인이 필요한 시스템은 게임뿐입니다. (아직 완성된 게임도 없지만요..)
+	<br />
+	그러므로 로그인 했다고 크게 달라지는것은 없습니다.
+	<br />
+	뭐, 지금 가입하지 않아도 됩니다.
+	<br />
+	하지만, 누가 몇번째로 가입하는지는 지켜보고 있겠어요.
+	<br />
+	<img src="/Static/image/kakao/2200001.thum_054.png" />
+</p>
+<a id="signin-google" href="@registerUrl"><img src="/Static/image/red_signin_long_44dp/Red-signin_Long_base_44dp.png" /></a>
+
+@section Css
+{
+	<style type="text/css">
+		a#signin-google img {
+			width: 200px;
+		}
+	</style>
+}
+
+@section Javascript
+{
+	<script type="text/javascript">
+		$(document).ready(function () {
+		});
+	</script>
+}
+
+@section JavascriptRelease
+{
+}

@@ -1,0 +1,28 @@
+﻿@inherits Nancy.ViewEngines.Razor.NancyRazorViewBase<dynamic>
+@{
+	Layout = "Layout.cshtml";
+}
+
+<h2>@Model.ErrorTitle</h2>
+
+<p>
+	@Html.Raw(@Model.ErrorMessage)
+</p>
+
+@section Css
+{
+	<style type="text/css">
+	</style>
+}
+
+@section Javascript
+{
+	<script type="text/javascript">
+		$(document).ready(function () {
+		});
+	</script>
+}
+
+@section JavascriptRelease
+{
+}

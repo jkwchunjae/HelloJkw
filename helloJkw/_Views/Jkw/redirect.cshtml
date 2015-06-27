@@ -1,11 +1,5 @@
 ﻿@inherits Nancy.ViewEngines.Razor.NancyRazorViewBase<dynamic>
 @{
-	string title;
-	try { title = @Model.Title; }
-	catch { title = "Hello Jkw!"; }
-	string desc;
-	try { desc = @Model.Desc; }
-	catch { desc = ""; }
 }
 <!DOCTYPE html>
 <html lang="ko">
@@ -14,9 +8,8 @@
 	<meta http-equiv="X-UA-Compatible" content="IE=edge">
 	<meta name="viewport" content="width=device-width, initial-scale=1">
 	<meta name="author" content="jkw">
-	<meta name="description" content="@desc">
-	<meta http-equiv="refresh" content="0;URL=/" />
-	<title>@title</title>
+	<meta http-equiv="refresh" content="0;URL=@Model.RedirectUrl" />
+	<title>Hello Jkw</title>
 	<!-- Bootstrap Core CSS -->
 	<link href="/Static/bootstrap/css/bootstrap.min.css" rel="stylesheet">
 	<!-- Custom CSS -->
@@ -38,7 +31,7 @@
 </head>
 <body id="page-top" class="index">
 	<!-- Navigation -->
-	<nav class="navbar navbar-default navbar-fixed-top">
+	<nav class="navbar navbar-default navbar-fixed-top navbar-shrink">
 		<div class="container">
 			<!-- Brand and toggle get grouped for better mobile display -->
 			<div class="navbar-header page-scroll">
@@ -69,7 +62,7 @@
 	</div>
 
 	<div class="container" id="layout-content">
-		로그인 리다이렉트 화면입니다. 홈으로 이동하지 않으면 <a href="/" style="color:blue;text-decoration:underline;">여기</a>를 눌러주세요.
+		리다이렉트 화면입니다. 이동하지 않으면 <a href="@Model.RedirectUrl" style="color:blue;text-decoration:underline;">여기</a>를 눌러주세요.
 	</div>
 
 	<footer>
@@ -86,9 +79,6 @@
 	<!-- Bootstrap Core JavaScript -->
 	<script src="/Static/bootstrap/js/bootstrap.min.js"></script>
 	<script type="text/javascript">
-		$("nav.navbar").addClass("navbar-shrink");
-		$("li#menu-blog").addClass("active");
-
 		var alertNumber;
 		var showAlert = function (message) {
 			$('div.fixed-alert').text(message).slideDown();

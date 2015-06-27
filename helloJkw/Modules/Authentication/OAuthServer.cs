@@ -33,7 +33,7 @@ namespace helloJkw
 			//apiKey.Dump();
 		}
 
-		public static async Task<string> GetAccessTokenAsync(string code)
+		public static async Task<string> GetAccessTokenAsync(string code, string redirect)
 		{
 			string json = string.Empty;
 			try
@@ -44,9 +44,9 @@ namespace helloJkw
 				data["client_id"] = clientId;
 				data["client_secret"] = clientSecret;
 #if DEBUG
-				data["redirect_uri"] = "http://localhost/login";
+				data["redirect_uri"] = "http://localhost/oauth/" + redirect;
 #else
-				data["redirect_uri"] = "http://hellojkw.com/login";
+				data["redirect_uri"] = "http://hellojkw.com/oauth/" + redirect;
 #endif
 				data["grant_type"] = "authorization_code";
 				var param = data.Select(e => "{0}={1}".With(e.Key, e.Value)).StringJoin("&");

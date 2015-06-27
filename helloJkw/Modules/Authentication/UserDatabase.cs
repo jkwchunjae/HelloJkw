@@ -60,14 +60,23 @@ namespace helloJkw
 			return _userDic.ContainsKey(id);
 		}
 
-		public static bool Register(string id, string userName, string imageUrl)
+		public static User Register(string id, string userName, string imageUrl)
 		{
-			if (IsRegister(id)) return false;
-			var user = new User(id, regDate: DateTime.Now) { Name = userName, ImageUrl = imageUrl };
-			if (!_userDic.TryAdd(id, user))
-				return false;
+			if (IsRegister(id))
+				throw new AlreadyRegisterdException();
+
+			User user = null;
+			lock (_userDic)
+			{
+				int no = 1;
+				if (_userDic.Count() > 0)
+					no = _userDic.Select(e => e.Value).Max(t => t.No) + 1;
+				user = new User(no, id, regDate: DateTime.Now) { Name = userName, ImageUrl = imageUrl };
+				if (!_userDic.TryAdd(id, user))
+					throw new RegistrationFailException();
+			}
 			Save();
-			return true;
+			return user;
 		}
 
 		//public static bool Update(User updateUser)

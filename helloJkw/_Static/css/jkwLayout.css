@@ -30,4 +30,22 @@ div.fixed-alert {
 		width: 40px;
 		height: 40px;
 	}
+
+	a#navbar-user-image {
+		padding-top: 0;
+		padding-bottom: 0;
+		cursor: pointer;
+	}
+
+	a#navbar-user-image, a#navbar-user-image:hover, a#navbar-user-image:active, a#navbar-user-image:focus, a#navbar-user-image:visited {
+		background-color: initial;
+	}
+
+	.dropdown ul.dropdown-menu {
+		background-color: #444;
+	}
+
+	ul.dropdown-menu li a:hover {
+		background-color: initial;
+	}
 }
