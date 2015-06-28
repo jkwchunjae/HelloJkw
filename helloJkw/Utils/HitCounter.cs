@@ -11,15 +11,15 @@ using Extensions;
 
 namespace helloJkw.Utils
 {
-	class HitClass
-	{
-		public int Date { get; set; }
-		public string Key { get; set; }
-		public long Hit { get; set; }
-	}
-
 	static class HitCounter
 	{
+		class HitClass
+		{
+			public int Date { get; set; }
+			public string Key { get; set; }
+			public long Hit { get; set; }
+		}
+
 		static DateTime _lastSaveTime;
 		static string _path = "jkw/db/hit.txt";
 		static Dictionary<Tuple<int, string>, long> _hitDic;
