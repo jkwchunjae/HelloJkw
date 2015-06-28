@@ -138,7 +138,7 @@
     <None Include="_Views\Jkw\jkwBlogPost.cshtml" />
     <None Include="_Views\Jkw\jkwBlogTag.cshtml" />
     <None Include="_Views\Jkw\error.cshtml" />
-    <None Include="_Views\Jkw\user.cshtml" />
+    <None Include="_Views\Jkw\userSetting.cshtml" />
     <None Include="_Views\Jkw\register.cshtml" />
     <None Include="_Views\Jkw\jkwHome.cshtml" />
     <None Include="_Views\Jkw\jkwKboChart.cshtml" />

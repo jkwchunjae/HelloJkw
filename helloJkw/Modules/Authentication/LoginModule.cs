@@ -4,6 +4,8 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using helloJkw.Utils;
+using Extensions;
 
 namespace helloJkw
 {
@@ -13,7 +15,20 @@ namespace helloJkw
 		{
 			Get["/register"] = _ =>
 			{
+				HitCounter.Hit("register");
 				return View["register", Model];
+			};
+
+			Get["/user"] = _ =>
+			{
+				if (session.IsExpired || !session.IsLogin)
+				{
+					Model.RedirectUrl = "/";
+					return View["redirect", Model];
+				}
+				HitCounter.Hit("user-setting");
+				Model.Title = "유저 정보 수정";
+				return View["userSetting", Model];
 			};
 
 			Get["/oauth/login", runAsync: true] = async (_, ct) =>
@@ -149,6 +164,34 @@ namespace helloJkw
 				}
 				Model.RedirectUrl = "/";
 				return View["redirect", Model];
+			};
+
+			Post["/user-setting", runAsync: true] = async (ctx, ct) =>
+			{
+				try
+				{
+					if (session.IsExpired || !session.IsLogin)
+						throw new Exception();
+					var user = session.User;
+
+					var bytes = new byte[Request.Body.Length];
+					int l = await Request.Body.ReadAsync(bytes, 0, (int)Request.Body.Length);
+					string infostr = Encoding.UTF8.GetString(bytes);
+					//string infostr = bytes.JQueryAjaxEncoding();
+					dynamic accountInfo = JsonConvert.DeserializeObject(infostr);
+
+					if (accountInfo.name == null || accountInfo.name == "")
+						throw new Exception();
+
+					user.Name = accountInfo.name;
+					UserDatabase.Save();
+					Logger.Log(user.Name);
+				}
+				catch
+				{
+					return "fail";
+				}
+				return "success";
 			};
 		}
 	}
