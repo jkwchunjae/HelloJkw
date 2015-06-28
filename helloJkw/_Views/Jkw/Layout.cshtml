@@ -62,7 +62,7 @@
 					<li id="menu-blog"> <a class="page-scroll" href="/blog">Blog</a> </li>
 					<li id="menu-games"> <a class="page-scroll" href="/#games">Games</a> </li>
 					<li id="menu-about"> <a class="page-scroll" href="/#about">About</a> </li>
-					@if (@Model.isLogin)
+					@if (@Model.isLogin && @Model.isDebug)
 					{
 						<li class="dropdown" id="menu-login">
 							<a class="dropdown-toggle" data-toggle="dropdown" role="button" id="navbar-user-image" style="padding-top:0;padding-bottom:0;cursor:pointer;">
@@ -74,7 +74,7 @@
 							</ul>
 						</li>
 					}
-					else
+					else if (@Model.isDebug)
 					{
 						<li class="dropdown" id="menu-login">
 							<a class="dropdown-toggle page-scroll" data-toggle="dropdown" role="button" href="#">Login<span class="caret"></span></a>
