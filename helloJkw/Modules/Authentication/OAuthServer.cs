@@ -52,11 +52,11 @@ namespace helloJkw
 				var param = data.Select(e => "{0}={1}".With(e.Key, e.Value)).StringJoin("&");
 				var paramBytes = Encoding.ASCII.GetBytes(param);
 
-				var request = WebRequest.CreateHttp(url);
+				var request = WebRequest.Create(url);
 
 				request.Method = "POST";
 				request.ContentType = "application/x-www-form-urlencoded";
-				request.Host = "www.googleapis.com";
+				//request.Host = "www.googleapis.com";
 				request.ContentLength = paramBytes.Length;
 
 				using (var stream = await request.GetRequestStreamAsync())
@@ -83,10 +83,10 @@ namespace helloJkw
 			{
 				var url = "https://www.googleapis.com/plus/v1/people/me";
 
-				var request = WebRequest.CreateHttp(url);
+				var request = WebRequest.Create(url);
 				request.Method = "GET";
 				request.ContentType = "application/x-www-form-urlencoded";
-				request.Host = "www.googleapis.com";
+				//request.Host = "www.googleapis.com";
 				request.ContentLength = 0;
 				request.Headers.Add("Authorization", "Bearer " + access_token);
 				request.Headers.Add("key", apiKey);

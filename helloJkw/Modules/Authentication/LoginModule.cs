@@ -19,6 +19,12 @@ namespace helloJkw
 				return View["register", Model];
 			};
 
+			Get["/login"] = _ =>
+			{
+				HitCounter.Hit("login");
+				return View["login", Model];
+			};
+
 			Get["/user"] = _ =>
 			{
 				if (session.IsExpired || !session.IsLogin)

@@ -26,17 +26,25 @@ img.navbar-user-image {
 	height: 100px;
 }
 
-	a#navbar-user-image, a#navbar-user-image:hover, a#navbar-user-image:active, a#navbar-user-image:focus, a#navbar-user-image:visited {
-		background-color: initial;
-	}
+a#navbar-user-image, a#navbar-user-image:hover, a#navbar-user-image:active, a#navbar-user-image:focus, a#navbar-user-image:visited {
+	background-color: initial;
+}
 
-	.dropdown ul.dropdown-menu {
-		background-color: #444;
-	}
+.dropdown ul.dropdown-menu {
+	background-color: #444;
+}
 
-	ul.dropdown-menu li a:hover {
-		background-color: initial;
-	}
+ul.dropdown-menu li a:hover {
+	background-color: initial;
+}
+
+li.login-link {
+	/*display: none;*/
+}
+
+.login-link-google img {
+	width: 100px;
+}
 
 @media(max-width:767px) {
 	.navbar-default .navbar-nav .open .dropdown-menu>li>a {
