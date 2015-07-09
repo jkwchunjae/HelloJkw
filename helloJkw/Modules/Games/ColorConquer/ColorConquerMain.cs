@@ -13,7 +13,10 @@ namespace helloJkw
 		{
 			Get["/games/ColorConquer"] = _ =>
 				{
-					//return "test";
+					if (!session.IsLogin)
+					{
+						return "require login";
+					}
 					return View["colorConquerMain", Model];
 				};
 		}
