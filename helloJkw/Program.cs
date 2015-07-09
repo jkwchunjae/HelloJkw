@@ -31,10 +31,12 @@ namespace helloJkw
 
 			#endregion
 
+#if !DEBUG
 			LuciaStatic.LuciaDir = LuciaStatic.RootPath.CreateDirInfo();
 			LuciaStatic.UpdateLuciaDir(0);
 
 			KboCenter.Load();
+#endif
 
 			using (var host = new NancyHost(new Uri("http://localhost:" + port)))
 			{
