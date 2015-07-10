@@ -8,6 +8,14 @@ using Extensions;
 
 namespace helloJkw
 {
+	public enum UserGrade
+	{
+		Admin,
+		Family,
+		Friend,
+		Someone,
+	}
+
 	public class User
 	{
 		string _imageUrl;
@@ -15,6 +23,7 @@ namespace helloJkw
 		public readonly int No; // 회원가입 일련번호
 		public readonly string Id; // email id 가 아닌 google 고유 번호
 		public string Name;
+		public UserGrade Grade;
 		public bool IsUseGoogleImage;
 
 		public readonly DateTime RegDate;
