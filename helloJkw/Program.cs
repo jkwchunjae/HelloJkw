@@ -69,7 +69,7 @@ namespace helloJkw
 			nancyConventions.StaticContentsConventions.Clear();
 
 			nancyConventions.StaticContentsConventions.AddDirectory("Static", "Static");
-			nancyConventions.StaticContentsConventions.AddDirectory("jkw", "jkw");
+			nancyConventions.StaticContentsConventions.AddDirectory("jkw", "jkw/static");
 			nancyConventions.StaticContentsConventions.AddDirectory("lucia", "lucia");
 			nancyConventions.StaticContentsConventions.AddDirectory("lucia-web", "lucia-web");
 			nancyConventions.StaticContentsConventions.AddDirectory("lucia-mobile", "lucia-mobile");

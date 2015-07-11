@@ -65,6 +65,7 @@
     <Compile Include="Modules\Authentication\UserDatabase.cs" />
     <Compile Include="Modules\Authentication\UserManager.cs" />
     <Compile Include="Modules\Games\ColorConquer\ColorConquerMain.cs" />
+    <Compile Include="Modules\Games\GameCenter.cs" />
     <Compile Include="Modules\Jkw\JkwBlogManageModule.cs" />
     <Compile Include="Modules\Jkw\JkwBlogModule.cs" />
     <Compile Include="Modules\Jkw\JkwHomeModule.cs" />

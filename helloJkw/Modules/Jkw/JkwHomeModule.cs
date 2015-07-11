@@ -65,18 +65,9 @@ namespace helloJkw
 			Get["/"] = _ =>
 			{
 				//HitCounter.Hit("hellojkw home");
-				var files = Directory.GetFiles(@"Static/Agency/img/bg/", "*");
-				var gameRoot = @"jkw/games";
-				var games = Directory.GetDirectories(gameRoot)
-					.Select(path => new
-					{
-						engName = Path.GetFileName(path),
-						korName = File.ReadAllText(Path.Combine(path, "info.txt")),
-						thumbnail = Path.GetFileName(Directory.GetFiles(path, "*thumbnail*").FirstOrDefault()),
-					}.ToExpando());
 
-				Model.BackGroundFileName = Path.GetFileName(files.GetRandom());
-				Model.games = games;
+				Model.BackGroundFileName = Directory.GetFiles(@"Static/Agency/img/bg/", "*").GetRandom();
+				Model.games = GameCenter.GetGameList().Select(e => e.ToExpando());
 				return View["jkwHome", Model];
 			};
 

@@ -28,5 +28,10 @@ namespace helloJkw
 
 			return (ExpandoObject)expando;
 		}
+
+		public static string ReplaceJkwStatic(this string path)
+		{
+			return path.Replace("jkw/static", "jkw");
+		}
 	}
 }
