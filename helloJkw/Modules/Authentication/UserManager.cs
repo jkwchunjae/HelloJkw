@@ -65,7 +65,6 @@ namespace helloJkw
 			#endregion
 
 			user.LastLogin = DateTime.Now;
-			UserDatabase.Save();
 			return user;
 		}
 
@@ -75,7 +74,7 @@ namespace helloJkw
 				_userDic.TryAdd(user.Id, user);
 
 			user.LastLogin = DateTime.Now;
-			UserDatabase.Save();
+			//UserDatabase.Save();
 			return user;
 		}
 
@@ -94,7 +93,7 @@ namespace helloJkw
 
 			#region parsing user info
 			// nickName 이 없으면 displayName 이라도..
-			string userName = accountInfo.nickname != null ? accountInfo.nickname : accountInfo.displayname;
+			string userName = accountInfo.nickname != null ? accountInfo.nickname : accountInfo.displayName;
 
 			string imageUrl;
 			try { imageUrl = ((string)accountInfo.image.url).RegexReplace(@"\?.*", ""); }

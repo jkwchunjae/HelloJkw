@@ -151,9 +151,10 @@ namespace helloJkw
 					Model.RedirectUrl = "/error?type=registration-fail";
 					return View["redirect", Model];
 				}
-				catch
+				catch (Exception ex)
 				{
 					session.Logout();
+					Logger.Log(ex);
 				}
 				#endregion
 
@@ -190,7 +191,6 @@ namespace helloJkw
 						throw new Exception();
 
 					user.Name = accountInfo.name;
-					UserDatabase.Save();
 					Logger.Log(user.Name);
 				}
 				catch

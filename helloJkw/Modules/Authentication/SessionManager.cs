@@ -44,8 +44,7 @@ namespace helloJkw
 				_sessionDic.TryAdd(sessionId, session);
 			}
 
-			// 10% 확률로 Session을 정리한다.
-			if (StaticRandom.Next(1, 10) == 1)
+			if (StaticRandom.Next(1, 10) == 1) ///< 10% 확률로 Session을 정리한다.
 				RemoveExpiredSession();
 			return null;
 		}
