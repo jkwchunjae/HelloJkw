@@ -191,10 +191,11 @@ namespace helloJkw
 						throw new Exception();
 
 					user.Name = accountInfo.name;
-					Logger.Log(user.Name);
+					user.SaveUserName();
 				}
-				catch
+				catch (Exception ex)
 				{
+					Logger.Log(ex);
 					return "fail";
 				}
 				return "success";

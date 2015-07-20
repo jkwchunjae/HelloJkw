@@ -37,6 +37,19 @@ namespace helloJkw
 
 			KboCenter.Load();
 #endif
+			#region Check Database Connection
+			try
+			{
+				var conn = DB.Connection;
+			}
+			catch (Exception ex)
+			{
+				Logger.Log("Database에 접속할 수 없습니다.");
+				Logger.Log(ex);
+				return;
+			}
+			Logger.Log("Database연결에 성공하였습니다.");
+			#endregion
 
 			using (var host = new NancyHost(new Uri("http://localhost:" + port)))
 			{

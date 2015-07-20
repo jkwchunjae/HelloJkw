@@ -121,9 +121,26 @@ namespace helloJkw
 			throw new Exception();
 		}
 
-		public static void UpdateUser(User user)
+		public static void SaveLastLogin(this User user)
 		{
-			var query = "update users set where id=@id;";
+			string query = @"update users set lastdate=@lastdate where id=@id;";
+			using (var cmd = query.CreateCommand())
+			{
+				cmd.Parameters.AddWithValue("@id", user.Id);
+				cmd.Parameters.AddWithValue("@lastdate", user.LastLogin);
+				cmd.ExecuteNonQuery();
+			}
+		}
+
+		public static void SaveUserName(this User user)
+		{
+			string query = @"update users set name=@name where id=@id;";
+			using (var cmd = query.CreateCommand())
+			{
+				cmd.Parameters.AddWithValue("@id", user.Id);
+				cmd.Parameters.AddWithValue("@name", user.Name);
+				cmd.ExecuteNonQuery();
+			}
 		}
 	}
 }

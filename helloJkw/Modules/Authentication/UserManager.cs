@@ -74,7 +74,7 @@ namespace helloJkw
 				_userDic.TryAdd(user.Id, user);
 
 			user.LastLogin = DateTime.Now;
-			//UserDatabase.Save();
+			user.SaveLastLogin();
 			return user;
 		}
 
