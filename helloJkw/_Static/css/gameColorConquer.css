@@ -1,0 +1,28 @@
+﻿div#room div {
+	margin: 0;
+	padding: 0;
+}
+
+div#room-right div.row {
+	margin-bottom: 10px;
+}
+
+div#room-left {
+
+}
+
+div#room-left div.row {
+	height: 30px;
+}
+
+div#room-left div.cell {
+	margin: 0;
+	padding: 0;
+	width: 30px;
+	height: 30px;
+	display: inline-block;
+}
+
+.room-name {
+	display: inline;
+}

@@ -286,6 +286,7 @@
     <Content Include="_Static\bootstrap\js\npm.js" />
     <Content Include="_Static\css\carousel.css" />
     <Content Include="_Static\css\jkwKboChart.css" />
+    <Content Include="_Static\css\gameColorConquer.css" />
     <Content Include="_Static\css\jkwLayout.css" />
     <Content Include="_Static\css\jkwBlogHome.css" />
     <Content Include="_Static\css\luciaProduct.css" />

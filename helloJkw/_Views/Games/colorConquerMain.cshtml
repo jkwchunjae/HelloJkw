@@ -23,21 +23,31 @@
 		</ul>
 	</div>
 	<div class="place" id="room">
-		<p class="room-name">{{roomName}}</p>
-		<button class="btn btn-default" ng-click="leaveRoom(roomName)">나가기</button>
-		<div class="form-inline">
-			<input type="number" class="form-control" id="size" ng-model="size" placeholder="게임판의 크기" />
-			<input type="number" class="form-control" id="countColor" ng-model="countColor" placeholder="게임의색 종류" />
-			<button class="btn btn-default" ng-click="startGame()">게임시작</button>
+		<div class="col-md-8" id="room-left">
+			<div id="game-board">
+			</div>
 		</div>
-		<div id="game-board">
+		<div class="col-md-4" id="room-right">
+			<div class="row">
+				<h3 class="room-name">{{roomName}}</h3>
+				<button class="btn btn-xs btn-danger" ng-click="leaveRoom(roomName)">나가기</button>
+			</div>
+			<div class="row">
+				<div class="col-xs-8">
+					<input type="number" class="form-control" id="size" ng-model="size" placeholder="게임판의 크기" />
+					<input type="number" class="form-control" id="countColor" ng-model="countColor" placeholder="게임의색 종류" />
+				</div>
+				<button class="btn btn-default col-xs-4" ng-click="startGame()">게임시작</button>
+			</div>
+			<div class="row">
+			<ul id="user-list">
+				<li class="user" ng-repeat="user in userList">
+					<span class="glyphicon glyphicon-user" aria-hidden="true"></span>
+					{{user.userName}}
+				</li>
+			</ul>
+			</div>
 		</div>
-		<ul id="user-list">
-			<li class="user" ng-repeat="user in userList">
-				<span class="glyphicon glyphicon-user" aria-hidden="true"></span>
-				{{user.userName}}
-			</li>
-		</ul>
 	</div>
 </div>
 <div id="console">
@@ -46,6 +56,7 @@
 
 @section Css
 {
+	<link href="/Static/css/gameColorConquer.css" rel="stylesheet" />
 <style type="text/css">
 	#console {
 		position: fixed;
@@ -241,8 +252,38 @@
 				showAlert('게임 시작이 실패하였습니다.');
 				return;
 			}
+			SetBoard(data.size, data.cellsColor);
+			SetColor();
+		};
+
+		var SetBoard = function (size, cellsColor) {
+			$('div#game-board .row').remove();
+			for (var row = 0; row < size; row++) {
+				var divRow = document.createElement('div');
+				$(divRow).addClass('row');
+				for (var col = 0; col < size; col++) {
+					var cell = document.createElement('div');
+					$(cell).addClass('cell').addClass(cellsColor[row][col]);
+					$(divRow).append(cell);
+				} // for col
+				$('div#game-board').append(divRow);
+			} // for row
+		};
+
+
+		var SetColor = function () {
+			$('div#game-board div.A').css('background-color', '#DBB7EE');
+			$('div#game-board div.B').css('background-color', '#F8CBAD');
+			$('div#game-board div.C').css('background-color', '#FFE699');
+			$('div#game-board div.D').css('background-color', '#C6E0B4');
+			$('div#game-board div.E').css('background-color', '#FF9595');
+			$('div#game-board div.F').css('background-color', '#DBDBDB');
 		};
 	});
+
+	window.onbeforeunload = function () {
+		//return "게임 중 페이지를 나오면 게임에서 패하게 됩니다.";
+	};
 
 	$(document).ready(function () {
 	});
