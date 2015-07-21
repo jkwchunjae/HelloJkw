@@ -5,11 +5,6 @@
 }
 
 <div class="playground" ng-app="app-color-conquer" ng-controller="controller-color-conquer">
-	<div class="place form-inline" id="login">
-		<label class="sr-only" for="userName">이름</label>
-		<input type="text" id="userName" class="form-control" ng-model="userName" placeholder="이름"/>
-		<button class="btn btn-success" id="login" ng-click="login(userName)">채널 입장</button>
-	</div>
 	<div class="place" id="channel">
 		<div class="form-inline" id="new-room">
 			<input type="text" class="form-control" id="new-room-name" placeholder="방 제목"/>
@@ -42,7 +37,7 @@
 			<div class="row">
 			<ul id="user-list">
 				<li class="user" ng-repeat="user in userList">
-					<span class="glyphicon glyphicon-user" aria-hidden="true"></span>
+					<img class="userlist-image" src="{{user.userImage}}"/>
 					{{user.userName}}
 				</li>
 			</ul>
@@ -65,10 +60,6 @@
 		width: 35%;
 		z-index: -1;
 	}
-
-	.place {
-		display: none;
-	}
 </style>
 }
 
@@ -77,6 +68,10 @@
 <script type="text/javascript">
 	$("nav.navbar").addClass("navbar-shrink");
 	$("li#menu-games").addClass("active");
+	var player = {
+		name: '',
+		image: ''
+	};
 
 	var app = angular.module('app-color-conquer', []);
 	app.controller('controller-color-conquer', function ($scope) {
@@ -85,15 +80,15 @@
 			$('#' + place).css('display', 'block');
 		};
 
-		$scope.login = function (userName) {
+		$scope.login = function (userName, userImage) {
 			if (userName == '') {
 				showAlert('이름을 입력하세요.');
-				$('input#userName').focus();
 				return;
 			}
 			var message = {
 				packetType: 'TryEnterChannel',
-				userName: userName
+				userName: userName,
+				userImage: userImage
 			};
 			sendMessage(message);
 		}
@@ -137,8 +132,9 @@
 		};
 
 		ws.onopen = function (e) {
-			changeUserPlace('login');
-			$scope.login('User' + Math.round(Math.random() * 1000));
+			player.name = 'User' + Math.round(Math.random() * 1000);
+			player.image = '@Model.user.ImageUrl';
+			$scope.login(player.name, player.image);
 		};
 
 		ws.onmessage = function (e) {
@@ -155,6 +151,7 @@
 		};
 
 		ws.onclose = function (e) {
+			showAlert('서버와의 접속이 끊겼습니다.');
 			Log('close: ' + e.code);
 		};
 
@@ -191,6 +188,9 @@
 					break;
 				case 'ResultStartGame':
 					ResultStartGame(obj.data);
+					break;
+				case 'ResultClickCell':
+					ResultClickCell(obj.data);
 					break;
 			}
 		};
@@ -242,7 +242,7 @@
 		var RecvUserList = function (data) {
 			$scope.userList = [];
 			$.each(data, function (index, user) {
-				$scope.userList.push({ userName: user.userName });
+				$scope.userList.push({ userName: user.userName, userImage: user.userImage });
 			});
 			$scope.$apply();
 		};
@@ -252,22 +252,46 @@
 				showAlert('게임 시작이 실패하였습니다.');
 				return;
 			}
-			SetBoard(data.size, data.cellsColor);
-			SetColor();
+			SetBoard(data.size, data.cellsColor, data);
 		};
 
-		var SetBoard = function (size, cellsColor) {
+		var ResultClickCell = function (data) {
+			if (data.result == 'false') {
+				showAlert('선택이 잘못되었습니다. 다른 색을 누르세요!');
+				return;
+			}
+			SetBoard(data.size, data.cellsColor, data);
+			if (data.currentTurnName == player.name)
+			{
+				showAlert(player.name + '님 차례입니다.');
+			}
+		};
+
+		var SetBoard = function (size, cellsColor, data) {
 			$('div#game-board .row').remove();
 			for (var row = 0; row < size; row++) {
 				var divRow = document.createElement('div');
 				$(divRow).addClass('row');
 				for (var col = 0; col < size; col++) {
 					var cell = document.createElement('div');
-					$(cell).addClass('cell').addClass(cellsColor[row][col]);
+					var color = data.bobName == player.name ? cellsColor[size - row - 1][size - col - 1] : cellsColor[row][col];
+					$(cell).addClass('cell').addClass(color);
+					$(cell).attr('data-color', color);
+					if (data.currentTurnName == player.name) {
+						$(cell).css('cursor', 'pointer');
+						$(cell).click(function () {
+							var obj = {
+								packetType: 'ClickCell',
+								color: $(this).attr('data-color')
+							};
+							sendMessage(obj);
+						});
+					}
 					$(divRow).append(cell);
 				} // for col
 				$('div#game-board').append(divRow);
 			} // for row
+			SetColor();
 		};
 
 
