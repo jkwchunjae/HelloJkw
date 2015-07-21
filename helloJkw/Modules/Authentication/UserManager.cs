@@ -65,6 +65,7 @@ namespace helloJkw
 			#endregion
 
 			user.LastLogin = DateTime.Now;
+			user.SaveLastLogin();
 			return user;
 		}
 
