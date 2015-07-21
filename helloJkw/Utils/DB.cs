@@ -13,7 +13,6 @@ namespace helloJkw
 	public static class DB
 	{
 		static string _connStr;
-		static MySqlConnection _conn = null;
 
 		static DB()
 		{
@@ -39,23 +38,9 @@ namespace helloJkw
 
 		static MySqlConnection GetConnection(string connectionString)
 		{
-			if (_conn == null)
-			{
-				_conn = new MySqlConnection(connectionString);
-				_conn.Open();
-			}
-			return _conn;
-		}
-
-		public static void Reset()
-		{
-			try
-			{
-				_conn.Close();
-				_conn.Dispose();
-			}
-			catch { }
-			_conn = null;
+			var conn = new MySqlConnection(connectionString);
+			conn.Open();
+			return conn;
 		}
 
 		public static MySqlConnection Connection
@@ -66,14 +51,14 @@ namespace helloJkw
 			}
 		}
 
-		public static MySqlCommand CreateCommand(this string query)
-		{
-			return Connection.CreateCommand(query);
-		}
-
 		public static MySqlCommand CreateCommand(this MySqlConnection conn, string query)
 		{
 			return new MySqlCommand(query, conn);
+		}
+
+		public static MySqlCommand CreateCommand(this string query)
+		{
+			return Connection.CreateCommand(query);
 		}
 
 		public static MySqlDataReader ExecuteReader(this string query, params object[] paramArray)
