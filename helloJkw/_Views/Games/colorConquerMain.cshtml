@@ -152,7 +152,7 @@
 
 		ws.onclose = function (e) {
 			showAlert('서버와의 접속이 끊겼습니다.');
-			Log('close: ' + e.code);
+			Log('close: ' + e.code + ', ' + e.reason);
 		};
 
 		$("#create-room").click(function () {
