@@ -191,6 +191,8 @@
 					break;
 				case 'ResultClickCell':
 					ResultClickCell(obj.data);
+				case 'GameFinished':
+					GameFinished(obj.data);
 					break;
 			}
 		};
@@ -294,7 +296,6 @@
 			SetColor();
 		};
 
-
 		var SetColor = function () {
 			$('div#game-board div.A').css('background-color', '#DBB7EE');
 			$('div#game-board div.B').css('background-color', '#F8CBAD');
@@ -302,6 +303,13 @@
 			$('div#game-board div.D').css('background-color', '#C6E0B4');
 			$('div#game-board div.E').css('background-color', '#FF9595');
 			$('div#game-board div.F').css('background-color', '#DBDBDB');
+		};
+
+		var GameFinished = function (data) {
+			if (data.winnerName == player.name)
+				showAlert('이겼습니다! ' + data.winnerScore + ':' + data.loserScore);
+			if (data.loserName == player.name)
+				showAlert('졌습니다.' + data.winnerScore + ':' + data.loserScore);
 		};
 	});
 
