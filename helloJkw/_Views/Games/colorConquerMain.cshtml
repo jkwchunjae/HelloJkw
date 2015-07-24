@@ -2,6 +2,7 @@
 @{
 	Layout = "Layout.cshtml";
 	string serverAddress = Model.isDebug ? "ws://localhost:55591/colorconquer" : "ws://hellojkw.com:55591/colorconquer";
+	string playerName = Model.isDebug ? "'User' + Math.round(Math.random() * 1000)" : "'" + Model.user.name + "'";
 }
 
 <div class="playground" ng-app="app-color-conquer" ng-controller="controller-color-conquer">
@@ -14,6 +15,7 @@
 			<li class="room" ng-repeat="room in roomList">
 				<div class="room-name">{{room.roomName}}</div>
 				<button class="btn btn-info btn-sm enter-room" ng-click="enterRoom(room.roomName)">참여!</button>
+				<button class="btn btn-warning btn-sm enter-room" ng-click="enterRoomMonitor(room.roomName)">관전!</button>
 			</li>
 		</ul>
 	</div>
@@ -27,7 +29,7 @@
 				<h3 class="room-name">{{roomName}}</h3>
 				<button class="btn btn-xs btn-danger" ng-click="leaveRoom(roomName)">나가기</button>
 			</div>
-			<div class="row">
+			<div class="row" id="StartGameSection">
 				<div class="col-xs-8">
 					<input type="number" class="form-control" id="size" ng-model="size" placeholder="게임판의 크기" />
 					<input type="number" class="form-control" id="countColor" ng-model="countColor" placeholder="게임의색 종류" />
@@ -101,6 +103,14 @@
 			sendMessage(message);
 		};
 
+		$scope.enterRoomMonitor = function (roomName) {
+			var message = {
+				packetType: 'TryEnterRoomMonitor',
+				roomName: roomName
+			};
+			sendMessage(message);
+		};
+
 		$scope.leaveRoom = function (roomName) {
 			var message = {
 				packetType: 'TryLeaveRoom'
@@ -132,7 +142,8 @@
 		};
 
 		ws.onopen = function (e) {
-			player.name = 'User' + Math.round(Math.random() * 1000);
+			//player.name = 'User' + Math.round(Math.random() * 1000);
+			player.name = @playerName
 			player.image = '@Model.user.ImageUrl';
 			$scope.login(player.name, player.image);
 		};
@@ -181,6 +192,9 @@
 				case 'ResultEnterRoom':
 					ResultEnterRoom(obj.data);
 					break;
+				case 'ResultEnterRoomMonitor':
+					ResultEnterRoomMonitor(obj.data);
+					break;
 				case 'ResultLeaveRoom':
 					ResultLeaveRoom(obj.data);
 				case 'UserList':
@@ -191,6 +205,10 @@
 					break;
 				case 'ResultClickCell':
 					ResultClickCell(obj.data);
+					break;
+				case 'GameStatus':
+					SetBoard(obj.data.size, obj.data.cellsColor, obj.data);
+					break;
 				case 'GameFinished':
 					GameFinished(obj.data);
 					break;
@@ -233,6 +251,17 @@
 			showAlert(data.roomName + '방에 입장하였습니다.');
 		};
 
+		var ResultEnterRoomMonitor = function (data) {
+			if (data.result == 'false') {
+				showAlert('방 입장에 실패하였습니다.');
+				return;
+			}
+			changeUserPlace('room');
+			$scope.roomName = data.roomName;
+			$scope.$apply();
+			showAlert(data.roomName + '방에 입장하였습니다.');
+		};
+
 		var ResultLeaveRoom = function (data) {
 			if (data.result == 'false') {
 				showAlert('방 나가기에 실패하였습니다.');
@@ -243,15 +272,20 @@
 
 		var RecvUserList = function (data) {
 			$scope.userList = [];
+			$('#StartGameSection').css('display', 'none');
 			$.each(data, function (index, user) {
 				$scope.userList.push({ userName: user.userName, userImage: user.userImage });
+				if (user.userType == 'Alice' && user.userName == player.name)
+				{
+					$('#StartGameSection').css('display', 'block');
+				}
 			});
 			$scope.$apply();
 		};
 
 		var ResultStartGame = function (data) {
 			if (data.result == 'false') {
-				showAlert('게임 시작이 실패하였습니다.');
+				showAlert(data.failMessage);
 				return;
 			}
 			SetBoard(data.size, data.cellsColor, data);
