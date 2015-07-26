@@ -30,13 +30,6 @@ namespace helloJkw
 			#endregion
 
 			#endregion
-
-#if !DEBUG
-			LuciaStatic.LuciaDir = LuciaStatic.RootPath.CreateDirInfo();
-			LuciaStatic.UpdateLuciaDir(0);
-
-			KboCenter.Load();
-#endif
 			#region Check Database Connection
 			try
 			{
@@ -49,6 +42,16 @@ namespace helloJkw
 				return;
 			}
 			Logger.Log("Database연결에 성공하였습니다.");
+			#endregion
+			#region Load something
+#if !DEBUG
+			Logger.Log("Load luciashop");
+			LuciaStatic.LuciaDir = LuciaStatic.RootPath.CreateDirInfo();
+			LuciaStatic.UpdateLuciaDir(0);
+
+			Logger.Log("Load KboCenter");
+			KboCenter.Load();
+#endif
 			#endregion
 
 			using (var host = new NancyHost(new Uri("http://localhost:" + port)))
