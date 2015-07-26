@@ -2,7 +2,10 @@
 @{
 	Layout = "Layout.cshtml";
 	string serverAddress = Model.isDebug ? "ws://localhost:55591/colorconquer" : "ws://hellojkw.com:55591/colorconquer";
-	string playerName = Model.isDebug ? "'User' + Math.round(Math.random() * 1000)" : "'" + Model.user.name + "'";
+	//string serverAddress = true ? "ws://localhost:55591/colorconquer" : "ws://hellojkw.com:55591/colorconquer";
+	string playerId = Model.isLogin ? Model.user.Id : "";
+	string playerName = Model.isLogin && !Model.isDebug ? "'" + Model.user.Name + "'" : "'User' + Math.round(Math.random() * 1000)";
+	string playerImage = Model.isLogin ? Model.user.ImageUrl : "";
 }
 
 <div class="playground" ng-app="app-color-conquer" ng-controller="controller-color-conquer">
@@ -27,14 +30,17 @@
 		<div class="col-md-4" id="room-right">
 			<div class="row">
 				<h3 class="room-name">{{roomName}}</h3>
-				<button class="btn btn-xs btn-danger" ng-click="leaveRoom(roomName)">나가기</button>
+				<button class="btn btn-xs btn-danger" ng-click="leaveRoom()">나가기</button>
 			</div>
-			<div class="row" id="StartGameSection">
+			<div class="row" id="start-game-section">
 				<div class="col-xs-8">
 					<input type="number" class="form-control" id="size" ng-model="size" placeholder="게임판의 크기" />
 					<input type="number" class="form-control" id="countColor" ng-model="countColor" placeholder="게임의색 종류" />
 				</div>
 				<button class="btn btn-default col-xs-4" ng-click="startGame()">게임시작</button>
+			</div>
+			<div class="row" id="game-control">
+				<button class="btn btn-warning" ng-click="giveupGame()">기권</button>
 			</div>
 			<div class="row">
 			<ul id="user-list">
@@ -71,8 +77,11 @@
 	$("nav.navbar").addClass("navbar-shrink");
 	$("li#menu-games").addClass("active");
 	var player = {
+		id: '',
 		name: '',
-		image: ''
+		image: '',
+		isPlayer: false,
+		isGameRunning: false
 	};
 
 	var app = angular.module('app-color-conquer', []);
@@ -80,15 +89,17 @@
 		var changeUserPlace = function (place) {
 			$('.place').css('display', 'none');
 			$('#' + place).css('display', 'block');
+			$('#game-control').css('display', 'none');
 		};
 
-		$scope.login = function (userName, userImage) {
+		$scope.login = function (userId, userName, userImage) {
 			if (userName == '') {
 				showAlert('이름을 입력하세요.');
 				return;
 			}
 			var message = {
 				packetType: 'TryEnterChannel',
+				userId: userId,
 				userName: userName,
 				userImage: userImage
 			};
@@ -111,9 +122,16 @@
 			sendMessage(message);
 		};
 
-		$scope.leaveRoom = function (roomName) {
+		$scope.leaveRoom = function () {
 			var message = {
 				packetType: 'TryLeaveRoom'
+			};
+			sendMessage(message);
+		};
+
+		$scope.giveupGame = function () {
+			var message = {
+				packetType: 'GiveupGame'
 			};
 			sendMessage(message);
 		};
@@ -130,9 +148,13 @@
 		var ws = new WebSocket("@serverAddress");
 
 		var Log = function (message) {
+			@if (@Model.isDebug) { 
+				string script = @"
 			var p = document.createElement('p');
 			$(p).text(message);
-			$('#console').prepend(p);
+			$('#console').prepend(p);";
+				@script
+			}
 		};
 
 		var sendMessage = function (obj) {
@@ -142,10 +164,10 @@
 		};
 
 		ws.onopen = function (e) {
-			//player.name = 'User' + Math.round(Math.random() * 1000);
-			player.name = @playerName
-			player.image = '@Model.user.ImageUrl';
-			$scope.login(player.name, player.image);
+			player.id = '@playerId';
+			player.name = @playerName @* playerName 은 'User' + random 형식 때문에 ' 를 붙이지 않고 그대로 대입 *@
+			player.image = '@playerImage';
+			$scope.login(player.id, player.name, player.image);
 		};
 
 		ws.onmessage = function (e) {
@@ -272,12 +294,17 @@
 
 		var RecvUserList = function (data) {
 			$scope.userList = [];
-			$('#StartGameSection').css('display', 'none');
+			$('#start-game-section').css('display', 'none');
 			$.each(data, function (index, user) {
 				$scope.userList.push({ userName: user.userName, userImage: user.userImage });
 				if (user.userType == 'Alice' && user.userName == player.name)
 				{
-					$('#StartGameSection').css('display', 'block');
+					$('#start-game-section').css('display', 'block');
+					player.isPlayer = true;
+				}
+				if (user.userType == 'Bob' && user.userName == player.name)
+				{
+					player.isPlayer = true;
 				}
 			});
 			$scope.$apply();
@@ -288,6 +315,8 @@
 				showAlert(data.failMessage);
 				return;
 			}
+			$('#game-control').css('display', 'block');
+			player.isGameRunning = true;
 			SetBoard(data.size, data.cellsColor, data);
 		};
 
@@ -340,15 +369,24 @@
 		};
 
 		var GameFinished = function (data) {
-			if (data.winnerName == player.name)
+			$('#game-control').css('display', 'none');
+			$('div#game-board .row').remove();
+			player.isGameRunning = false;
+
+			if (data.winnerName == player.name) {
 				showAlert('이겼습니다! ' + data.winnerScore + ':' + data.loserScore);
-			if (data.loserName == player.name)
+			} else if (data.loserName == player.name) {
 				showAlert('졌습니다.' + data.winnerScore + ':' + data.loserScore);
+			} else {
+				showAlert('게임종료. ' + data.winnerName + ' ' + data.winnerScore + ' : ' + data.loserScore + ' ' + data.loserName);
+			}
 		};
 	});
 
 	window.onbeforeunload = function () {
-		//return "게임 중 페이지를 나오면 게임에서 패하게 됩니다.";
+		if (player.isPlayer && player.isGameRunning) {
+			return "게임 중 페이지를 나오면 게임에서 패하게 됩니다.";
+		}
 	};
 
 	$(document).ready(function () {

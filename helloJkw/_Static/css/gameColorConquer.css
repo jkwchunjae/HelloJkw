@@ -17,14 +17,14 @@ div#room-left {
 }
 
 div#room-left div.row {
-	height: 30px;
+	height: 20px;
 }
 
 div#room-left div.cell {
 	margin: 0;
 	padding: 0;
-	width: 30px;
-	height: 30px;
+	width: 20px;
+	height: 20px;
 	display: inline-block;
 }
 
