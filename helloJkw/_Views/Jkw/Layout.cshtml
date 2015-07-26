@@ -73,14 +73,7 @@
 					@*else if (@Model.isDebug)*@
 					else
 					{
-						<li class="dropdown" id="menu-login">
-							<a class="dropdown-toggle page-scroll" data-toggle="dropdown" role="button" href="#">Login<span class="caret"></span></a>
-							<ul class="dropdown-menu">
-								<li><a class="page-scroll show-login" href="/login">Login</a></li>
-								@*<li class="login-link"><a class="page-scroll login-link login-link-google" href="@loginUrl"><img src="/Static/image/login/google/2x/20dp/White signin_Medium_20dp/White-signin_Medium_base_20dp.png" /></a></li>*@
-								<li><a class="page-scroll" href="/register">Register</a></li>
-							</ul>
-						</li>
+						<li id="menu-login"><button class="page-scroll" id="btn-login">Login</button></li>
 					}
 				</ul>
 			</div>
@@ -129,6 +122,9 @@
 		});
 
 		$(document).ready(function () {
+			$('#btn-login').click(function () {
+				window.open('http://localhost/login', '', 'width=400px, height=400px, resizable=no, scrollbar=no, status=no;');
+			});
 			//$('.show-login').click(function () {
 			//	$('li.login-link').show();
 			//});

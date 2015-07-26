@@ -44,13 +44,6 @@ namespace helloJkw
 			#endregion
 			#endregion
 
-			#region check register
-			if (!UserDatabase.IsRegister(id))
-			{
-				throw new NotRegisteredUserException();
-			}
-			#endregion
-
 			#region add user
 			if (!_userDic.ContainsKey(id))
 				_userDic.TryAdd(id, UserDatabase.GetUser(id));
@@ -71,6 +64,7 @@ namespace helloJkw
 
 		public static User Login(User user)
 		{
+			Logger.Log("login: {0}, {1}".With(user.Id, user.Name));
 			if (!_userDic.ContainsKey(user.Id))
 				_userDic.TryAdd(user.Id, user);
 
@@ -102,8 +96,17 @@ namespace helloJkw
 			#endregion
 			#endregion
 
+			Logger.Log("Register: {0}".With(id));
+
 			#region register
 			User user = UserDatabase.Register(id, userName, imageUrl);
+			#endregion
+
+			#region update user info
+			if (user.IsUseGoogleImage && imageUrl != user.ImageUrl)
+			{
+				user.SaveUserImage(imageUrl);
+			}
 			#endregion
 
 			Login(user);

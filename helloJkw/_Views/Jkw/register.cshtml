@@ -1,6 +1,6 @@
 ﻿@inherits Nancy.ViewEngines.Razor.NancyRazorViewBase<dynamic>
 @{
-	Layout = "Layout.cshtml";
+	//Layout = "Layout.cshtml";
 	string redirectUrl = Model.isDebug ? "http://localhost/oauth/login" : "http://hellojkw.com/oauth/login";
 	string loginUrl = "https://accounts.google.com/o/oauth2/auth?client_id=381224079549-pmkekmoko01ss0uqle22q0btsam7nluh.apps.googleusercontent.com&redirect_uri=" + redirectUrl + "&scope=https://www.googleapis.com/auth/plus.login&response_type=code";
 	redirectUrl = Model.isDebug ? "http://localhost/oauth/register" : "http://hellojkw.com/oauth/register";

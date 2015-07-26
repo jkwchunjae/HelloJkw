@@ -26,7 +26,9 @@ namespace helloJkw
 		public static User Register(string id, string userName, string imageUrl)
 		{
 			if (IsRegister(id))
-				throw new AlreadyRegisterdException();
+			{
+				return GetUser(id);
+			}
 
 			try
 			{
@@ -123,6 +125,7 @@ namespace helloJkw
 
 		public static void SaveLastLogin(this User user)
 		{
+			Logger.Log("save user last login: {0}, {1}".With(user.Id, user.LastLogin));
 			string query = @"update users set lastdate=@lastdate where id=@id;";
 			using (var cmd = query.CreateCommand())
 			{
@@ -134,11 +137,25 @@ namespace helloJkw
 
 		public static void SaveUserName(this User user)
 		{
+			Logger.Log("save user name: {0}, {1}".With(user.Id, user.Name));
 			string query = @"update users set name=@name where id=@id;";
 			using (var cmd = query.CreateCommand())
 			{
 				cmd.Parameters.AddWithValue("@id", user.Id);
 				cmd.Parameters.AddWithValue("@name", user.Name);
+				cmd.ExecuteNonQuery();
+			}
+		}
+
+		public static void SaveUserImage(this User user, string imageUrl = null)
+		{
+			if (imageUrl != null) user.ImageUrl = imageUrl;
+			Logger.Log("save user image: {0}, {1}".With(user.Id, user.ImageUrl));
+			string query = @"update users set imageurl=@imageurl where id=@id;";
+			using (var cmd = query.CreateCommand())
+			{
+				cmd.Parameters.AddWithValue("@id", user.Id);
+				cmd.Parameters.AddWithValue("@imageurl", user.ImageUrl);
 				cmd.ExecuteNonQuery();
 			}
 		}

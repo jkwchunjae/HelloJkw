@@ -204,16 +204,21 @@ fieldset[disabled] .btn-xl.active {
     background-color: #fed136;
 }
 
-.navbar-default .nav li a {
+.navbar-default .nav li a,
+.navbar-default .nav li button {
     text-transform: uppercase;
     font-family: Montserrat,"Helvetica Neue",Helvetica,Arial,sans-serif;
     font-weight: 400;
     letter-spacing: 1px;
     color: #fff;
+	background-color: transparent;
+	border: none;
 }
 
 .navbar-default .nav li a:hover,
-.navbar-default .nav li a:focus {
+.navbar-default .nav li a:focus,
+.navbar-default .nav li button:hover,
+.navbar-default .nav li button:focus {
     outline: 0;
     color: #fed136;
 }
