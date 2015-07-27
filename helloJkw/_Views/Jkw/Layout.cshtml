@@ -4,6 +4,8 @@
 	try { title = @Model.Title; } catch { title = "Hello Jkw!"; }
 	string desc;
 	try { desc = @Model.Desc; } catch { desc = ""; }
+
+	string popupUrl = Model.isDebug ? "http://localhost/login" : "http://hellojkw.com/login";
 }
 <!DOCTYPE html>
 <html lang="ko">
@@ -123,7 +125,7 @@
 
 		$(document).ready(function () {
 			$('#btn-login').click(function () {
-				window.open('http://localhost/login', '', 'width=400px, height=400px, resizable=no, scrollbar=no, status=no;');
+				window.open('@popupUrl', '', 'width=400px, height=400px, resizable=no, scrollbar=no, status=no;');
 			});
 			//$('.show-login').click(function () {
 			//	$('li.login-link').show();
