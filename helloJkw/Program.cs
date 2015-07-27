@@ -50,7 +50,7 @@ namespace helloJkw
 			#endregion
 			#region Load something
 #if !DEBUG
-			Logger.Log("Load luciashop");
+			Logger.Log("Load LuciaShop");
 			LuciaStatic.LuciaDir = LuciaStatic.RootPath.CreateDirInfo();
 			LuciaStatic.UpdateLuciaDir(0);
 
@@ -61,8 +61,8 @@ namespace helloJkw
 
 			using (var host = new NancyHost(new Uri("http://localhost:" + port)))
 			{
-				Logger.Log("Start Lucia Shop");
 				host.Start();
+				Logger.Log("Start HelloJkw");
 
 				while (true)
 				{
