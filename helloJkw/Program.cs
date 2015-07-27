@@ -33,12 +33,17 @@ namespace helloJkw
 			#region Check Database Connection
 			try
 			{
+#if DEBUG
+				var conn = DB.Connection;
+				conn.Close();
+#else
 				var query = @"insert into server_start values (now());";
 				var affectedRow = query.ExecuteNonQuery();
 				if (affectedRow != 1)
 				{
 					throw new Exception(query + " 쿼리 실행에 실패하였습니다.");
 				}
+#endif
 			}
 			catch (Exception ex)
 			{
