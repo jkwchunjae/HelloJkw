@@ -60,12 +60,12 @@ namespace helloJkw
 
 					#region get account info Async
 					var jsonStr = await OAuthServer.GetAccessTokenAsync(code, "login");
-					//jsonStr.Dump();
+					jsonStr.Dump();
 					dynamic json = JsonConvert.DeserializeObject(jsonStr);
 					var accessToken = (string)json.access_token;
-					//accessToken.Dump();
+					accessToken.Dump();
 					var accountInfoJson = await OAuthServer.GetAccountInfoAsync(accessToken);
-					//accountInfoJson.Dump();
+					accountInfoJson.Dump();
 					dynamic accountInfo = JsonConvert.DeserializeObject(accountInfoJson);
 					#endregion
 
