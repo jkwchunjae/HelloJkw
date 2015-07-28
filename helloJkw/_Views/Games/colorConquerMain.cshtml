@@ -24,6 +24,15 @@
 	</div>
 	<div class="place" id="room">
 		<div class="col-md-8" id="room-left">
+			<div id="game-status">
+				<span>{{AliceName}}</span>
+				<img class="userlist-image" src="{{AliceImage}}" />
+				<span>{{AliceScore}}</span>
+				<span> : </span>
+				<span>{{BobScore}}</span>
+				<img class="userlist-image" src="{{BobImage}}" />
+				<span>{{BobName}}</span>
+			</div>
 			<div id="game-board">
 			</div>
 		</div>
@@ -298,13 +307,19 @@
 			$('#start-game-section').css('display', 'none');
 			$.each(data, function (index, user) {
 				$scope.userList.push({ userName: user.userName, userImage: user.userImage });
-				if (user.userType == 'Alice' && user.userName == player.name)
-				{
+
+				if (user.userType == 'Alice') {
+					$scope.AliceName = user.userName;
+					$scope.AliceImage = user.userImage;
+				} else if (user.userType == 'Bob') {
+					$scope.BobName = user.userName;
+					$scope.BobImage = user.userImage;
+				}
+
+				if (user.userType == 'Alice' && user.userName == player.name) {
 					$('#start-game-section').css('display', 'block');
 					player.isPlayer = true;
-				}
-				if (user.userType == 'Bob' && user.userName == player.name)
-				{
+				} else if (user.userType == 'Bob' && user.userName == player.name) {
 					player.isPlayer = true;
 				}
 			});
@@ -313,7 +328,7 @@
 
 		var ResultStartGame = function (data) {
 			if (data.result == 'false') {
-				showAlert(data.failMessage);
+				showAlert(data.failureMessage);
 				return;
 			}
 			$('#game-control').css('display', 'block');
@@ -358,6 +373,7 @@
 				$('div#game-board').append(divRow);
 			} // for row
 			SetColor();
+			SetScore(data.aliceScore, data.bobScore);
 		};
 
 		var SetColor = function () {
@@ -367,6 +383,12 @@
 			$('div#game-board div.D').css('background-color', '#C6E0B4');
 			$('div#game-board div.E').css('background-color', '#FF9595');
 			$('div#game-board div.F').css('background-color', '#DBDBDB');
+		};
+
+		var SetScore = function (aliceScore, bobScore) {
+			$scope.AliceScore = aliceScore;
+			$scope.BobScore = bobScore;
+			$scope.$apply();
 		};
 
 		var GameFinished = function (data) {
