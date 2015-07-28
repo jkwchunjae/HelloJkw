@@ -194,6 +194,7 @@
 
 		ws.onclose = function (e) {
 			showAlert('서버와의 접속이 끊겼습니다.');
+			player.isGameRunning = false;
 			Log('close: ' + e.code + ', ' + e.reason);
 		};
 
@@ -338,7 +339,8 @@
 
 		var ResultClickCell = function (data) {
 			if (data.result == 'false') {
-				showAlert('선택이 잘못되었습니다. 다른 색을 누르세요!');
+				showAlert(data.failureMessage);
+				//showAlert('선택이 잘못되었습니다. 다른 색을 누르세요!');
 				return;
 			}
 			SetBoard(data.size, data.cellsColor, data);
