@@ -25,13 +25,13 @@
 	<div class="place" id="room">
 		<div class="col-md-8" id="room-left">
 			<div id="game-status">
-				<span>{{AliceName}}</span>
+				<span class="username-status" id="alice-name">{{AliceName}}</span>
 				<img class="userlist-image" src="{{AliceImage}}" />
 				<span>{{AliceScore}}</span>
 				<span> : </span>
 				<span>{{BobScore}}</span>
 				<img class="userlist-image" src="{{BobImage}}" />
-				<span>{{BobName}}</span>
+				<span class="username-status" id="bob-name">{{BobName}}</span>
 			</div>
 			<div id="game-board">
 			</div>
@@ -44,7 +44,7 @@
 			<div class="row" id="start-game-section">
 				<div class="col-xs-8">
 					<input type="number" class="form-control" id="size" ng-model="size" placeholder="게임판의 크기" />
-					<input type="number" class="form-control" id="countColor" ng-model="countColor" placeholder="게임의색 종류" />
+					@*<input type="number" class="form-control" id="countColor" ng-model="countColor" placeholder="게임의색 종류" />*@
 				</div>
 				<button class="btn btn-default col-xs-4" ng-click="startGame()">게임시작</button>
 			</div>
@@ -92,6 +92,14 @@
 		isPlayer: false,
 		isGameRunning: false
 	};
+
+	var ColorSet = new Array();
+	ColorSet['A'] = '#DBB7EE';
+	ColorSet['B'] = '#F8CBAD';
+	ColorSet['C'] = '#FFE699';
+	ColorSet['D'] = '#C6E0B4';
+	ColorSet['E'] = '#FF9595';
+	ColorSet['F'] = '#DBDBDB';
 
 	var app = angular.module('app-color-conquer', []);
 	app.controller('controller-color-conquer', function ($scope) {
@@ -148,8 +156,8 @@
 		$scope.startGame = function () {
 			var message = {
 				packetType: 'TryStartGame',
-				size: $scope.size,
-				countColor: $scope.countColor
+				size: $scope.size
+				@*countColor: $scope.countColor*@
 			};
 			sendMessage(message);
 		};
@@ -310,6 +318,11 @@
 				$scope.userList.push({ userName: user.userName, userImage: user.userImage });
 
 				if (user.userType == 'Alice') {
+					if ($scope.BobName == user.userName) {
+						var tmp = $scope.BobScore;
+						$scope.BobScore = $scope.AliceScore;
+						$scope.AliceScore = tmp;
+					}
 					$scope.AliceName = user.userName;
 					$scope.AliceImage = user.userImage;
 				} else if (user.userType == 'Bob') {
@@ -376,21 +389,30 @@
 			} // for row
 			SetColor();
 			SetScore(data.aliceScore, data.bobScore);
+			SetUserColor(data);
 		};
 
 		var SetColor = function () {
-			$('div#game-board div.A').css('background-color', '#DBB7EE');
-			$('div#game-board div.B').css('background-color', '#F8CBAD');
-			$('div#game-board div.C').css('background-color', '#FFE699');
-			$('div#game-board div.D').css('background-color', '#C6E0B4');
-			$('div#game-board div.E').css('background-color', '#FF9595');
-			$('div#game-board div.F').css('background-color', '#DBDBDB');
+			for (var color in ColorSet) {
+				$('div#game-board div.' + color).css('background-color', ColorSet[color]);
+			}
 		};
 
 		var SetScore = function (aliceScore, bobScore) {
 			$scope.AliceScore = aliceScore;
 			$scope.BobScore = bobScore;
 			$scope.$apply();
+		};
+
+		var SetUserColor = function (data) {
+			$('.username-status').css('background-color', '');
+			if (data.currentTurnName == data.aliceName) {
+				var color = data.cellsColor[0][0];
+				$('#alice-name').css('background-color', ColorSet[color]);
+			} else if (data.currentTurnName == data.bobName) {
+				var color = data.cellsColor[data.size - 1][data.size - 1];
+				$('#bob-name').css('background-color', ColorSet[color]);
+			}
 		};
 
 		var GameFinished = function (data) {

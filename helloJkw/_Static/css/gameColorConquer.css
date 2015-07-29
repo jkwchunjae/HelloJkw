@@ -1,5 +1,4 @@
-﻿
-.place {
+﻿.place {
 	display: none;
 }
 
@@ -14,6 +13,11 @@ div#room-right div.row {
 
 div#room-left {
 
+}
+
+.username-status {
+	border-radius: 5px;
+	padding: 10px;
 }
 
 div#room-left div.row {
