@@ -1,7 +1,7 @@
 ﻿@inherits Nancy.ViewEngines.Razor.NancyRazorViewBase<dynamic>
 @{
 	Layout = "Layout.cshtml";
-	string serverAddress = Model.isDebug ? "ws://localhost:55591/colorconquer" : "ws://hellojkw.com:55591/colorconquer";
+	string serverAddress = Model.isDebug ? "http://localhost:55591/colorconquer" : "http://hellojkw.com:55591/colorconquer";
 	//string serverAddress = true ? "ws://localhost:55591/colorconquer" : "ws://hellojkw.com:55591/colorconquer";
 	string playerId = Model.isLogin ? Model.user.Id : "";
 	string playerName = Model.isLogin && !Model.isDebug ? "'" + Model.user.Name + "'" : "'User' + Math.round(Math.random() * 1000)";
@@ -82,6 +82,8 @@
 
 @section Javascript
 {
+<script src="/Static/js/jquery.signalR-2.0.3.min.js"></script>
+<script src="@serverAddress/hubs"></script>
 <script type="text/javascript">
 	$("nav.navbar").addClass("navbar-shrink");
 	$("li#menu-games").addClass("active");
@@ -103,6 +105,35 @@
 
 	var app = angular.module('app-color-conquer', []);
 	app.controller('controller-color-conquer', function ($scope) {
+
+		$.connection.hub.url = '@serverAddress';
+		var game = $.connection.colorConquerHub;
+
+		game.client.ServerToClient = function (data) {
+			Log('recv: ' + data);
+			var obj = JSON.parse(data);
+			processPacket(obj);
+		};
+
+		$.connection.hub.start().done(function () {
+			player.id = '@playerId';
+			player.name = @playerName @* playerName 은 'User' + random 형식 때문에 ' 를 붙이지 않고 그대로 대입 *@
+			player.image = '@playerImage';
+			$scope.login(player.id, player.name, player.image);
+		});
+
+		$.connection.hub.disconnected(function () {
+			showAlert('서버와의 접속이 끊겼습니다.');
+			player.isGameRunning = false;
+			Log('close: ' + $.connection.hub.state);
+		});
+
+		var sendMessage = function (obj) {
+			var data = JSON.stringify(obj);
+			Log('send: ' + data);
+			game.server.clientToServer(data);
+		};
+
 		var changeUserPlace = function (place) {
 			$('.place').css('display', 'none');
 			$('#' + place).css('display', 'block');
@@ -162,10 +193,8 @@
 			sendMessage(message);
 		};
 
-		var ws = new WebSocket("@serverAddress");
-
 		var Log = function (message) {
-			@if (@Model.isDebug) { 
+			@if (@Model.isDebug) {
 				string script = @"
 			var p = document.createElement('p');
 			$(p).text(message);
@@ -174,15 +203,10 @@
 			}
 		};
 
-		var sendMessage = function (obj) {
-			var data = JSON.stringify(obj);
-			Log('send: ' + data);
-			ws.send(data);
-		};
-
+		@*
 		ws.onopen = function (e) {
 			player.id = '@playerId';
-			player.name = @playerName @* playerName 은 'User' + random 형식 때문에 ' 를 붙이지 않고 그대로 대입 *@
+			player.name = @playerName // playerName 은 'User' + random 형식 때문에 ' 를 붙이지 않고 그대로 대입
 			player.image = '@playerImage';
 			$scope.login(player.id, player.name, player.image);
 		};
@@ -206,6 +230,13 @@
 			Log('close: ' + e.code + ', ' + e.reason);
 		};
 
+		var sendMessage = function (obj) {
+			var data = JSON.stringify(obj);
+			Log('send: ' + data);
+			ws.send(data);
+		};
+		*@
+
 		$("#create-room").click(function () {
 			var roomName = $('#new-room-name').val();
 			var obj = {
@@ -214,12 +245,6 @@
 			};
 			sendMessage(obj);
 		});
-
-		var sendMessage = function (obj) {
-			var data = JSON.stringify(obj);
-			Log('send: ' + data);
-			ws.send(data);
-		};
 
 		var processPacket = function (obj) {
 			switch (obj.packetType) {
@@ -357,8 +382,7 @@
 				return;
 			}
 			SetBoard(data.size, data.cellsColor, data);
-			if (data.currentTurnName == player.name)
-			{
+			if (data.currentTurnName == player.name) {
 				showAlert(player.name + '님 차례입니다.');
 			}
 		};
