@@ -77,12 +77,13 @@ namespace helloJkw
 					#endregion
 				}
 				#region Exceptions
-				catch (InValidAccountIdException)
+				catch (InValidAccountIdException ex)
 				{
+					Logger.Log(ex);
 				}
 				catch (Exception ex)
 				{
-					session.Logout();
+					//session.Logout();
 					Logger.Log(ex);
 				}
 				#endregion

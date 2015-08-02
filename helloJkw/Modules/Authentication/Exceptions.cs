@@ -8,16 +8,19 @@ namespace helloJkw
 {
 	public class AccessDeniedException: Exception
 	{
-		public AccessDeniedException() { }
+		public AccessDeniedException() : base("AccessDeniedException")
+		{ }
 	}
 
 	public class InValidAccountIdException: Exception
 	{
-		public InValidAccountIdException() { }
+		public InValidAccountIdException() : base("InValidAccountIdException")
+		{ }
 	}
 
 	public class RegistrationFailException: Exception
 	{
-		public RegistrationFailException() { }
+		public RegistrationFailException() : base("RegisterationFailException")
+		{ }
 	}
 }

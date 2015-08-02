@@ -10,17 +10,29 @@
 
 <div class="playground" ng-app="app-color-conquer" ng-controller="controller-color-conquer">
 	<div class="place" id="channel">
-		<div class="form-inline" id="new-room">
-			<input type="text" class="form-control" id="new-room-name" placeholder="방 제목"/>
-			<button class="btn btn-success" id="create-room">방 만들기</button>
+		<div class="col-md-8" id="channel-left">
+			<div class="form-inline" id="new-room">
+				<input type="text" class="form-control" id="new-room-name" placeholder="방 제목"/>
+				<button class="btn btn-success" id="create-room">방 만들기</button>
+			</div>
+			<ul id="room-list">
+				<li class="room" ng-repeat="room in roomList">
+					<div class="room-name">{{room.roomName}}</div>
+					<button class="btn btn-info btn-sm enter-room" ng-click="enterRoom(room.roomName)">참여!</button>
+					<button class="btn btn-warning btn-sm enter-room" ng-click="enterRoomMonitor(room.roomName)">관전!</button>
+				</li>
+			</ul>
 		</div>
-		<ul id="room-list">
-			<li class="room" ng-repeat="room in roomList">
-				<div class="room-name">{{room.roomName}}</div>
-				<button class="btn btn-info btn-sm enter-room" ng-click="enterRoom(room.roomName)">참여!</button>
-				<button class="btn btn-warning btn-sm enter-room" ng-click="enterRoomMonitor(room.roomName)">관전!</button>
-			</li>
-		</ul>
+		<div class="col-md-4" id="channel-right">
+			<div class="row">
+				<ul id="user-list">
+					<li class="user" ng-repeat="user in userList">
+						<img class="userlist-image" src="{{user.userImage}}" />
+						{{user.userName}}, {{user.roomName}}
+					</li>
+				</ul>
+			</div>
+		</div>
 	</div>
 	<div class="place" id="room">
 		<div class="col-md-8" id="room-left">
@@ -43,8 +55,13 @@
 			</div>
 			<div class="row" id="start-game-section">
 				<div class="col-xs-8">
-					<input type="number" class="form-control" id="size" ng-model="size" placeholder="게임판의 크기" />
-					@*<input type="number" class="form-control" id="countColor" ng-model="countColor" placeholder="게임의색 종류" />*@
+					<select class="form-control" id="size" ng-model="size" ng-init="size=11">
+						<option value="7">7</option>
+						<option value="9">9</option>
+						<option value="11">11</option>
+						<option value="13">13</option>
+						<option value="15">15</option>
+					</select>
 				</div>
 				<button class="btn btn-default col-xs-4" ng-click="startGame()">게임시작</button>
 			</div>
@@ -340,7 +357,7 @@
 			$scope.userList = [];
 			$('#start-game-section').css('display', 'none');
 			$.each(data, function (index, user) {
-				$scope.userList.push({ userName: user.userName, userImage: user.userImage });
+				$scope.userList.push({ userName: user.userName, userImage: user.userImage, roomName: user.roomName });
 
 				if (user.userType == 'Alice') {
 					if ($scope.BobName == user.userName) {
@@ -356,7 +373,9 @@
 				}
 
 				if (user.userType == 'Alice' && user.userName == player.name) {
-					$('#start-game-section').css('display', 'block');
+					if (!player.isGameRunning) {
+						$('#start-game-section').css('display', 'block');
+					}
 					player.isPlayer = true;
 				} else if (user.userType == 'Bob' && user.userName == player.name) {
 					player.isPlayer = true;
@@ -371,6 +390,7 @@
 				return;
 			}
 			$('#game-control').css('display', 'block');
+			$('#start-game-section').css('display', 'none');
 			player.isGameRunning = true;
 			SetBoard(data.size, data.cellsColor, data);
 		};
