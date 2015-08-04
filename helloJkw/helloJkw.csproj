@@ -35,9 +35,29 @@
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="MySql.Data, Version=6.9.6.0, Culture=neutral, PublicKeyToken=c5687fc88969c44d, processorArchitecture=MSIL" />
+    <Reference Include="Nancy, Version=1.2.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\Nancy.1.2.0\lib\net40\Nancy.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="Nancy.Hosting.Self, Version=1.2.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\Nancy.Hosting.Self.1.2.0\lib\net40\Nancy.Hosting.Self.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="Nancy.ViewEngines.Razor, Version=1.2.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\Nancy.Viewengines.Razor.1.2.0\lib\net40\Nancy.ViewEngines.Razor.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="Newtonsoft.Json, Version=7.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
+      <HintPath>..\packages\Newtonsoft.Json.7.0.1\lib\net45\Newtonsoft.Json.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
     <Reference Include="System.Drawing" />
+    <Reference Include="System.Web.Razor, Version=2.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <HintPath>..\packages\Microsoft.AspNet.Razor.2.0.30506.0\lib\net40\System.Web.Razor.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
     <Reference Include="System.Xml.Linq" />
     <Reference Include="System.Data.DataSetExtensions" />
     <Reference Include="Microsoft.CSharp" />
@@ -83,6 +103,8 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />
+    <None Include="packages.config" />
+    <None Include="web.config" />
     <None Include="_Static\Agency\font-awesome\fonts\fontawesome-webfont.eot" />
     <None Include="_Static\Agency\font-awesome\fonts\fontawesome-webfont.ttf" />
     <None Include="_Static\Agency\font-awesome\fonts\fontawesome-webfont.woff" />
@@ -166,22 +188,6 @@
     <ProjectReference Include="..\..\HtmlAgilityPack\HtmlAgilityPack\HtmlAgilityPack.fx.4.5.csproj">
       <Project>{1028002a-bbe2-4ff2-94b7-a8368a8f6887}</Project>
       <Name>HtmlAgilityPack.fx.4.5</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\..\Nancy\src\Nancy.Hosting.Self\Nancy.Hosting.Self.csproj">
-      <Project>{aa7f66eb-ec2c-47de-855f-30b3e6ef2134}</Project>
-      <Name>Nancy.Hosting.Self</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\..\Nancy\src\Nancy.ViewEngines.Razor\Nancy.ViewEngines.Razor.csproj">
-      <Project>{2c6f51df-015c-4db6-b44c-0e5e4f25e2a9}</Project>
-      <Name>Nancy.ViewEngines.Razor</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\..\Nancy\src\Nancy\Nancy.csproj">
-      <Project>{34576216-0dca-4b0f-a0dc-9075e75a676f}</Project>
-      <Name>Nancy</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\..\Newtonsoft.Json\Src\Newtonsoft.Json\Newtonsoft.Json.csproj">
-      <Project>{eeea67f9-9089-481d-a4dc-0966dec9fd7d}</Project>
-      <Name>Newtonsoft.Json</Name>
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
@@ -432,6 +438,13 @@
   <PropertyGroup>
     <PreBuildEvent>
     </PreBuildEvent>
+  </PropertyGroup>
+  <PropertyGroup>
+    <PostBuildEvent>
+if $(ConfigurationName) == Debug (
+xcopy /s /y /R "$(SolutionDir)packages\Nancy.Viewengines.Razor.1.2.0\BuildProviders\Nancy.ViewEngines.Razor.BuildProviders.dll" "$(ProjectDir)bin\"
+xcopy /s /y /R "$(SolutionDir)packages\Nancy.Viewengines.Razor.1.2.0\lib\Net40\Nancy.ViewEngines.Razor.dll" "$(ProjectDir)bin\"
+)</PostBuildEvent>
   </PropertyGroup>
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.
