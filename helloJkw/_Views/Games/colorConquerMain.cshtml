@@ -12,8 +12,8 @@
 	<div class="place" id="channel">
 		<div class="col-md-8" id="channel-left">
 			<div class="form-inline" id="new-room">
-				<input type="text" class="form-control" id="new-room-name" placeholder="방 제목"/>
-				<button class="btn btn-success" id="create-room">방 만들기</button>
+				<input type="text" class="form-control" id="new-room-name" ng-model="newRoomName" placeholder="방 제목"/>
+				<button class="btn btn-success" id="create-room" ng-click="createRoom(newRoomName)">방 만들기</button>
 			</div>
 			<ul id="room-list">
 				<li class="room" ng-repeat="room in roomList">
@@ -33,10 +33,10 @@
 				</ul>
 			</div>
 			<div class="row">
-				<div id="lobby-chat"></div>
-				<div class="form-inline">
-					<input type="text" class="form-control" id="chat-channel-msg" ng-model="chatChannelMessage"/>
-					<button class="btn btn-default" ng-click="chat('ChatChannel', chatChannelMessage)">Enter</button>
+				<div class="chat-list" id="lobby-chat"></div>
+				<div class="chat-message input-group">
+					<input type="text" class="chat-text form-control" id="chat-channel-msg" ng-model="chatChannelMessage"/>
+					<div class="btn btn-default chat-send input-group-addon" ng-click="chat('ChatChannel', chatChannelMessage)">Enter</div>
 				</div>
 			</div>
 		</div>
@@ -183,7 +183,7 @@
 				userImage: userImage
 			};
 			sendMessage(message);
-		}
+		};
 
 		$scope.chat = function (packetType, chatMessage) {
 			var message = {
@@ -191,6 +191,14 @@
 				message: chatMessage
 			};
 			sendMessage(message);
+		};
+
+		$scope.createRoom = function (roomName) {
+			var obj = {
+				packetType: 'TryCreateRoom',
+				roomName: roomName
+			};
+			sendMessage(obj);
 		};
 
 		$scope.enterRoom = function (roomName) {
@@ -275,15 +283,6 @@
 			ws.send(data);
 		};
 		*@
-
-		$("#create-room").click(function () {
-			var roomName = $('#new-room-name').val();
-			var obj = {
-				packetType: 'TryCreateRoom',
-				roomName: roomName
-			};
-			sendMessage(obj);
-		});
 
 		var processPacket = function (obj) {
 			switch (obj.packetType) {
