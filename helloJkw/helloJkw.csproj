@@ -185,10 +185,6 @@
       <Project>{5b845d86-ae90-40bc-9950-25f4d03c016a}</Project>
       <Name>Extensions</Name>
     </ProjectReference>
-    <ProjectReference Include="..\..\HtmlAgilityPack\HtmlAgilityPack\HtmlAgilityPack.fx.4.5.csproj">
-      <Project>{1028002a-bbe2-4ff2-94b7-a8368a8f6887}</Project>
-      <Name>HtmlAgilityPack.fx.4.5</Name>
-    </ProjectReference>
   </ItemGroup>
   <ItemGroup>
     <Content Include="_Static\Agency\css\agency.css" />
