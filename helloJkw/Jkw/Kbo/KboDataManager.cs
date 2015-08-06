@@ -29,6 +29,14 @@ namespace helloJkw
 		}
 		#endregion
 
+		#region StandingList (caching)
+		public static List<Standing> LoadStandingList(string filepath)
+		{
+			var json = File.ReadAllText(filepath, Encoding.UTF8);
+			return JsonConvert.DeserializeObject<List<Standing>>(json);
+		}
+		#endregion
+
 		#region Match (from json file)
 		public static List<Match> _matchList = null;
 		public static List<Match> LoadMatchList(string filepath)

@@ -37,6 +37,7 @@ namespace helloJkw
 	{
 		static string _filepathMatchHistory = @"jkw/project/kbo/kbochart/matchHistory.txt";
 		static string _filepathSeasonInfo = @"jkw/project/kbo/kbochart/seasonInfo.txt";
+		static string _filepathStandingList = @"jkw/project/kbo/kbochart/standingList.txt";
 
 		public static List<Match> AllMatchList;
 		public static List<Season> SeasonList;
@@ -46,20 +47,35 @@ namespace helloJkw
 
 		static KboCenter()
 		{
-			AllMatchList = KboDataManager.LoadMatchList(_filepathMatchHistory);
-			SeasonList = KboDataManager.LoadSeasonList(_filepathSeasonInfo);
-			foreach (var season in SeasonList)
+			try
 			{
-				var teamSet = season.LastSeasonRank.Split(',').ToHashSet();
-				season.MatchList = AllMatchList
-					.Where(e => e.Date.Year() == season.Year)
-					.Where(e => e.Date.IsBetween(season.BeginDate, season.EndDate))
-					.Where(e => teamSet.Contains(e.Home) && teamSet.Contains(e.Away))
-					.OrderBy(e => e.Date)
-					.ToList();
-				season.MakeTeamMatchList();
-				season.CalcStanding();
-				season.MakeChartObject();
+				AllMatchList = KboDataManager.LoadMatchList(_filepathMatchHistory);
+				SeasonList = KboDataManager.LoadSeasonList(_filepathSeasonInfo);
+				var standingList = KboDataManager.LoadStandingList(_filepathStandingList);
+				foreach (var season in SeasonList)
+				{
+					var teamSet = season.LastSeasonRank.Split(',').ToHashSet();
+					season.MatchList = AllMatchList
+						.Where(e => e.Date.Year() == season.Year)
+						.Where(e => e.Date.IsBetween(season.BeginDate, season.EndDate))
+						.Where(e => teamSet.Contains(e.Home) && teamSet.Contains(e.Away))
+						.OrderBy(e => e.Date)
+						.ToList();
+					season.MakeTeamMatchList();
+					if (standingList.Where(e => e.Season == season.Year).Count() > 0)
+					{
+						season.StandingList = standingList.Where(e => e.Season == season.Year).ToList();
+					}
+					else
+					{
+						season.CalcStanding();
+					}
+					season.MakeChartObject();
+				}
+			}
+			catch (Exception ex)
+			{
+				Logger.Log(ex);
 			}
 		}
 
