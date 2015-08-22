@@ -33,7 +33,12 @@
 				</ul>
 			</div>
 			<div class="row">
-				<div class="chat-list" id="lobby-chat"></div>
+				<div class="chat-list" id="lobby-chat" style="overflow-y:auto;">
+					<div class="chat-lobby" ng-repeat="chat in chatLobbyList">
+						<div class="chat-lobby-speaker">{{chat.speakerName}}</div>
+						<div class="chat-lobby-message">{{chat.message}}</div>
+					</div>
+				</div>
 				<div class="chat-message input-group">
 					<input type="text" class="chat-text form-control" id="chat-channel-msg" ng-model="chatChannelMessage"/>
 					<div class="btn btn-default chat-send input-group-addon" ng-click="chat('ChatChannel', chatChannelMessage)">Enter</div>
@@ -136,6 +141,7 @@
 
 	var app = angular.module('app-color-conquer', []);
 	app.controller('controller-color-conquer', function ($scope) {
+		$scope.chatLobbyList = [];
 
 		$.connection.hub.url = '@serverAddress';
 		var game = $.connection.colorConquerHub;
@@ -314,6 +320,13 @@
 					break;
 				case 'GameFinished':
 					GameFinished(obj.data);
+					break;
+				case 'ChatChannel':
+					$scope.chatLobbyList.push({ speakerName: obj.data.speakerName, message: obj.data.message });
+					$('#lobby-chat').animate({
+						scrollTop: $('#lobby-chat')[0].scrollHeight
+					}, 1000);
+					$scope.$apply();
 					break;
 			}
 		};
