@@ -47,7 +47,30 @@ img.userlist-image {
 	border-radius: 50%;
 }
 
+div#game-pad {
+	display: block;
+	height: 80px;
+}
+
+div#game-pad div {
+	cursor: pointer;
+	width: 25%;
+	height: 60px;
+	margin: 2px;
+	border-radius: 5px;
+	/*background-color: #ccc;*/
+}
+
+@media(min-width:768px) {
+	div#game-pad {
+		display: none;
+	}
+}
 /* 채팅 시작 */
+
+div.row-chat {
+	display: none;
+}
 
 div.chat-list {
 	height: 300px;
@@ -82,3 +105,5 @@ div.chat-message button.chat-send {
 }*/
 
 /* 채팅 종료 */
+
+

@@ -32,7 +32,7 @@
 					</li>
 				</ul>
 			</div>
-			<div class="row">
+			<div class="row row-chat">
 				<div class="chat-list" id="lobby-chat" style="overflow-y:auto;">
 					<div class="chat-lobby" ng-repeat="chat in chatLobbyList">
 						<div class="chat-lobby-speaker">{{chat.speakerName}}</div>
@@ -58,6 +58,14 @@
 				<span class="username-status" id="bob-name">{{BobName}}</span>
 			</div>
 			<div id="game-board">
+			</div>
+			<div id="game-pad">
+				<div class="game-button col-xs-4" data-color="A" ng-click="clickCell('A')"></div>
+				<div class="game-button col-xs-4" data-color="B" ng-click="clickCell('B')"></div>
+				<div class="game-button col-xs-4" data-color="C" ng-click="clickCell('C')"></div>
+				<div class="game-button col-xs-4" data-color="D" ng-click="clickCell('D')"></div>
+				<div class="game-button col-xs-4" data-color="E" ng-click="clickCell('E')"></div>
+				<div class="game-button col-xs-4" data-color="F" ng-click="clickCell('F')"></div>
 			</div>
 		</div>
 		<div class="col-md-4" id="room-right">
@@ -88,7 +96,7 @@
 				</li>
 			</ul>
 			</div>
-			<div class="row">
+			<div class="row row-chat">
 				<div id="room-chat"></div>
 				<div class="form-inline">
 					<input type="text" class="form-control" id="chat-room-msg" ng-model="chatRoomMessage" />
@@ -137,7 +145,7 @@
 	ColorSet['C'] = '#FFE699';
 	ColorSet['D'] = '#C6E0B4';
 	ColorSet['E'] = '#FF9595';
-	ColorSet['F'] = '#DBDBDB';
+	ColorSet['F'] = '#999999';
 
 	var app = angular.module('app-color-conquer', []);
 	app.controller('controller-color-conquer', function ($scope) {
@@ -145,6 +153,13 @@
 
 		$.connection.hub.url = '@serverAddress';
 		var game = $.connection.colorConquerHub;
+
+		$('div.game-button[data-color="A"]').css('background-color', ColorSet['A']);
+		$('div.game-button[data-color="B"]').css('background-color', ColorSet['B']);
+		$('div.game-button[data-color="C"]').css('background-color', ColorSet['C']);
+		$('div.game-button[data-color="D"]').css('background-color', ColorSet['D']);
+		$('div.game-button[data-color="E"]').css('background-color', ColorSet['E']);
+		$('div.game-button[data-color="F"]').css('background-color', ColorSet['F']);
 
 		game.client.ServerToClient = function (data) {
 			Log('recv: ' + data);
@@ -221,6 +236,14 @@
 				roomName: roomName
 			};
 			sendMessage(message);
+		};
+
+		$scope.clickCell = function (color) {
+			var obj = {
+				packetType: 'ClickCell',
+				color: color
+			};
+			sendMessage(obj);
 		};
 
 		$scope.leaveRoom = function () {
