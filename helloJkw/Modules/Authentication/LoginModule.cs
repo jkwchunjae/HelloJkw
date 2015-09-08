@@ -73,6 +73,8 @@ namespace helloJkw
 					// 로그인한다는 뜻은 무조건 가입한다는 뜻으로 처리하자.
 					// 분리는 불필요하다고 판단함.
 					User user = UserManager.Register(accountInfo);
+					Logger.Log("login: {0}".With(user.Name));
+					Logger.Log("login / {0}".With(session.SessionId));
 					session.Login(user);
 					#endregion
 				}

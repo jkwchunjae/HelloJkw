@@ -26,33 +26,39 @@ namespace helloJkw
 #endif
 			Before += ctx =>
 			{
-				SetSession(ctx);
+				Logger.Log(ctx.Request.Path);
+				SetSession(ctx, "before");
 				return null;
 			};
 
 			After += ctx =>
 			{
-				SetSession(ctx);
+				Logger.Log(ctx.Request.Path);
+				SetSession(ctx, "after");
 				ctx.Response.WithCookie("session_id", session.SessionId);
 			};
 		}
 
-		public void SetSession(NancyContext context)
+		public void SetSession(NancyContext context, string when = "")
 		{
 			sessionId = Request.GetSessionId();
+			Logger.Log("{0} / {1}".With(when, sessionId));
 			session = SessionManager.GetSession(sessionId);
 
 			if (session.IsExpired)
 			{
+				Logger.Log("Logout!");
 				session.Logout();
 			}
 			else
 			{
+				Logger.Log("Refresh!");
 				session.RefreshExpire();
 			}
 			Model.isLogin = session.IsLogin;
 			if (session.IsLogin)
 			{
+				Logger.Log("IsLogin == true");
 				Model.user = session.User;
 			}
 		}
