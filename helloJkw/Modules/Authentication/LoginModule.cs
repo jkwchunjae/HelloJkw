@@ -59,7 +59,7 @@ namespace helloJkw
 					#endregion
 
 					#region get account info Async
-					var jsonStr = await OAuthServer.GetAccessTokenAsync(code, "login");
+					var jsonStr = await OAuthServer.GetAccessTokenAsync(code, "login", Request.Url.SiteBase);
 					//jsonStr.Dump();
 					dynamic json = JsonConvert.DeserializeObject(jsonStr);
 					var accessToken = (string)json.access_token;
@@ -73,8 +73,8 @@ namespace helloJkw
 					// 로그인한다는 뜻은 무조건 가입한다는 뜻으로 처리하자.
 					// 분리는 불필요하다고 판단함.
 					User user = UserManager.Register(accountInfo);
-					Logger.Log("login: {0}".With(user.Name));
-					Logger.Log("login / {0}".With(session.SessionId));
+					//Logger.Log("login: {0}".With(user.Name));
+					//Logger.Log("login / {0}".With(session.SessionId));
 					session.Login(user);
 					#endregion
 				}

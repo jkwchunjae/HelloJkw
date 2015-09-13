@@ -173,7 +173,6 @@
     <None Include="_Views\Jkw\login.cshtml" />
     <None Include="_Views\Jkw\redirectLogin.cshtml" />
     <None Include="_Views\Jkw\userSetting.cshtml" />
-    <None Include="_Views\Jkw\register.cshtml" />
     <None Include="_Views\Jkw\jkwHome.cshtml" />
     <None Include="_Views\Jkw\jkwKboChart.cshtml" />
     <None Include="_Views\Jkw\redirect.cshtml" />

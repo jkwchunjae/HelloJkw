@@ -5,7 +5,7 @@
 	string desc;
 	try { desc = @Model.Desc; } catch { desc = ""; }
 
-	string popupUrl = Model.isDebug ? "http://localhost/login" : "http://hellojkw.com/login";
+	string popupUrl = Model.SiteBase + "/login";
 }
 <!DOCTYPE html>
 <html lang="ko">

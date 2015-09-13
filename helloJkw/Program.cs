@@ -30,6 +30,7 @@ namespace helloJkw
 			#endregion
 
 			#endregion
+
 			#region Check Database Connection
 			try
 			{
@@ -53,6 +54,7 @@ namespace helloJkw
 			}
 			Logger.Log("Database연결에 성공하였습니다.");
 			#endregion
+
 			#region Load something
 #if !DEBUG
 			Logger.Log("Load LuciaShop");
