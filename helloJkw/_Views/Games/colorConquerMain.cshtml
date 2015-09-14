@@ -1,7 +1,7 @@
 ﻿@inherits Nancy.ViewEngines.Razor.NancyRazorViewBase<dynamic>
 @{
 	Layout = "Layout.cshtml";
-	string serverAddress = Model.SiteBase + ":55591/colorconquer";
+	string serverAddress = Model.isDebug ? "http://localhost:55591/colorconquer" : "http://hellojkw.com:55591/colorconquer";
 	string playerId = Model.isLogin ? Model.user.Id : "";
 	string playerName = Model.isLogin && !Model.isDebug ? "'" + Model.user.Name + "'" : "'User' + Math.round(Math.random() * 1000)";
 	string playerImage = Model.isLogin ? Model.user.ImageUrl : "";
