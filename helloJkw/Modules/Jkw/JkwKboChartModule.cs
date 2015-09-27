@@ -34,15 +34,15 @@ namespace helloJkw.Modules.Jkw
 				if (!KboCenter.SeasonList.Select(e => e.Year).Contains(year)) year = KboCenter.RecentSeason;
 				HitCounter.Hit("kbochart/chart/" + year.ToString());
 
+#if (DEBUG)
+				KboCenter.Update(0);
+#else
 				dynamic tmpModel;
 				if (KboChartCache.ChartViewCache.TryGetValue(year, out tmpModel))
 				{
 					if (DateTime.Now.Subtract(KboChartCache.LastChartViewTime[year]).TotalMinutes < 3.0)
 						return View["jkwKboChart", tmpModel];
 				}
-#if (DEBUG)
-				KboCenter.Update(0);
-#else
 				KboCenter.Update();
 #endif
 
