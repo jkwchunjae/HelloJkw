@@ -45,6 +45,7 @@ namespace helloJkw
 					throw new Exception(query + " 쿼리 실행에 실패하였습니다.");
 				}
 #endif
+				Logger.Log("Database연결에 성공하였습니다.");
 			}
 			catch (Exception ex)
 			{
@@ -52,7 +53,6 @@ namespace helloJkw
 				Logger.Log(ex);
 				return;
 			}
-			Logger.Log("Database연결에 성공하였습니다.");
 			#endregion
 
 			#region Load something
