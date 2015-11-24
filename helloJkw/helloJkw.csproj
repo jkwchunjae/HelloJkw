@@ -95,6 +95,7 @@
     <Compile Include="Modules\Games\ColorConquer\ColorConquerMain.cs" />
     <Compile Include="Modules\Games\GameCenter.cs" />
     <Compile Include="Modules\Jkw\JkwBlogManageModule.cs" />
+    <Compile Include="Modules\Jkw\JkwDiaryModule.cs" />
     <Compile Include="Modules\Jkw\JkwBlogModule.cs" />
     <Compile Include="Modules\Jkw\JkwHomeModule.cs" />
     <Compile Include="Modules\Jkw\JkwKboChartModule.cs" />
@@ -164,6 +165,8 @@
     <None Include="_Static\js\jssor\jssor.slider.min.compress.bat" />
     <None Include="_Static\js\jssor\jssor.slider.mini.compress.bat" />
     <None Include="_Views\Games\colorConquerMain.cshtml" />
+    <None Include="_Views\Jkw\diary\jkwDiaryRequireLogin.cshtml" />
+    <None Include="_Views\Jkw\diary\jkwDiaryHome.cshtml" />
     <None Include="_Views\Jkw\jkwBlogCategory.cshtml" />
     <None Include="_Views\Jkw\jkwBlogManage.cshtml" />
     <None Include="_Views\Jkw\jkwBlogHome.cshtml" />
@@ -184,6 +187,7 @@
     <None Include="_Views\Lucia\luciaProduct.cshtml" />
   </ItemGroup>
   <ItemGroup>
+    <Folder Include="Jkw\Diary\" />
     <Folder Include="_Views\Games\ColorConquer\" />
   </ItemGroup>
   <ItemGroup>

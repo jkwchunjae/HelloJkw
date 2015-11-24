@@ -1,0 +1,35 @@
+﻿@{
+	Layout = "Layout.cshtml";
+}
+
+<div class="container" ng-app="app-diary" ng-controller="diary-controller">
+	<h1>전경원의 일기장!</h1>
+	<ul>
+		<li ng-repeat="diary in diaryList">
+			<span>{{diary.date}}</span>
+			<p>
+<pre>{{diary.content}}</pre>
+			</p>
+		</li>
+	</ul>
+</div>
+
+@section Css
+{
+}
+
+@section Javascript
+{
+<script type="text/javascript">
+	$("nav.navbar").addClass("navbar-shrink");
+
+	var app = angular.module('app-diary', []);
+	var getScope = function () {
+		return angular.element(document.querySelector('[ng-controller="diary-controller"]')).scope();
+	}
+
+	app.controller('diary-controller', function ($scope) {
+		$scope.diaryList = new Array();
+	});
+</script>
+}

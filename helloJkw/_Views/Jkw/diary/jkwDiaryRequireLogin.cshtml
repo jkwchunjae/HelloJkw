@@ -1,0 +1,37 @@
+﻿@{
+	Layout = "Layout.cshtml";
+}
+
+<div class="container">
+	<p>
+		안녕하세요! 전경원의 일기장입니다.
+	</p>
+<p>
+저의 일기장을 찾아주셔서 감사합니다.
+<br />
+저는 고2 때부터 싸이월드에 꾸준히 일기를 써왔습니다.
+<br />
+그 때 공개는 하지 않고, 일촌에게만 공개했습니다.
+<br />
+지금도 마찬가지로 제 홈페이지 회원에게만 공개하려고 합니다.
+<br />
+홈페이지 회원이 되려면 메뉴에서 로그인을 눌러주세요.
+<br />
+<button class="btn-login">로그인</button>
+</p>
+</div>
+
+@section Css
+{
+<link href="/Static/css/jkwBlogHome.css" rel="stylesheet">
+<link href="/Static/css/prism.css" rel="stylesheet">
+}
+
+@section Javascript
+{
+<script src="/Static/js/prism.js"></script>
+<script type="text/javascript">
+	$("nav.navbar").addClass("navbar-shrink");
+	$("li#menu-blog").addClass("active");
+</script>
+}
