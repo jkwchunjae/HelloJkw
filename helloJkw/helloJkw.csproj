@@ -76,6 +76,7 @@
     <Compile Include="Extensions\IntHelper.cs" />
     <Compile Include="Jkw\Blog\BlogManager.cs" />
     <Compile Include="Jkw\Blog\Post.cs" />
+    <Compile Include="Jkw\Diary\DiaryManager.cs" />
     <Compile Include="Jkw\Kbo\KboCenter.cs" />
     <Compile Include="Jkw\Kbo\KboDataManager.cs" />
     <Content Include="Jkw\Kbo\KboMatch.cs" />
@@ -187,7 +188,6 @@
     <None Include="_Views\Lucia\luciaProduct.cshtml" />
   </ItemGroup>
   <ItemGroup>
-    <Folder Include="Jkw\Diary\" />
     <Folder Include="_Views\Games\ColorConquer\" />
   </ItemGroup>
   <ItemGroup>
