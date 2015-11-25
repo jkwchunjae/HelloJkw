@@ -32,6 +32,7 @@ namespace helloJkw
 					var model = new
 					{
 						rootPath = (device == "m" ? LuciaStatic.RootPathMobile : LuciaStatic.RootPathWeb),
+						mobilePath = LuciaStatic.RootPathMobile,
 						device,
 						mainMenu = LuciaStatic.GetMainMenu(),
 						category,
