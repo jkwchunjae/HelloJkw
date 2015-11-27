@@ -4,9 +4,18 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace helloJkw.Jkw.Diary
+namespace helloJkw
 {
-	class DiaryManager
+	public class Diary
 	{
+
+	}
+
+	public static class DiaryManager
+	{
+		public static IEnumerable<Diary> GetDiary(string user, DateTime date)
+		{
+			return null;
+		}
 	}
 }

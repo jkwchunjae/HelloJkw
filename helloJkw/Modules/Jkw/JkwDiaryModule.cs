@@ -9,6 +9,7 @@ using Extensions;
 using helloJkw.Utils;
 using System.Diagnostics;
 using System.IO;
+using Newtonsoft.Json;
 
 namespace helloJkw
 {
@@ -34,6 +35,10 @@ namespace helloJkw
 			{
 				string user = _.user;
 				string dateStr = _.date;
+				var date = dateStr.ToDate();
+				var diaryList = DiaryManager.GetDiary(user, date);
+				var json = JsonConvert.SerializeObject(diaryList);
+				return json;
 			};
 		}
 	}
