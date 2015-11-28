@@ -23,7 +23,7 @@ namespace helloJkw
 			return user != null;
 		}
 
-		public static User Register(string id, string userName, string imageUrl)
+		public static User Register(string id, string userName, string email, string imageUrl)
 		{
 			if (IsRegister(id))
 			{
@@ -33,14 +33,15 @@ namespace helloJkw
 			try
 			{
 				int no = GetLastNo() + 1;
-				var user = new User(no, id, regDate: DateTime.Now) { Name = userName, ImageUrl = imageUrl, LastLogin = DateTime.Now, Grade = UserGrade.Friend };
-				string query = @"insert into users (id, no, name, grade, regdate, lastdate, imageurl) 
-										values(@id, @no, @name, @grade, @regdate, @lastdate, @imageurl);";
+				var user = new User(no, id, regDate: DateTime.Now) { Name = userName, Email = email, ImageUrl = imageUrl, LastLogin = DateTime.Now, Grade = UserGrade.Friend };
+				string query = @"insert into users (id, no, name, email, grade, regdate, lastdate, imageurl) 
+										values(@id, @no, @name, @email, @grade, @regdate, @lastdate, @imageurl);";
 				var cmd = query.CreateCommand();
 				#region Setting Prams
 				cmd.Parameters.AddWithValue("@id", user.Id);
 				cmd.Parameters.AddWithValue("@no", user.No);
 				cmd.Parameters.AddWithValue("@name", user.Name);
+				cmd.Parameters.AddWithValue("@email", user.Email);
 				cmd.Parameters.AddWithValue("@grade", user.Grade.ToString());
 				cmd.Parameters.AddWithValue("@regdate", user.RegDate);
 				cmd.Parameters.AddWithValue("@lastdate", user.LastLogin);

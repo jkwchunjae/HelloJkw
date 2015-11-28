@@ -90,6 +90,13 @@ namespace helloJkw
 			// nickName 이 없으면 displayName 이라도..
 			string userName = accountInfo.nickname != null ? accountInfo.nickname : accountInfo.displayName;
 
+			var emails = (JArray)accountInfo.emails;
+			string email = emails
+				.Select(x => (dynamic)x)
+				.Where(x => x.type == "account")
+				.Select(x => x.value)
+				.FirstOrDefault();
+
 			string imageUrl;
 			try { imageUrl = ((string)accountInfo.image.url).RegexReplace(@"\?.*", ""); }
 			catch { imageUrl = null; }
@@ -99,7 +106,7 @@ namespace helloJkw
 			Logger.Log("Register: {0}".With(id));
 
 			#region register
-			User user = UserDatabase.Register(id, userName, imageUrl);
+			User user = UserDatabase.Register(id, userName, email, imageUrl);
 			#endregion
 
 			#region update user info
