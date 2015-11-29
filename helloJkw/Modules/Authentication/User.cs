@@ -26,6 +26,7 @@ namespace helloJkw
 		public string Email;
 		public UserGrade Grade;
 		public bool IsUseGoogleImage;
+		public string DiaryName;
 
 		public readonly DateTime RegDate;
 		public DateTime LastLogin;
@@ -81,6 +82,29 @@ namespace helloJkw
 			Id = id;
 			RegDate = regDate;
 			IsUseGoogleImage = true;
+		}
+
+		public User UpdateJsonInfo(UserInfoJson userInfoJson)
+		{
+			if (userInfoJson == null)
+				return this;
+			DiaryName = userInfoJson.DiaryName;
+			return this;
+		}
+	}
+
+	public class UserInfoJson
+	{
+		public string Id;
+		public string DiaryName;
+
+		public UserInfoJson()
+		{ }
+
+		public UserInfoJson(User user)
+		{
+			Id = user.Id;
+			DiaryName = user.DiaryName;
 		}
 	}
 }

@@ -23,6 +23,11 @@ namespace helloJkw
 				{
 					// 자신의 다이어리가 있다면 가장 우선적으로 보여준다.
 					// 없으면 나의 다이어리를 보여준다.
+					var viewDiaryUser = string.IsNullOrEmpty(session.User.DiaryName)
+						? UserManager.GetUser("112902876433833556239") : session.User;
+					Model.DiaryUserName = viewDiaryUser.Name;
+					Model.DiaryUserId = viewDiaryUser.Id;
+					Model.DiaryUserImage = viewDiaryUser.ImageUrl;
 					return View["diary/jkwDiaryHome", Model];
 				}
 				else
@@ -31,10 +36,11 @@ namespace helloJkw
 				}
 			};
 
-			Post["/diary/get/{user}/{date}"] = _ =>
+			Post["/diary/get"] = _ =>
 			{
-				string user = _.user;
-				string dateStr = _.date;
+				string userId = Request.Form["userId"];
+				var user = UserManager.GetUser(userId);
+				string dateStr = Request.Form["date"];
 				var date = dateStr.ToDate();
 				var diaryList = DiaryManager.GetDiary(user, date);
 				var json = JsonConvert.SerializeObject(diaryList);
