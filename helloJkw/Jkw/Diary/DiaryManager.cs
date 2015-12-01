@@ -13,6 +13,7 @@ namespace helloJkw
 		public DateTime Date;
 		public DateTime RegDate;
 		public DateTime LastModifyDate;
+		public bool IsSecure;
 		public string Text;
 
 		public Diary(string path)
@@ -29,32 +30,33 @@ namespace helloJkw
 		static Dictionary<string /* diaryName */, IEnumerable<Diary>> _diaryDic = new Dictionary<string, IEnumerable<Diary>>();
 
 
-		public static IEnumerable<Diary> LoadDiaryAll(User user, bool reload = false)
+		public static IEnumerable<Diary> LoadDiaryAll(string diaryName, bool reload = false)
 		{
 			// upgradable read lock
-			if (!_diaryDic.ContainsKey(user.DiaryName) || reload)
+			if (!_diaryDic.ContainsKey(diaryName) || reload)
 			{
 				// write lock
-				_diaryDic.Remove(user.DiaryName);
-				var currentPath = Path.Combine(_rootPath, user.DiaryName);
+				_diaryDic.Remove(diaryName);
+				var currentPath = Path.Combine(_rootPath, diaryName);
 				if (!Directory.Exists(currentPath))
 					return new List<Diary>();
 				var diaryList = Directory.GetFiles(currentPath)
 					.Select(x => new Diary(x));
-				_diaryDic.Add(user.DiaryName, diaryList);
+				_diaryDic.Add(diaryName, diaryList);
 			}
-			return _diaryDic[user.DiaryName];
+			return _diaryDic[diaryName];
 		}
 
-		public static IEnumerable<Diary> LoadDiaryByDate(User user, DateTime beginDate, DateTime endDate, bool reload = false)
+		public static IEnumerable<Diary> LoadDiaryByDate(string diaryName, DateTime beginDate, DateTime endDate, bool withSecure, bool reload = false)
 		{
-			return LoadDiaryAll(user, reload)
-				.Where(x => x.Date.Date >= beginDate.Date && x.Date.Date <= endDate.Date);
+			return LoadDiaryAll(diaryName, reload)
+				.Where(x => x.Date.Date >= beginDate.Date && x.Date.Date <= endDate.Date)
+				.Where(x => withSecure ? true : !x.IsSecure);
 		}
 
-		public static IEnumerable<Diary> GetDiary(User user, DateTime date)
+		public static IEnumerable<Diary> GetDiary(string diaryName, DateTime date, bool withSecure)
 		{
-			return LoadDiaryByDate(user, date, date);
+			return LoadDiaryByDate(diaryName, date, date, withSecure);
 		}
 	}
 }

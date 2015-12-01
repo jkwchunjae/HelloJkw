@@ -3,15 +3,20 @@
 }
 
 <div class="container" ng-app="app-diary" ng-controller="diary-controller">
-	<h1>@Model.DiaryUserName 님의 일기장!</h1>
-	<ul>
+	<h1>님의 일기장!</h1>
+	@*<ul>
 		<li ng-repeat="diary in diaryList">
 			<span>{{diary.date}}</span>
 			<p>
 <pre style="max-width: 600px;">{{diary.text}}</pre>
 			</p>
 		</li>
-	</ul>
+	</ul>*@
+	@foreach (var diary in @Model.diaryList)
+	{
+	<span>@diary.Date</span>
+<pre style="max-width: 600px;">@diary.Text</pre>
+	}
 </div>
 
 @section Css
@@ -27,21 +32,6 @@
 	var getScope = function () {
 		return angular.element(document.querySelector('[ng-controller="diary-controller"]')).scope();
 	}
-
-	$.post('diary/get',
-		{
-			userId: '@Model.DiaryUserId',
-			date: '20050717'
-		},
-		function (json) {
-			var data = JSON.parse(json);
-			var scope = getScope();
-			data.map(function (diary) {
-				scope.diaryList.push({ date: diary.Date, text: diary.Text });
-			});
-			scope.$apply();
-		}
-	);
 
 	app.controller('diary-controller', function ($scope) {
 		$scope.diaryList = new Array();

@@ -19,30 +19,39 @@ namespace helloJkw
 		{
 			Get["/diary"] = _ =>
 			{
-				if (session.IsLogin)
-				{
-					// 자신의 다이어리가 있다면 가장 우선적으로 보여준다.
-					// 없으면 나의 다이어리를 보여준다.
-					var viewDiaryUser = string.IsNullOrEmpty(session.User.DiaryName)
-						? UserManager.GetUser("112902876433833556239") : session.User;
-					Model.DiaryUserName = viewDiaryUser.Name;
-					Model.DiaryUserId = viewDiaryUser.Id;
-					Model.DiaryUserImage = viewDiaryUser.ImageUrl;
-					return View["diary/jkwDiaryHome", Model];
-				}
-				else
-				{
+				if (!session.IsLogin)
 					return View["diary/jkwDiaryRequireLogin", Model];
-				}
+
+				// 자신의 다이어리가 있다면 가장 우선적으로 보여준다.
+				// 없으면 나의 다이어리를 보여준다.
+				var diaryName = string.IsNullOrEmpty(session.User.DiaryName)
+					? "jkwchunjae" : session.User.DiaryName;
+				Model.DiaryName = diaryName;
+				return View["diary/jkwDiaryHome", Model];
+			};
+
+			Get["/diary/{diaryName}/{date}"] = _ =>
+			{
+				if (!session.IsLogin)
+					return View["diary/jkwDiaryRequireLogin", Model];
+
+				string diaryName = _.diaryName;
+				DateTime date = ((string)_.date).ToDate();
+				bool withSecure = session.User.DiaryName == diaryName;
+				var diaryList = DiaryManager.GetDiary(diaryName, date, withSecure);
+				Model.diaryList = diaryList;
+				return View["diary/jkwDiaryHome", Model];
 			};
 
 			Post["/diary/get"] = _ =>
 			{
-				string userId = Request.Form["userId"];
-				var user = UserManager.GetUser(userId);
-				string dateStr = Request.Form["date"];
-				var date = dateStr.ToDate();
-				var diaryList = DiaryManager.GetDiary(user, date);
+				if (!session.IsLogin)
+					return string.Empty;
+
+				string diaryName = Request.Form["diaryName"];
+				DateTime date = ((string)Request.Form["date"]).ToDate();
+				bool withSecure = session.User.DiaryName == diaryName;
+				var diaryList = DiaryManager.GetDiary(diaryName, date, withSecure);
 				var json = JsonConvert.SerializeObject(diaryList);
 				return json;
 			};
