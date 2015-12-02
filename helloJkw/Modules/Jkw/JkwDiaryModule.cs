@@ -26,7 +26,10 @@ namespace helloJkw
 				// 없으면 나의 다이어리를 보여준다.
 				var diaryName = string.IsNullOrEmpty(session.User.DiaryName)
 					? "jkwchunjae" : session.User.DiaryName;
+				bool withSecure = session.User.DiaryName == diaryName;
+				var diaryList = new[] { DiaryManager.GetLastDiary(diaryName, withSecure) };
 				Model.DiaryName = diaryName;
+				Model.diaryList = diaryList;
 				return View["diary/jkwDiaryHome", Model];
 			};
 

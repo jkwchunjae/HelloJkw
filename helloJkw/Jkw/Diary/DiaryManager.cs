@@ -41,7 +41,9 @@ namespace helloJkw
 				if (!Directory.Exists(currentPath))
 					return new List<Diary>();
 				var diaryList = Directory.GetFiles(currentPath)
-					.Select(x => new Diary(x));
+					.Select(x => new Diary(x))
+					.OrderBy(x => x.Date)
+					.ToList();
 				_diaryDic.Add(diaryName, diaryList);
 			}
 			return _diaryDic[diaryName];
@@ -57,6 +59,13 @@ namespace helloJkw
 		public static IEnumerable<Diary> GetDiary(string diaryName, DateTime date, bool withSecure)
 		{
 			return LoadDiaryByDate(diaryName, date, date, withSecure);
+		}
+
+		public static Diary GetLastDiary(string diaryName, bool withSecure)
+		{
+			return LoadDiaryAll(diaryName)
+				.Where(x => withSecure ? true : !x.IsSecure)
+				.Last();
 		}
 	}
 }
