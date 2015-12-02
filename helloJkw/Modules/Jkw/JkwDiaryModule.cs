@@ -17,34 +17,48 @@ namespace helloJkw
 	{
 		public JkwDiaryModule()
 		{
-			Get["/diary"] = _ =>
+			Get["/diary/{diaryName?}/{date?}"] = _ =>
 			{
 				if (!session.IsLogin)
 					return View["diary/jkwDiaryRequireLogin", Model];
 
 				// 자신의 다이어리가 있다면 가장 우선적으로 보여준다.
 				// 없으면 나의 다이어리를 보여준다.
-				var diaryName = string.IsNullOrEmpty(session.User.DiaryName)
-					? "jkwchunjae" : session.User.DiaryName;
+				string diaryName = _.diaryName != null ? _.diaryName
+					: string.IsNullOrEmpty(session.User.DiaryName)
+						? "test" : session.User.DiaryName;
 				bool withSecure = session.User.DiaryName == diaryName;
-				var diaryList = new[] { DiaryManager.GetLastDiary(diaryName, withSecure) };
+
+				var diaryList = _.date != null
+					? DiaryManager.GetDiary(diaryName, ((string)_.date).ToDate(), withSecure)
+					: DiaryManager.GetLastDiary(diaryName, withSecure);
+				var date = diaryList.Any() ? diaryList.First().Date : DateTime.MinValue;
+				var prevDate = DiaryManager.GetPrevDate(diaryName, date, withSecure);
+				var nextDate = DiaryManager.GetNextDate(diaryName, date, withSecure);
+
+				Model.Date = date.ToString("yyyy.MM.dd");
+				Model.hasPrev = prevDate != DateTime.MinValue;
+				Model.hasNext = nextDate != DateTime.MinValue;
+				Model.PrevDate = prevDate.ToString("yyyyMMdd");
+				Model.NextDate = nextDate.ToString("yyyyMMdd");
 				Model.DiaryName = diaryName;
-				Model.diaryList = diaryList;
+				Model.DiaryList = diaryList;
+				Model.IsMine = session.User.DiaryName == diaryName;
 				return View["diary/jkwDiaryHome", Model];
 			};
 
-			Get["/diary/{diaryName}/{date}"] = _ =>
-			{
-				if (!session.IsLogin)
-					return View["diary/jkwDiaryRequireLogin", Model];
+			//Get["/diary/{diaryName}/{date}"] = _ =>
+			//{
+			//	if (!session.IsLogin)
+			//		return View["diary/jkwDiaryRequireLogin", Model];
 
-				string diaryName = _.diaryName;
-				DateTime date = ((string)_.date).ToDate();
-				bool withSecure = session.User.DiaryName == diaryName;
-				var diaryList = DiaryManager.GetDiary(diaryName, date, withSecure);
-				Model.diaryList = diaryList;
-				return View["diary/jkwDiaryHome", Model];
-			};
+			//	string diaryName = _.diaryName;
+			//	DateTime date = ((string)_.date).ToDate();
+			//	bool withSecure = session.User.DiaryName == diaryName;
+			//	var diaryList = DiaryManager.GetDiary(diaryName, date, withSecure);
+			//	Model.diaryList = diaryList;
+			//	return View["diary/jkwDiaryHome", Model];
+			//};
 
 			Post["/diary/get"] = _ =>
 			{

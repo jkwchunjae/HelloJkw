@@ -2,39 +2,58 @@
 	Layout = "Layout.cshtml";
 }
 
-<div class="container" ng-app="app-diary" ng-controller="diary-controller">
-	<h1>님의 일기장!</h1>
-	@*<ul>
-		<li ng-repeat="diary in diaryList">
-			<span>{{diary.date}}</span>
-			<p>
-<pre style="max-width: 600px;">{{diary.text}}</pre>
-			</p>
-		</li>
-	</ul>*@
-	@foreach (var diary in @Model.diaryList)
-	{
-	<span>@diary.Date</span>
-<pre style="max-width: 600px;">@diary.Text</pre>
-	}
+<div>
+	<div id="diary-text">
+		<h2>@Model.Date</h2>
+		@foreach (var diary in @Model.DiaryList)
+		{
+		<div class="diary">
+			<pre>@diary.Text</pre>
+		</div>
+		}
+		@if (@Model.hasPrev)
+		{
+		<a href="/diary/@Model.DiaryName/@Model.PrevDate" class="btn btn-default">이전</a>
+		}
+		else
+		{
+		<a href="#" class="btn btn-default" disabled="disabled">이전</a>
+		}
+		@if (@Model.hasNext)
+		{
+		<a href="/diary/@Model.DiaryName/@Model.NextDate" class="btn btn-default">다음</a>
+		}
+		else
+		{
+		<a href="#" class="btn btn-default" disabled="disabled">다음</a>
+		}
+		@if (@Model.IsMine)
+		{
+		<a href="/diary/write/@Model.DiaryName" class="btn btn-success" id="diary-write">쓰기</a>
+		}
+	</div>
 </div>
 
 @section Css
 {
+<style type="text/css">
+	h2 {
+		margin-top: 0px;
+	}
+
+	div#diary-text {
+		max-width: 600px;
+	}
+
+	a#diary-write {
+		float: right;
+	}
+</style>
 }
 
 @section Javascript
 {
 <script type="text/javascript">
 	$("nav.navbar").addClass("navbar-shrink");
-
-	var app = angular.module('app-diary', []);
-	var getScope = function () {
-		return angular.element(document.querySelector('[ng-controller="diary-controller"]')).scope();
-	}
-
-	app.controller('diary-controller', function ($scope) {
-		$scope.diaryList = new Array();
-	});
 </script>
 }
