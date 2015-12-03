@@ -36,29 +36,30 @@ namespace helloJkw
 				var prevDate = DiaryManager.GetPrevDate(diaryName, date, withSecure);
 				var nextDate = DiaryManager.GetNextDate(diaryName, date, withSecure);
 
-				Model.Date = date.ToString("yyyy.MM.dd");
+				Model.Date = date;
 				Model.hasPrev = prevDate != DateTime.MinValue;
 				Model.hasNext = nextDate != DateTime.MinValue;
-				Model.PrevDate = prevDate.ToString("yyyyMMdd");
-				Model.NextDate = nextDate.ToString("yyyyMMdd");
+				Model.PrevDate = prevDate;
+				Model.NextDate = nextDate;
 				Model.DiaryName = diaryName;
 				Model.DiaryList = diaryList;
 				Model.IsMine = session.User.DiaryName == diaryName;
 				return View["diary/jkwDiaryHome", Model];
 			};
 
-			//Get["/diary/{diaryName}/{date}"] = _ =>
-			//{
-			//	if (!session.IsLogin)
-			//		return View["diary/jkwDiaryRequireLogin", Model];
+			Get["/diary/write/{diaryName}"] = _ =>
+			{
+				if (!session.IsLogin)
+					return View["diary/jkwDiaryRequireLogin", Model];
 
-			//	string diaryName = _.diaryName;
-			//	DateTime date = ((string)_.date).ToDate();
-			//	bool withSecure = session.User.DiaryName == diaryName;
-			//	var diaryList = DiaryManager.GetDiary(diaryName, date, withSecure);
-			//	Model.diaryList = diaryList;
-			//	return View["diary/jkwDiaryHome", Model];
-			//};
+				string diaryName = _.diaryName;
+				if (session.User.DiaryName != diaryName)
+					return View["diary/jkwDiarySomethingWrong", Model];
+
+				Model.Date = DateTime.Today;
+				Model.DiaryName = diaryName;
+				return View["diary/jkwDiaryWrite", Model];
+			};
 
 			Post["/diary/get"] = _ =>
 			{

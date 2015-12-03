@@ -5,6 +5,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Extensions;
+using Newtonsoft.Json;
 
 namespace helloJkw
 {
@@ -15,13 +16,6 @@ namespace helloJkw
 		public DateTime LastModifyDate;
 		public bool IsSecure;
 		public string Text;
-
-		public Diary(string path)
-		{
-			var filename = Path.GetFileName(path);
-			Date = filename.Left(8).ToDate();
-			Text = File.ReadAllText(path, Encoding.UTF8);
-		}
 	}
 
 	public static class DiaryManager
@@ -44,7 +38,7 @@ namespace helloJkw
 				if (!Directory.Exists(currentPath))
 					return new List<Diary>();
 				var diaryList = Directory.GetFiles(currentPath)
-					.Select(x => new Diary(x))
+					.Select(x => JsonConvert.DeserializeObject<Diary>(File.ReadAllText(x, Encoding.UTF8)))
 					.OrderBy(x => x.Date)
 					.ToList();
 				_diaryDic.Add(diaryName, diaryList);

@@ -1,0 +1,90 @@
+﻿@{
+	Layout = "Layout.cshtml";
+}
+
+<div>
+	<div id="diary-text">
+		<h2>@Model.Date.ToString("yyyy.MM.dd")</h2>
+		<div class="datepicker"></div>
+		<div class="diary">
+			<textarea></textarea>
+		</div>
+
+		<button class="btn btn-success btn-diary-action">저장</button>
+	</div>
+</div>
+
+@section Css
+{
+<link href="/Static/bootstrap-datepicker/css/bootstrap-datepicker3.min.css" rel="stylesheet">
+<style type="text/css">
+	h2 {
+		margin-top: 0px;
+	}
+
+	div#diary-text {
+		max-width: 600px;
+	}
+
+	textarea {
+		width: 600px;
+		min-height: 200px;
+		max-height: 600px;
+	}
+
+	.btn-diary-action {
+		float: right;
+		margin-left: 5px;
+	}
+
+	.datepicker {
+		display: none;
+	}
+
+	h2 {
+		cursor: pointer;
+		display: inline-block;
+	}
+
+		h2:hover {
+			text-decoration: underline;
+		}
+</style>
+}
+
+@section Javascript
+{
+<script src="/Static/bootstrap-datepicker/js/bootstrap-datepicker.min.js"></script>
+<script type="text/javascript">
+	$("nav.navbar").addClass("navbar-shrink");
+
+	$('h2').click(function () {
+		if ($('div.datepicker').css('display') == 'none') {
+			$('div.datepicker').css('display', 'block');
+		} else {
+			$('div.datepicker').css('display', 'none');
+		}
+	});
+
+	$('textarea').keyup(function () {
+		$(this).css('height', 'auto');
+		$(this).height(this.scrollHeight);
+	});
+
+	$('div.datepicker').datepicker({
+		format: 'yyyy.mm.dd',
+		todayBtn: 'linked',
+		autoclose: true
+	})
+	.on('changeDate', function (e) {
+		var date = $('div.datepicker').datepicker('getDate');
+		var date8 = date.getFullYear() + '.' + padStr(date.getMonth() + 1) + '.' + padStr(date.getDate());
+		$('h2').text(date8);
+		$('div.datepicker').css('display', 'none');
+	});
+
+	function padStr(value) {
+		return (value < 10) ? '0' + value : '' + value;
+	}
+</script>
+}

@@ -166,6 +166,8 @@
     <None Include="_Static\js\jssor\jssor.slider.min.compress.bat" />
     <None Include="_Static\js\jssor\jssor.slider.mini.compress.bat" />
     <None Include="_Views\Games\colorConquerMain.cshtml" />
+    <None Include="_Views\Jkw\diary\jkwDiaryWrite.cshtml" />
+    <None Include="_Views\Jkw\diary\jkwDiarySomethingWrong.cshtml" />
     <None Include="_Views\Jkw\diary\jkwDiaryRequireLogin.cshtml" />
     <None Include="_Views\Jkw\diary\jkwDiaryHome.cshtml" />
     <None Include="_Views\Jkw\jkwBlogCategory.cshtml" />

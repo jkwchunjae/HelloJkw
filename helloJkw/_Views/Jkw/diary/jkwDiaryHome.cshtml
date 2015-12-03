@@ -4,32 +4,28 @@
 
 <div>
 	<div id="diary-text">
-		<h2>@Model.Date</h2>
+		<h2>@Model.Date.ToString("yyyy.MM.dd")</h2>
 		@foreach (var diary in @Model.DiaryList)
 		{
 		<div class="diary">
 			<pre>@diary.Text</pre>
 		</div>
 		}
-		@if (@Model.hasPrev)
-		{
-		<a href="/diary/@Model.DiaryName/@Model.PrevDate" class="btn btn-default">이전</a>
-		}
-		else
-		{
+		@if (@Model.hasPrev) {
+		<a href="/diary/@Model.DiaryName/@Model.PrevDate.ToString("yyyyMMdd")" class="btn btn-default">이전</a>
+		} else {
 		<a href="#" class="btn btn-default" disabled="disabled">이전</a>
 		}
-		@if (@Model.hasNext)
-		{
-		<a href="/diary/@Model.DiaryName/@Model.NextDate" class="btn btn-default">다음</a>
-		}
-		else
-		{
+		@if (@Model.hasNext) {
+		<a href="/diary/@Model.DiaryName/@Model.NextDate.ToString("yyyyMMdd")" class="btn btn-default">다음</a>
+		} else {
 		<a href="#" class="btn btn-default" disabled="disabled">다음</a>
 		}
+
 		@if (@Model.IsMine)
 		{
-		<a href="/diary/write/@Model.DiaryName" class="btn btn-success" id="diary-write">쓰기</a>
+		<a href="/diary/write/@Model.DiaryName" class="btn btn-success btn-diary-action" id="diary-write">쓰기</a>
+		<a href="/diary/modify/@Model.DiaryName/@Model.Date.ToString("yyyyMMdd")" class="btn btn-warning btn-diary-action" id="diary-modify">수정</a>
 		}
 	</div>
 </div>
@@ -45,8 +41,9 @@
 		max-width: 600px;
 	}
 
-	a#diary-write {
+	.btn-diary-action {
 		float: right;
+		margin-left: 5px;
 	}
 </style>
 }
