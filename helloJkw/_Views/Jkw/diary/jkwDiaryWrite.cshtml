@@ -19,6 +19,11 @@
 {
 <link href="/Static/bootstrap-datepicker/css/bootstrap-datepicker3.min.css" rel="stylesheet">
 <style type="text/css">
+	::selection {
+		text-shadow: none;
+		background-color: #c8c8c8;
+	}
+
 	h2 {
 		margin-top: 0px;
 	}
@@ -80,7 +85,6 @@
 			text: $('#diary-text').val()
 		},
 		function (data) {
-			alert(data);
 			if (data == 'success') {
 				location.href = '/diary/@Model.DiaryName';
 			} else {

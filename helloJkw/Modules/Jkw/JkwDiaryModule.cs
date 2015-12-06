@@ -10,6 +10,7 @@ using helloJkw.Utils;
 using System.Diagnostics;
 using System.IO;
 using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
 
 namespace helloJkw
 {
@@ -17,6 +18,7 @@ namespace helloJkw
 	{
 		public JkwDiaryModule()
 		{
+			#region Show Diary
 			Get["/diary/{diaryName?}/{date?}"] = _ =>
 			{
 				if (!session.IsLogin)
@@ -26,7 +28,7 @@ namespace helloJkw
 				// 없으면 나의 다이어리를 보여준다.
 				string diaryName = _.diaryName != null ? _.diaryName
 					: string.IsNullOrEmpty(session.User.DiaryName)
-						? "test" : session.User.DiaryName;
+						? "jkwchunjae" : session.User.DiaryName;
 				bool withSecure = session.User.DiaryName == diaryName;
 
 				var diaryList = _.date != null
@@ -35,6 +37,8 @@ namespace helloJkw
 				var date = diaryList.Any() ? diaryList.First().Date : DateTime.MinValue;
 				var prevDate = DiaryManager.GetPrevDate(diaryName, date, withSecure);
 				var nextDate = DiaryManager.GetNextDate(diaryName, date, withSecure);
+
+				HitCounter.Hit("diary-{diaryName}-{date}".WithVar(new { diaryName, date = date.ToInt() }));
 
 				Model.Date = date;
 				Model.hasPrev = prevDate != DateTime.MinValue;
@@ -46,7 +50,9 @@ namespace helloJkw
 				Model.IsMine = session.User.DiaryName == diaryName;
 				return View["diary/jkwDiaryHome", Model];
 			};
+			#endregion
 
+			#region Write Diary
 			Get["/diary/write/{diaryName}"] = _ =>
 			{
 				if (!session.IsLogin)
@@ -85,19 +91,71 @@ namespace helloJkw
 
 				return "success";
 			};
+			#endregion
 
-			Post["/diary/get"] = _ =>
+			#region Modify Diary
+			Get["/diary/modify/{diaryName}/{date}"] = _ =>
 			{
 				if (!session.IsLogin)
-					return string.Empty;
+					return View["diary/jkwDiaryRequireLogin", Model];
+
+				string diaryName = _.diaryName;
+				DateTime date = ((string)_.date).ToDate();
+
+				if (session.User.DiaryName != diaryName)
+					return View["diary/jkwDiarySomethingWrong", Model];
+
+				var diaryList = DiaryManager.GetDiary(diaryName, date, withSecure: true);
+
+				Model.DiaryName = diaryName;
+				Model.Date = date;
+				Model.DiaryList = diaryList;
+
+				return View["diary/jkwDiaryModify", Model];
+			};
+
+			Post["/diary/modify"] = _ =>
+			{
+				if (!session.IsLogin)
+					return "로그인을 해주세요.";
 
 				string diaryName = Request.Form["diaryName"];
 				DateTime date = ((string)Request.Form["date"]).ToDate();
-				bool withSecure = session.User.DiaryName == diaryName;
-				var diaryList = DiaryManager.GetDiary(diaryName, date, withSecure);
-				var json = JsonConvert.SerializeObject(diaryList);
-				return json;
+
+				if (session.User.DiaryName != diaryName)
+					return "본인 다이어리가 아닙니다.";
+
+				try
+				{
+					string json = Request.Form["diaryList"];
+					var diaryList = ((JArray)JsonConvert.DeserializeObject(json))
+						.Select(x => new
+						{
+							Index = ((string)((dynamic)x).Index).ToInt(),
+							Text = (string)((dynamic)x).Text
+						});
+
+					foreach (var diary in diaryList)
+					{
+						if (string.IsNullOrEmpty(diary.Text.Trim()))
+						{
+							DiaryManager.DeleteDiary(diaryName, date, diary.Index);
+						}
+						else
+						{
+							DiaryManager.ModifyDiary(diaryName, date, diary.Index, diary.Text);
+						}
+					}
+				}
+				catch (Exception ex)
+				{
+					ex.WriteLog();
+					return ex.Message;
+				}
+
+				return "success";
 			};
+			#endregion
 		}
 	}
 }

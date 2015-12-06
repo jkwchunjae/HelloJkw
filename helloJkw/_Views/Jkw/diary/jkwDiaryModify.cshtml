@@ -1,0 +1,98 @@
+﻿@{
+	Layout = "Layout.cshtml";
+}
+
+<div>
+	<div id="diary-modify">
+		<h2>@Model.Date.ToString("yyyy.MM.dd")</h2>
+		@foreach (var diary in @Model.DiaryList)
+		{
+		<div class="diary">
+			<textarea class="diary-text" id="diary-text-@diary.Index" data-index="@diary.Index">@diary.Text</textarea>
+		</div>
+		}
+
+		<button class="btn btn-warning btn-diary-action" id="diary-modify">수정</button>
+	</div>
+</div>
+
+@section Css
+{
+<link href="/Static/bootstrap-datepicker/css/bootstrap-datepicker3.min.css" rel="stylesheet">
+<style type="text/css">
+	::selection {
+		text-shadow: none;
+		background-color: #c8c8c8;
+	}
+
+	h2 {
+		margin-top: 0px;
+	}
+
+	div#diary-modify {
+		max-width: 600px;
+	}
+
+	.diary-text {
+		width: 600px;
+		/*min-height: 200px;*/
+		height: auto;
+		max-height: 600px;
+	}
+
+	.btn-diary-action {
+		float: right;
+		margin-left: 5px;
+	}
+</style>
+}
+
+@section Javascript
+{
+<script src="/Static/bootstrap-datepicker/js/bootstrap-datepicker.min.js"></script>
+<script type="text/javascript">
+	$("nav.navbar").addClass("navbar-shrink");
+
+	$('.diary-text').keyup(function () {
+		$(this).css('height', 'auto');
+		$(this).height(this.scrollHeight);
+	});
+
+	var getDiaryText = function (index) {
+		return $('#diary-text-' + index).val();
+	}
+
+	$('button#diary-modify').click(function () {
+		var diaryList = new Array();
+		@foreach (var diary in @Model.DiaryList)
+		{
+			@:var diarry = {
+				@:Index: @diary.Index,
+				@:Text: getDiaryText(@diary.Index)
+			@:};
+			@:diaryList.push(diarry);
+		}
+
+		$.post('/diary/modify',
+		{
+			diaryName: '@Model.DiaryName',
+			date: '@Model.Date.ToString("yyyyMMdd");',
+			diaryList: JSON.stringify(diaryList)
+		},
+		function (data) {
+			if (data == 'success') {
+				location.href = '/diary/@Model.DiaryName/@Model.Date.ToString("yyyyMMdd")';
+			} else {
+				showAlert(data);
+			}
+		});
+	});
+
+	$(document).ready(function () {
+		$('.diary-text').focus();
+		$('.diary-text').each(function () {
+			$(this).height(this.scrollHeight);
+		});
+	});
+</script>
+}

@@ -15,21 +15,21 @@ namespace helloJkw
 		public DateTime RegDate;
 		public DateTime LastModifyDate;
 		public bool IsSecure;
-		public string Text;
 		public int Index;
+		public string Text;
 	}
 
 	public static class DiaryManager
 	{
 		static string _rootPath = @"jkw/project/diary";
 		const string _diaryExt = "diary";
-		static Dictionary<string /* diaryName */, IEnumerable<Diary>> _diaryDic = new Dictionary<string, IEnumerable<Diary>>();
+		static Dictionary<string /* diaryName */, List<Diary>> _diaryDic = new Dictionary<string, List<Diary>>();
 
 		#region Load & Get
 		private static IEnumerable<Diary> LoadDiaryAll(string diaryName, bool reload = false)
 		{
 #if DEBUG
-			reload = true;
+			//reload = true;
 #endif
 			// upgradable read lock
 			if (!_diaryDic.ContainsKey(diaryName) || reload)
@@ -42,7 +42,7 @@ namespace helloJkw
 
 				var diaryList = Directory.GetFiles(currentPath, "*." + _diaryExt)
 					.Select(x => new { Diary = JsonConvert.DeserializeObject<Diary>(File.ReadAllText(x, Encoding.UTF8)), FileName = Path.GetFileNameWithoutExtension(x) })
-					.Select(x => new { x.Diary, FileIndex = x.FileName.Substring(9, x.FileName.Length - 9 - (1 + _diaryExt.Length)).ToInt()})
+					.Select(x => new { x.Diary, FileIndex = x.FileName.Substring(9, x.FileName.Length - 9).ToInt()})
 					.OrderBy(x => x.Diary.Date)
 					.ToList();
 
@@ -52,7 +52,7 @@ namespace helloJkw
 					// 어떻게 해야하지?
 				}
 
-				_diaryDic.Add(diaryName, diaryList.Select(x => x.Diary));
+				_diaryDic.Add(diaryName, diaryList.Select(x => x.Diary).ToList());
 			}
 			return _diaryDic[diaryName];
 		}
@@ -97,15 +97,52 @@ namespace helloJkw
 		#endregion
 
 		#region Write & Modify
+		public static Diary ModifyDiary(string diaryName, DateTime date, int index, string text)
+		{
+			var diary = LoadDiaryByDate(diaryName, date, date, withSecure: true)
+				.Where(x => x.Index == index)
+				.FirstOrDefault();
+
+			if (diary == null)
+				return null;
+
+			if (diary.Text == text)
+				return diary;
+
+			diary.Text = text;
+			var json = JsonConvert.SerializeObject(diary);
+
+			var fileName = "{date}_{index}.{ext}".WithVar(new { date = date.ToInt(), index = index, ext = _diaryExt });
+			File.WriteAllText(Path.Combine(_rootPath, diaryName, fileName), json, Encoding.UTF8);
+
+			return diary;
+		}
+
+		public static bool DeleteDiary(string diaryName, DateTime date, int index)
+		{
+			var diary = LoadDiaryByDate(diaryName, date, date, withSecure: true)
+				.Where(x => x.Index == index)
+				.FirstOrDefault();
+
+			if (diary == null)
+				return false;
+
+			_diaryDic[diaryName].Remove(diary);
+
+			var fileName = "{date}_{index}.{ext}".WithVar(new { date = date.ToInt(), index = index, ext = _diaryExt });
+			File.Delete(Path.Combine(_rootPath, diaryName, fileName));
+
+			return true;
+		}
+
 		public static Diary WriteDiary(string diaryName, DateTime date, string text, bool isSecure)
 		{
 			// write lock
 			// 쓰기할땐 항상 다시 로드 하자
-			var diaryIndex = LoadDiaryByDate(diaryName, date, date, withSecure: true, reload: true)
-				.Select(x => x.FileName.Substring(9, x.FileName.Length - 9 - (_diaryExt.Length + 1)).ToInt())
+			var diaryIndex = LoadDiaryByDate(diaryName, date, date, withSecure: true)
+				.Select(x => x.Index)
 				.DefaultIfEmpty(0)
 				.Max() + 1;
-			var fileName = "{date}_{index}.{ext}".WithVar(new { date = date.ToInt(), index = diaryIndex, ext = _diaryExt });
 
 			var diary = new Diary
 			{
@@ -113,13 +150,20 @@ namespace helloJkw
 				RegDate = DateTime.Now,
 				LastModifyDate = DateTime.Now,
 				IsSecure = isSecure,
+				Index = diaryIndex,
 				Text = text,
-				FileName = fileName,
 			};
 
 			var json = JsonConvert.SerializeObject(diary);
 
+			var fileName = "{date}_{index}.{ext}".WithVar(new { date = date.ToInt(), index = diaryIndex, ext = _diaryExt });
 			File.WriteAllText(Path.Combine(_rootPath, diaryName, fileName), json, Encoding.UTF8);
+
+			if (!_diaryDic.ContainsKey(diaryName))
+			{
+				_diaryDic.Add(diaryName, new List<Diary>());
+			}
+			_diaryDic[diaryName].Add(diary);
 
 			return diary;
 		}
