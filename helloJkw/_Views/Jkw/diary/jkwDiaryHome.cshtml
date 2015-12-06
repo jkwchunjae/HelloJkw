@@ -12,19 +12,19 @@
 		</div>
 		}
 		@if (@Model.hasPrev) {
-		<a href="/diary/@Model.DiaryName/@Model.PrevDate.ToString("yyyyMMdd")" class="btn btn-default">이전</a>
+		<a href="/diary/@Model.DiaryName/@Model.PrevDate.ToString("yyyyMMdd")" class="btn btn-default" id="diary-prev" title="키보드 ←">이전</a>
 		} else {
-		<a href="#" class="btn btn-default" disabled="disabled">이전</a>
+		<a href="#" class="btn btn-default" id="diary-prev" disabled="disabled">이전</a>
 		}
 		@if (@Model.hasNext) {
-		<a href="/diary/@Model.DiaryName/@Model.NextDate.ToString("yyyyMMdd")" class="btn btn-default">다음</a>
+		<a href="/diary/@Model.DiaryName/@Model.NextDate.ToString("yyyyMMdd")" class="btn btn-default" id="diary-next" title="키보드 →">다음</a>
 		} else {
-		<a href="#" class="btn btn-default" disabled="disabled">다음</a>
+		<a href="#" class="btn btn-default" id="diary-next" disabled="disabled">다음</a>
 		}
 
 		@if (@Model.IsMine)
 		{
-		<a href="/diary/write/@Model.DiaryName" class="btn btn-success btn-diary-action" id="diary-write">쓰기</a>
+		<a href="/diary/write/@Model.DiaryName" class="btn btn-success btn-diary-action" id="diary-write" title="키보드 N">쓰기</a>
 		<a href="/diary/modify/@Model.DiaryName/@Model.Date.ToString("yyyyMMdd")" class="btn btn-warning btn-diary-action" id="diary-modify">수정</a>
 		}
 	</div>
@@ -52,5 +52,16 @@
 {
 <script type="text/javascript">
 	$("nav.navbar").addClass("navbar-shrink");
+
+	$(document).keyup(function (e) {
+		var key = e.which;
+		if (key == 37) { // Arrow Left
+			location.href = $('#diary-prev').attr('href');
+		} else if (key == 39) { // Arrow Right
+			location.href = $('#diary-next').attr('href');
+		} else if (key == 78) { // Key N
+			location.href = $('#diary-write').attr('href');
+		}
+	});
 </script>
 }

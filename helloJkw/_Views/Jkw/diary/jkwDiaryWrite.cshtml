@@ -3,14 +3,15 @@
 }
 
 <div>
-	<div id="diary-text">
+	<div id="diary-write">
 		<h2>@Model.Date.ToString("yyyy.MM.dd")</h2>
+		<span id="date-desc">(오늘)</span>
 		<div class="datepicker"></div>
 		<div class="diary">
-			<textarea></textarea>
+			<textarea id="diary-text"></textarea>
 		</div>
 
-		<button class="btn btn-success btn-diary-action">저장</button>
+		<button class="btn btn-success btn-diary-action" id="diary-write">저장</button>
 	</div>
 </div>
 
@@ -22,11 +23,11 @@
 		margin-top: 0px;
 	}
 
-	div#diary-text {
+	div#diary-write {
 		max-width: 600px;
 	}
 
-	textarea {
+	#diary-text {
 		width: 600px;
 		min-height: 200px;
 		max-height: 600px;
@@ -66,9 +67,26 @@
 		}
 	});
 
-	$('textarea').keyup(function () {
+	$('#diary-text').keyup(function () {
 		$(this).css('height', 'auto');
 		$(this).height(this.scrollHeight);
+	});
+
+	$('button#diary-write').click(function () {
+		$.post('/diary/write',
+		{
+			diaryName: '@Model.DiaryName',
+			date: $('h2').attr('data-date'),
+			text: $('#diary-text').val()
+		},
+		function (data) {
+			alert(data);
+			if (data == 'success') {
+				location.href = '/diary/@Model.DiaryName';
+			} else {
+				showAlert(data);
+			}
+		})
 	});
 
 	$('div.datepicker').datepicker({
@@ -78,13 +96,54 @@
 	})
 	.on('changeDate', function (e) {
 		var date = $('div.datepicker').datepicker('getDate');
-		var date8 = date.getFullYear() + '.' + padStr(date.getMonth() + 1) + '.' + padStr(date.getDate());
-		$('h2').text(date8);
+		setDate(date);
 		$('div.datepicker').css('display', 'none');
 	});
+
+	function setDate(date) {
+		var date8 = getDate8(date);
+		$('h2').text(date8);
+		$('h2').attr('data-date', date.getFullYear() * 10000 + (date.getMonth() + 1) * 100 + date.getDate());
+
+		var today = new Date();
+		var yesterday = new Date();
+		yesterday.setDate(today.getDate() - 1);
+		var beforeYesterday = new Date();
+		beforeYesterday.setDate(yesterday.getDate() - 1);
+		var tomorrow = new Date();
+		tomorrow.setDate(today.getDate() + 1);
+
+		var dateDesc = '';
+		if (date8 == getDate8(today)) {
+			dateDesc = '(오늘)';
+		} else if (date8 == getDate8(yesterday)) {
+			dateDesc = '(어제)';
+		} else if (date8 == getDate8(beforeYesterday)) {
+			dateDesc = '(그저께)';
+		} else if (date8 == getDate8(tomorrow)) {
+			dateDesc = '(내일)'; // 일기장에 내일이 웬말이냐
+		}
+
+		$('span#date-desc').text(dateDesc);
+	}
+
+	function getDate8(date) {
+		return date.getFullYear() + '.' + padStr(date.getMonth() + 1) + '.' + padStr(date.getDate());
+	}
 
 	function padStr(value) {
 		return (value < 10) ? '0' + value : '' + value;
 	}
+
+	$(document).keydown(function () {
+		// 날짜 이동 단축키가 있었으면 좋겠다
+		//if (event.shiftKey && event.keyCode == 37) {
+		//}
+	});
+
+	$(document).ready(function () {
+		setDate(new Date());
+		$('#diary-text').focus();
+	});
 </script>
 }

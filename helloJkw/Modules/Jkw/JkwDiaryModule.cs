@@ -61,6 +61,31 @@ namespace helloJkw
 				return View["diary/jkwDiaryWrite", Model];
 			};
 
+			Post["/diary/write"] = _ =>
+			{
+				if (!session.IsLogin)
+					return "로그인을 해주세요.";
+
+				string diaryName = Request.Form["diaryName"];
+				DateTime date = ((string)Request.Form["date"]).ToDate();
+				string text = Request.Form["text"];
+
+				if (session.User.DiaryName != diaryName)
+					return "본인 다이어리가 아닙니다.";
+
+				try
+				{
+					DiaryManager.WriteDiary(diaryName, date, text, isSecure: false);
+				}
+				catch (Exception ex)
+				{
+					ex.WriteLog();
+					return ex.Message;
+				}
+
+				return "success";
+			};
+
 			Post["/diary/get"] = _ =>
 			{
 				if (!session.IsLogin)
