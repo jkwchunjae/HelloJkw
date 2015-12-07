@@ -39,7 +39,7 @@ namespace helloJkw
 				// 없으면 나의 다이어리를 보여준다.
 				string diaryName = _.diaryName != null ? _.diaryName
 					: string.IsNullOrEmpty(session.User.DiaryName)
-						? "jkwchunjae" : session.User.DiaryName;
+						? UserManager.GetUser("112902876433833556239").DiaryName : session.User.DiaryName;
 				bool withSecure = session.User.DiaryName == diaryName;
 
 				var diaryList = _.date != null
