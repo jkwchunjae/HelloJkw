@@ -14,6 +14,17 @@ using Newtonsoft.Json.Linq;
 
 namespace helloJkw
 {
+	public class YearGroup
+	{
+		public int Year;
+		public List<MonthGroup> MonthList;
+	}
+
+	public class MonthGroup
+	{
+		public int Month;
+		public List<DateTime> DateList;
+	}
 	public class JkwDiaryModule : JkwModule
 	{
 		public JkwDiaryModule()
@@ -49,6 +60,33 @@ namespace helloJkw
 				Model.DiaryList = diaryList;
 				Model.IsMine = session.User.DiaryName == diaryName;
 				return View["diary/jkwDiaryHome", Model];
+			};
+
+			Get["/diary/showDates/{diaryName}"] = _ =>
+			{
+				if (!session.IsLogin)
+					return View["diary/jkwDiaryRequireLogin", Model];
+
+				string diaryName = _.diaryName;
+				bool withSecure = session.User.DiaryName == diaryName;
+				var dateList = DiaryManager.GetAllDates(diaryName, withSecure);
+
+				var dateGroup = dateList
+					.GroupBy(x => x.Year)
+					.Select(x => new YearGroup
+					{
+						Year = x.Key,
+						MonthList = x.GroupBy(e => e.Month)
+									.Select(e => new MonthGroup{ Month = e.Key, DateList = e.Select(t => t).ToList() })
+									.OrderByDescending(e => e.Month)
+									.ToList()
+					})
+					.OrderByDescending(x => x.Year)
+					.ToList();
+
+				Model.DiaryName = diaryName;
+				Model.DateGroup = dateGroup;
+				return View["diary/jkwDiaryShowDates", Model];
 			};
 			#endregion
 

@@ -77,6 +77,15 @@ namespace helloJkw
 			return GetDiary(diaryName, lastDiary.Date, withSecure);
 		}
 
+		public static IEnumerable<DateTime> GetAllDates(string diaryName, bool withSecure)
+		{
+			return LoadDiaryAll(diaryName)
+				.Where(x => withSecure ? true : !x.IsSecure)
+				.Select(x => x.Date)
+				.Distinct()
+				.OrderBy(x => x);
+		}
+
 		public static DateTime GetPrevDate(string diaryName, DateTime date, bool withSecure)
 		{
 			var list = LoadDiaryAll(diaryName)

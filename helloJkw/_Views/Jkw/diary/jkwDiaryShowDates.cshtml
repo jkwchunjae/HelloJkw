@@ -1,0 +1,73 @@
+﻿@{
+	Layout = "Layout.cshtml";
+}
+
+<div>
+	<div id="diary-modify">
+		@foreach (var yearGroup in @Model.DateGroup)
+		{
+			<h2>@yearGroup.Year</h2>
+			@foreach (var monthGroup in yearGroup.MonthList)
+			{
+				<div>
+					<h3 style="display: inline;">@monthGroup.Month</h3>
+					@foreach (var date in @monthGroup.DateList)
+					{
+						<a href="/diary/@Model.DiaryName/@date.ToString("yyyyMMdd")">@date.ToString("dd")</a>
+					}
+				</div>
+			}
+		}
+	</div>
+</div>
+
+@section Css
+{
+<link href="/Static/bootstrap-datepicker/css/bootstrap-datepicker3.min.css" rel="stylesheet">
+<style type="text/css">
+	::selection {
+		text-shadow: none;
+		background-color: #c8c8c8;
+	}
+
+	a {
+		color: #4a4a4a;
+	}
+
+	a:hover {
+		color: black;
+		font-weight: bold;
+	}
+
+	h2 {
+		margin-bottom: 0px;
+	}
+
+	div#diary-modify {
+		max-width: 800px;
+	}
+
+	.diary-text {
+		width: 600px;
+		/*min-height: 200px;*/
+		height: auto;
+		max-height: 600px;
+	}
+
+	.btn-diary-action {
+		float: right;
+		margin-left: 5px;
+	}
+</style>
+}
+
+@section Javascript
+{
+<script src="/Static/bootstrap-datepicker/js/bootstrap-datepicker.min.js"></script>
+<script type="text/javascript">
+	$("nav.navbar").addClass("navbar-shrink");
+
+	$(document).ready(function () {
+	});
+</script>
+}
