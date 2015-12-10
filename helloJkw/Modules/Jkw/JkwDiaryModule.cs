@@ -37,9 +37,13 @@ namespace helloJkw
 
 				// 자신의 다이어리가 있다면 가장 우선적으로 보여준다.
 				// 없으면 나의 다이어리를 보여준다.
+				string defaultDiaryName = UserManager.GetUser("112902876433833556239").DiaryName;
 				string diaryName = _.diaryName != null ? _.diaryName
 					: string.IsNullOrEmpty(session.User.DiaryName)
-						? UserManager.GetUser("112902876433833556239").DiaryName : session.User.DiaryName;
+						? defaultDiaryName : session.User.DiaryName;
+				if (!DiaryManager.IsValidDiaryName(diaryName))
+					diaryName = defaultDiaryName;
+
 				bool withSecure = session.User.DiaryName == diaryName;
 
 				var diaryList = _.date != null
@@ -62,7 +66,15 @@ namespace helloJkw
 				return View["diary/jkwDiaryHome", Model];
 			};
 
-			Get["/diary/showDates/{diaryName}"] = _ =>
+			Get["/diary/home"] = _ =>
+			{
+				if (!session.IsLogin)
+					return View["diary/jkwDiaryRequireLogin", Model];
+
+				return null;
+			};
+
+			Get["/diary/showdates/{diaryName}"] = _ =>
 			{
 				if (!session.IsLogin)
 					return View["diary/jkwDiaryRequireLogin", Model];

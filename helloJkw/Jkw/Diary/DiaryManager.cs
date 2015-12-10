@@ -25,6 +25,22 @@ namespace helloJkw
 		const string _diaryExt = "diary";
 		static Dictionary<string /* diaryName */, List<Diary>> _diaryDic = new Dictionary<string, List<Diary>>();
 
+		#region Validate
+		public static bool IsValidDiaryName(string diaryName)
+		{
+			// write lock
+			if (_diaryDic.ContainsKey(diaryName))
+				return true;
+
+			if (Directory.Exists(Path.Combine(_rootPath, diaryName)))
+			{
+				_diaryDic.Add(diaryName, null);
+				return true;
+			}
+			return false;
+		}
+		#endregion
+
 		#region Load & Get
 		private static IEnumerable<Diary> LoadDiaryAll(string diaryName, bool reload = false)
 		{
@@ -32,7 +48,7 @@ namespace helloJkw
 			//reload = true;
 #endif
 			// upgradable read lock
-			if (!_diaryDic.ContainsKey(diaryName) || reload)
+			if (!_diaryDic.ContainsKey(diaryName) || _diaryDic[diaryName] == null || reload)
 			{
 				// write lock
 				_diaryDic.Remove(diaryName);
