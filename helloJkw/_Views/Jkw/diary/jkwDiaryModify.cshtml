@@ -66,11 +66,10 @@
 		var diaryList = new Array();
 		@foreach (var diary in @Model.DiaryList)
 		{
-			@:var diarry = {
+			@:diaryList.push({
 				@:Index: @diary.Index,
 				@:Text: getDiaryText(@diary.Index)
-			@:};
-			@:diaryList.push(diarry);
+			@:});
 		}
 
 		$.post('/diary/modify',
