@@ -76,7 +76,7 @@
 		$.post('/diary/modify',
 		{
 			diaryName: '@Model.DiaryName',
-			date: '@Model.Date.ToString("yyyyMMdd");',
+			date: '@Model.Date.ToString("yyyyMMdd")',
 			diaryList: JSON.stringify(diaryList)
 		},
 		function (data) {
