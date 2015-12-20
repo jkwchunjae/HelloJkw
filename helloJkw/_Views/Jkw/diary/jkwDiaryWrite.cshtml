@@ -33,7 +33,7 @@
 	}
 
 	#diary-text {
-		width: 600px;
+		width: 100%;
 		min-height: 200px;
 		max-height: 600px;
 	}
@@ -129,14 +129,6 @@
 		}
 
 		$('span#date-desc').text(dateDesc);
-	}
-
-	function getDate8(date) {
-		return date.getFullYear() + '.' + padStr(date.getMonth() + 1) + '.' + padStr(date.getDate());
-	}
-
-	function padStr(value) {
-		return (value < 10) ? '0' + value : '' + value;
 	}
 
 	$(document).keydown(function () {
