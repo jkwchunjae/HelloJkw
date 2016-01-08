@@ -30,6 +30,8 @@ namespace helloJkw
 		public JkwDiaryModule()
 		{
 			#region Show Diary
+
+			#region Get /diary/{diaryName?}/{date?}
 			Get["/diary/{diaryName?}/{date?}"] = _ =>
 			{
 				if (!session.IsLogin)
@@ -65,7 +67,9 @@ namespace helloJkw
 				Model.IsMine = session.User.DiaryName == diaryName;
 				return View["diary/jkwDiaryHome", Model];
 			};
+			#endregion
 
+			#region Get /diary/home
 			Get["/diary/home"] = _ =>
 			{
 				if (!session.IsLogin)
@@ -73,7 +77,9 @@ namespace helloJkw
 
 				return null;
 			};
+			#endregion
 
+			#region Get /diary/showdates/{diaryName}
 			Get["/diary/showdates/{diaryName}"] = _ =>
 			{
 				if (!session.IsLogin)
@@ -102,7 +108,11 @@ namespace helloJkw
 			};
 			#endregion
 
+			#endregion
+
 			#region Write Diary
+
+			#region Get /diary/write/{diaryName}
 			Get["/diary/write/{diaryName}"] = _ =>
 			{
 				if (!session.IsLogin)
@@ -116,7 +126,9 @@ namespace helloJkw
 				Model.DiaryName = diaryName;
 				return View["diary/jkwDiaryWrite", Model];
 			};
+			#endregion
 
+			#region Post /diary/write
 			Post["/diary/write"] = _ =>
 			{
 				if (!session.IsLogin)
@@ -143,7 +155,11 @@ namespace helloJkw
 			};
 			#endregion
 
+			#endregion
+
 			#region Modify Diary
+
+			#region Get /diary/modify/{diaryName}/{date}
 			Get["/diary/modify/{diaryName}/{date}"] = _ =>
 			{
 				if (!session.IsLogin)
@@ -163,7 +179,9 @@ namespace helloJkw
 
 				return View["diary/jkwDiaryModify", Model];
 			};
+			#endregion
 
+			#region Post /diary/modify
 			Post["/diary/modify"] = _ =>
 			{
 				if (!session.IsLogin)
@@ -205,6 +223,8 @@ namespace helloJkw
 
 				return "success";
 			};
+			#endregion
+
 			#endregion
 		}
 	}
