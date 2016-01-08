@@ -46,6 +46,10 @@ li.login-link {
 	width: 100px;
 }
 
+.smaller {
+	font-size: smaller;
+}
+
 @media(max-width:767px) {
 	.navbar-default .navbar-nav .open .dropdown-menu>li>a {
 		color: #fff;

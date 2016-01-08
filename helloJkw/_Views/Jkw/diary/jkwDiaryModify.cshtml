@@ -4,7 +4,7 @@
 
 <div>
 	<div id="diary-modify">
-		<h2>@Model.Date.ToString("yyyy.MM.dd")</h2>
+		<h2>@Model.Date.ToString("yyyy.MM.dd") <span class="smaller">@Model.DayOfWeek</span></h2>
 		@foreach (var diary in @Model.DiaryList)
 		{
 		<div class="diary">

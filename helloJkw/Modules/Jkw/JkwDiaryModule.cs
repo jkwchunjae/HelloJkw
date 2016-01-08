@@ -58,6 +58,7 @@ namespace helloJkw
 				HitCounter.Hit("diary-{diaryName}-{date}".WithVar(new { diaryName, date = date.ToInt() }));
 
 				Model.Date = date;
+				Model.DayOfWeek = date.GetWeekday(DateLanguage.KR, WeekdayFormat.D);
 				Model.hasPrev = prevDate != DateTime.MinValue;
 				Model.hasNext = nextDate != DateTime.MinValue;
 				Model.PrevDate = prevDate;
@@ -123,6 +124,7 @@ namespace helloJkw
 					return View["diary/jkwDiarySomethingWrong", Model];
 
 				Model.Date = DateTime.Today;
+				Model.DayOfWeek = DateTime.Today.GetWeekday(DateLanguage.KR, WeekdayFormat.D);
 				Model.DiaryName = diaryName;
 				return View["diary/jkwDiaryWrite", Model];
 			};
@@ -175,6 +177,7 @@ namespace helloJkw
 
 				Model.DiaryName = diaryName;
 				Model.Date = date;
+				Model.DayOfWeek = date.GetWeekday(DateLanguage.KR, WeekdayFormat.D);
 				Model.DiaryList = diaryList;
 
 				return View["diary/jkwDiaryModify", Model];
