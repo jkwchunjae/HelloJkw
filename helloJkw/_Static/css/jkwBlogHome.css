@@ -28,6 +28,10 @@ article.post time.post-datetime {
 	margin-left: 5px;
 }
 
+article.post p {
+	font-size: 16px;
+}
+
 p.post-content
 {
 	/*height: 100px;
