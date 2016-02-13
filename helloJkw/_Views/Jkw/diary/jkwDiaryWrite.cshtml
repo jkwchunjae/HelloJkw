@@ -4,7 +4,7 @@
 
 <div>
 	<div id="diary-write">
-		<h2>@Model.Date.ToString("yyyy.MM.dd") <span class="smaller">@Model.DayOfWeek</span></h2>
+		<h2>@Model.Date.ToString("yyyy.MM.dd") </h2>
 		<span id="date-desc">(오늘)</span>
 		<div class="datepicker"></div>
 		<div class="diary">
@@ -106,7 +106,8 @@
 
 	function setDate(date) {
 		var date8 = getDate8(date);
-		$('h2').text(date8);
+		var daysStr = ['일', '월', '화', '수', '목', '금', '토'];
+		$('h2').text(date8 + ' ' + daysStr[date.getDay()]);
 		$('h2').attr('data-date', date.getFullYear() * 10000 + (date.getMonth() + 1) * 100 + date.getDate());
 
 		var today = new Date();
