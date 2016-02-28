@@ -56,6 +56,10 @@
 			<div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
 				<ul class="nav navbar-nav navbar-right">
 					<li class="hidden"> <a href="/#page-top"></a> </li>
+					@if (@Model.isDebug)
+					{
+					<li id="menu-playground"> <a class="page-scroll" href="/playground">PlayGround</a> </li>
+					}
 					<li id="menu-project"> <a class="page-scroll" href="/#projects">Projects</a> </li>
 					<li id="menu-blog"> <a class="page-scroll" href="/blog">Blog</a> </li>
 					<li id="menu-games"> <a class="page-scroll" href="/#games">Games</a> </li>

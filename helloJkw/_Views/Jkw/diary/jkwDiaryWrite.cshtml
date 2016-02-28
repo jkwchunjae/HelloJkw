@@ -4,9 +4,15 @@
 
 <div>
 	<div id="diary-write">
-		<h2>@Model.Date.ToString("yyyy.MM.dd") </h2>
-		<span id="date-desc">(오늘)</span>
-		<div class="datepicker"></div>
+		<div class="col-md-6" style="margin-bottom: 10px ; padding: 0;">
+			<div class='input-group date' id='diary-date-group'>
+				<span class="input-group-addon">
+					<span class="glyphicon glyphicon-calendar"></span>
+				</span>
+				<input type='text' class="form-control" id="diary-date" style="width: 100px;"/>
+				<span class="form-control" id="date-desc" style="width:100px;">월 (어제)</span>
+			</div>
+		</div>
 		<div class="diary">
 			<textarea id="diary-text"></textarea>
 		</div>
@@ -17,15 +23,11 @@
 
 @section Css
 {
-<link href="/Static/bootstrap-datepicker/css/bootstrap-datepicker3.min.css" rel="stylesheet">
+<link href="/Static/bootstrap/css/bootstrap-datetimepicker.css" rel="stylesheet">
 <style type="text/css">
 	::selection {
 		text-shadow: none;
 		background-color: #c8c8c8;
-	}
-
-	h2 {
-		margin-top: 0px;
 	}
 
 	div#diary-write {
@@ -42,34 +44,23 @@
 		float: right;
 		margin-left: 5px;
 	}
-
-	.datepicker {
-		display: none;
-	}
-
-	h2 {
-		cursor: pointer;
-		display: inline-block;
-	}
-
-		h2:hover {
-			text-decoration: underline;
-		}
 </style>
 }
 
 @section Javascript
 {
-<script src="/Static/bootstrap-datepicker/js/bootstrap-datepicker.min.js"></script>
+<script src="/Static/bootstrap/js/moment.js"></script>
+<script src="/Static/bootstrap/js/bootstrap-datetimepicker.js"></script>
 <script type="text/javascript">
 	$("nav.navbar").addClass("navbar-shrink");
 
-	$('h2').click(function () {
-		if ($('div.datepicker').css('display') == 'none') {
-			$('div.datepicker').css('display', 'block');
-		} else {
-			$('div.datepicker').css('display', 'none');
-		}
+	$(function () {
+		$('#diary-date-group').datetimepicker({
+			useStrict: true,
+			format: 'YYYY.MM.DD'
+		}).on('dp.change', function (e) {
+			setDate(e.date);
+		});
 	});
 
 	$('#diary-text').keyup(function () {
@@ -81,7 +72,7 @@
 		$.post('/diary/write',
 		{
 			diaryName: '@Model.DiaryName',
-			date: $('h2').attr('data-date'),
+			date: $('#diary-date').attr('data-date'),
 			text: $('#diary-text').val()
 		},
 		function (data) {
@@ -93,40 +84,30 @@
 		})
 	});
 
-	$('div.datepicker').datepicker({
-		format: 'yyyy.mm.dd',
-		todayBtn: 'linked',
-		autoclose: true
-	})
-	.on('changeDate', function (e) {
-		var date = $('div.datepicker').datepicker('getDate');
-		setDate(date);
-		$('div.datepicker').css('display', 'none');
-	});
-
 	function setDate(date) {
 		var date8 = getDate8(date);
 		var daysStr = ['일', '월', '화', '수', '목', '금', '토'];
-		$('h2').text(date8 + ' ' + daysStr[date.getDay()]);
-		$('h2').attr('data-date', date.getFullYear() * 10000 + (date.getMonth() + 1) * 100 + date.getDate());
+		//$('#diary-date').val(date8 + ' ' + daysStr[date.day()]);
+		$('#diary-date').val(date8);
+		$('#diary-date').attr('data-date', date.year() * 10000 + (date.month() + 1) * 100 + date.date());
 
-		var today = new Date();
-		var yesterday = new Date();
-		yesterday.setDate(today.getDate() - 1);
-		var beforeYesterday = new Date();
-		beforeYesterday.setDate(yesterday.getDate() - 1);
-		var tomorrow = new Date();
-		tomorrow.setDate(today.getDate() + 1);
+		var today = moment(new Date());
+		var yesterday = moment(new Date());
+		yesterday.date(today.date() - 1);
+		var beforeYesterday = moment(new Date());
+		beforeYesterday.date(yesterday.date() - 1);
+		var tomorrow = moment(new Date());
+		tomorrow.date(today.date() + 1);
 
-		var dateDesc = '';
+		var dateDesc = daysStr[date.day()] + ' ';
 		if (date8 == getDate8(today)) {
-			dateDesc = '(오늘)';
+			dateDesc += '(오늘)';
 		} else if (date8 == getDate8(yesterday)) {
-			dateDesc = '(어제)';
+			dateDesc += '(어제)';
 		} else if (date8 == getDate8(beforeYesterday)) {
-			dateDesc = '(그저께)';
+			dateDesc += '(그저께)';
 		} else if (date8 == getDate8(tomorrow)) {
-			dateDesc = '(내일)'; // 일기장에 내일이 웬말이냐
+			dateDesc += '(내일)'; // 일기장에 내일이 웬말이냐
 		}
 
 		$('span#date-desc').text(dateDesc);
@@ -139,7 +120,7 @@
 	});
 
 	$(document).ready(function () {
-		setDate(new Date());
+		setDate(moment(new Date()));
 		$('#diary-text').focus();
 	});
 </script>

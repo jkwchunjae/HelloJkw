@@ -72,6 +72,13 @@ namespace helloJkw
 				return View["jkwHome", Model];
 			};
 
+#if (DEBUG)
+			Get["/playground"] = _ =>
+			{
+				return View["playground", Model];
+			};
+#endif
+
 			Get["/error"] = _ =>
 			{
 				string type = Request.Query.type;

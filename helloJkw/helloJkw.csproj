@@ -178,6 +178,7 @@
     <None Include="_Views\Jkw\jkwBlogPost.cshtml" />
     <None Include="_Views\Jkw\jkwBlogTag.cshtml" />
     <None Include="_Views\Jkw\error.cshtml" />
+    <None Include="_Views\Jkw\playground.cshtml" />
     <None Include="_Views\Jkw\login.cshtml" />
     <None Include="_Views\Jkw\redirectLogin.cshtml" />
     <None Include="_Views\Jkw\userSetting.cshtml" />

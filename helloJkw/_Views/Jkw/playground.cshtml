@@ -1,0 +1,41 @@
+﻿
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+	<!-- Bootstrap Core CSS -->
+	<link href="/Static/bootstrap/css/bootstrap.min.css" rel="stylesheet">
+	<link href="/Static/bootstrap/css/bootstrap-datetimepicker.css" rel="stylesheet">
+
+	<!-- jQuery -->
+	<script src="/Static/js/jquery-2.1.3.min.js"></script>
+	<script src="/Static/bootstrap/js/moment.js"></script>
+	<!-- Bootstrap Core JavaScript -->
+	<script src="/Static/bootstrap/js/bootstrap.min.js"></script>
+	<script src="/Static/bootstrap/js/bootstrap-datetimepicker.js"></script>
+</head>
+<body>
+	<div class='input-group date col-md-3' id='datetimepicker1'>
+		<input type='text' class="form-control"/>
+		<span class="input-group-addon">
+			<span class="glyphicon glyphicon-calendar"></span>
+		</span>
+	</div>
+
+	<script type="text/javascript">
+		$('#datetimepicker1').datetimepicker({
+			useStrict: true,
+			format: 'YYYY-MM-DD HH:mm:ss'
+		}).change(function (e) {
+			alert(e.date);
+		});
+
+		//$('#datetimepicker1 input').keypress(function () {
+		//	return false;
+		//});
+
+		$('#datetimepicker1 input').keydown(function () {
+			return false;
+		});
+	</script>
+</body>
+</html>
