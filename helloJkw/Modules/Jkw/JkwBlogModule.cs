@@ -40,7 +40,7 @@ namespace helloJkw
 				string getCount = _.getCount;
 				Model.postList = BlogManager.GetLastPosts(getCount.ToInt());
 
-				return View["jkwBlogHome", Model];
+				return View["blog/jkwBlogHome", Model];
 			};
 
 			Get["/blog/post/{postname}"] = _ =>
@@ -61,7 +61,7 @@ namespace helloJkw
 
 				var categoryList = BlogManager.PostList
 					.Where(e => e.CategoryUrl == post.CategoryUrl)
-					.OrderBy(e => e.Date)
+					.OrderBy(e => e.PublishDate)
 					.ThenBy(e => e.Name)
 					.Select((e, i) => new { Index = i, Post = e })
 					.ToList();
@@ -73,7 +73,7 @@ namespace helloJkw
 				Model.PrevPost = postIndex == 0 ? null : categoryList[postIndex - 1].Post;
 				Model.NextPost = postIndex == categoryList.Count() - 1 ? null : categoryList[postIndex + 1].Post;
 
-				return View["jkwBlogPost", Model];
+				return View["blog/jkwBlogPost", Model];
 			};
 
 			Get["/blog/category/{category}"] = _ =>
@@ -84,10 +84,10 @@ namespace helloJkw
 
 				Model.postList = BlogManager.PostList
 					.Where(e => e.CategoryUrl == category)
-					.OrderByDescending(e => e.Date)
+					.OrderByDescending(e => e.PublishDate)
 					.ThenByDescending(e => e.Name);
 
-				return View["jkwBlogHome", Model];
+				return View["blog/jkwBlogHome", Model];
 			};
 
 			Get["/blog/tag/{tag}"] = _ =>
@@ -98,10 +98,10 @@ namespace helloJkw
 
 				Model.postList = BlogManager
 					.ContainsTagPostList(tag)
-					.OrderByDescending(e => e.Date)
+					.OrderByDescending(e => e.PublishDate)
 					.ThenByDescending(e => e.Name);
 
-				return View["jkwBlogHome", Model];
+				return View["blog/jkwBlogHome", Model];
 			};
 		}
 	}

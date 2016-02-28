@@ -1,6 +1,6 @@
 ﻿@inherits Nancy.ViewEngines.Razor.NancyRazorViewBase<dynamic>
 @{
-	Layout = "LayoutBlog.cshtml";
+	Layout = "blog/LayoutBlog.cshtml";
 	var post = @Model.post;
 	var prevPost = @Model.PrevPost;
 	var nextPost = @Model.NextPost;
@@ -27,34 +27,34 @@
 			</div>
 		}
 		<div class="post-content">@Html.Raw(@post.Html)</div>
+		@foreach (var tag in @post.Tags)
+		{
+			<span class="post-tag label label-success"><a href="/blog/tag/@tag.Url">@tag.Name</a></span>
+		}
 		<div>
 			<div>
 				<span>이전글: </span>
 				@if (@prevPost == null)
 				{
-					<span>이전글이 없습니다.</span>
+				<span>이전글이 없습니다.</span>
 				}
 				else
 				{
-					<span><a href="/blog/post/@prevPost.Name">@prevPost.Title</a></span>
+				<span><a href="/blog/post/@prevPost.Name">@prevPost.Title</a></span>
 				}
 			</div>
 			<div>
 				<span>다음글: </span>
 				@if (@nextPost == null)
 				{
-					<span>다음글이 없습니다.</span>
+				<span>다음글이 없습니다.</span>
 				}
 				else
 				{
-					<span><a href="/blog/post/@nextPost.Name">@nextPost.Title</a></span>
+				<span><a href="/blog/post/@nextPost.Name">@nextPost.Title</a></span>
 				}
 			</div>
 		</div>
-		@foreach (var tag in @post.Tags)
-		{
-			<span class="post-tag label label-success"><a href="/blog/tag/@tag.Url">@tag.Name</a></span>
-		}
 	</article>
 	<div id="disqus_thread"></div>
 	<script type="text/javascript">

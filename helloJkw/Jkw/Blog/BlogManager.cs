@@ -44,10 +44,10 @@ namespace helloJkw
 #else
 					.Where(e => e.IsPublish)
 #endif
-					.OrderByDescending(e => e.Date)
+					.OrderByDescending(e => e.PublishDate)
 					.ThenByDescending(e => e.Title)
 					.ToList();
-				DateList = PostList.Select(post => post.Date).Distinct().ToList();
+				DateList = PostList.Select(post => post.PublishDate).Distinct().ToList();
 				CategoryList = PostList.Select(post => new { post.CategoryUrl, post.Category })
 					.GroupBy(e => e)
 					.Select(e => new CategoryItem { Url = e.Key.CategoryUrl, Name = e.Key.Category, Count = e.Count() })
@@ -63,7 +63,7 @@ namespace helloJkw
 
 		public static IEnumerable<Post> GetLastPosts(int postCount)
 		{
-			return PostList.OrderByDescending(e => e.Date).Take(postCount);
+			return PostList.OrderByDescending(e => e.PublishDate).Take(postCount);
 		}
 
 		public static IEnumerable<Post> ContainsTagPostList(string tagUrl)

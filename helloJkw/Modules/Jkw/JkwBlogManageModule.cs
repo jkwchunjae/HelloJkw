@@ -22,9 +22,9 @@ namespace helloJkw
 #if DEBUG
 				BlogManager.UpdatePost(0);
 				var post = BlogManager.PostList
-					.OrderByDescending(e => e.Filepath);
+					.OrderByDescending(e => e.FilePath);
 				Model.post = post;
-				return View["jkwBlogManage", Model];
+				return View["blog/jkwBlogManage", Model];
 #else
 				return "wrong";
 #endif
@@ -56,6 +56,8 @@ namespace helloJkw
 
 @tags : test
 
+@publishDate: 
+
 @isPublish : false
 
 @content
@@ -83,7 +85,7 @@ namespace helloJkw
 				BlogManager.UpdatePost(0);
 				string filename = _.postname; // yyyyMMdd-name
 				var post = BlogManager.PostList
-					.Where(e => e.Filepath.Contains(filename))
+					.Where(e => e.FilePath.Contains(filename))
 					.FirstOrDefault();
 				if (post == null)
 					return "wrong";
@@ -113,7 +115,7 @@ namespace helloJkw
 				string oldFilename = _.oldname; // yyyyMMdd-name
 				string newFilename = _.newname; // yyyyMMdd-name
 				var post = BlogManager.PostList
-					.Where(e => e.Filepath.Contains(oldFilename))
+					.Where(e => e.FilePath.Contains(oldFilename))
 					.FirstOrDefault();
 				if (post == null)
 					return oldFilename;
@@ -144,7 +146,7 @@ namespace helloJkw
 				BlogManager.UpdatePost(0);
 				string filename = _.postname; // yyyyMMdd-name
 				var post = BlogManager.PostList
-					.Where(e => e.Filepath.Contains(filename))
+					.Where(e => e.FilePath.Contains(filename))
 					.FirstOrDefault();
 				if (post == null)
 					return "파일을 찾을 수 없습니다.";

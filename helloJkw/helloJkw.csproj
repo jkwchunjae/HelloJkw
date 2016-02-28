@@ -172,11 +172,11 @@
     <None Include="_Views\Jkw\diary\jkwDiarySomethingWrong.cshtml" />
     <None Include="_Views\Jkw\diary\jkwDiaryRequireLogin.cshtml" />
     <None Include="_Views\Jkw\diary\jkwDiaryHome.cshtml" />
-    <None Include="_Views\Jkw\jkwBlogCategory.cshtml" />
-    <None Include="_Views\Jkw\jkwBlogManage.cshtml" />
-    <None Include="_Views\Jkw\jkwBlogHome.cshtml" />
-    <None Include="_Views\Jkw\jkwBlogPost.cshtml" />
-    <None Include="_Views\Jkw\jkwBlogTag.cshtml" />
+    <None Include="_Views\Jkw\blog\jkwBlogCategory.cshtml" />
+    <None Include="_Views\Jkw\blog\jkwBlogManage.cshtml" />
+    <None Include="_Views\Jkw\blog\jkwBlogHome.cshtml" />
+    <None Include="_Views\Jkw\blog\jkwBlogPost.cshtml" />
+    <None Include="_Views\Jkw\blog\jkwBlogTag.cshtml" />
     <None Include="_Views\Jkw\error.cshtml" />
     <None Include="_Views\Jkw\playground.cshtml" />
     <None Include="_Views\Jkw\login.cshtml" />
@@ -186,7 +186,7 @@
     <None Include="_Views\Jkw\jkwKboChart.cshtml" />
     <None Include="_Views\Jkw\redirect.cshtml" />
     <None Include="_Views\Jkw\Layout.cshtml" />
-    <None Include="_Views\Jkw\LayoutBlog.cshtml" />
+    <None Include="_Views\Jkw\blog\LayoutBlog.cshtml" />
     <None Include="_Views\Lucia\luciaCategory.cshtml" />
     <None Include="_Views\Lucia\luciaLayout.cshtml" />
     <None Include="_Views\Lucia\luciaHome.cshtml" />

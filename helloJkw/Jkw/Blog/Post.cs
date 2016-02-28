@@ -11,17 +11,20 @@ namespace helloJkw
 {
 	public class Post
 	{
-		public string Filepath { get; set; }
-		public string Name { get; set; }
-		public string Title { get; set; }
-		public string Category { get; set; }
-		public string CategoryUrl { get; set; }
-		public List<TagItem> Tags { get; set; }
-		public DateTime Date { get; set; }
-		public string Content;
-		public string Html;
-		public string HtmlCut;
-		public bool IsPublish { get; set; }
+		public string FilePath { get; private set; }
+		public string FileName { get; private set; }
+		public string Name { get; private set; }
+		public string Title { get; private set; }
+		public string Category { get; private set; }
+		public string CategoryUrl { get; private set; }
+		public List<TagItem> Tags { get; private set; }
+		public DateTime CreateDate { get; private set; }
+		public DateTime PublishDate { get; private set; }
+		public DateTime Date { get { return PublishDate; } }
+		public string Content { get; private set; }
+		public string Html { get; private set; }
+		public string HtmlCut { get; private set; }
+		public bool IsPublish { get; private set; }
 
 		public string Raw { get; private set; }
 
@@ -31,7 +34,7 @@ namespace helloJkw
 		/// <param name="text">directory에 저장되어 있는 text원본</param>
 		public Post(string filepath)
 		{
-			Filepath = filepath;
+			FilePath = filepath;
 			//var text = File.ReadAllText(filepath, Encoding.UTF8);
 			string text = string.Empty;
 			using (var inStream = new FileStream(filepath, FileMode.Open, FileAccess.Read, FileShare.ReadWrite))
@@ -41,8 +44,8 @@ namespace helloJkw
 					Raw = text = reader.ReadToEnd();
 				}
 			}
-			var filename = Path.GetFileNameWithoutExtension(filepath);
-			Parse(filename, text);
+			FileName = Path.GetFileNameWithoutExtension(filepath);
+			Parse(FileName, text);
 		}
 
 		void Parse(string filename, string text)
@@ -55,7 +58,14 @@ namespace helloJkw
 				.ToList();
 
 			Name = filename.Substring(9).Trim().Replace(" ", "");
-			Date = filename.Substring(0, 8).ToDate();
+			CreateDate = filename.Substring(0, 8).ToDate();
+			Func<string, DateTime, DateTime> GetDate = (string strDate, DateTime defulatDate) =>
+			{
+				if (string.IsNullOrWhiteSpace(strDate))
+					return defulatDate;
+				return strDate.Replace(".", "").Replace("/", "").ToDate(defulatDate);
+			};
+			PublishDate = GetDate(textList.GetValue("@publishDate"), CreateDate);
 			Content = text.Substring(indexContent + 8).Trim();
 			Html = Content.ToHtml();
 			HtmlCut = Html.CutParagraph();
