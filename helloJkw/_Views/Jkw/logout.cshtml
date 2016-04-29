@@ -1,0 +1,35 @@
+﻿@inherits Nancy.ViewEngines.Razor.NancyRazorViewBase<dynamic>
+@{
+	string redirectUrl = Model.SiteBase + "/oauth/login";
+	//string loginUrl = "https://accounts.google.com/o/oauth2/auth?client_id=381224079549-pmkekmoko01ss0uqle22q0btsam7nluh.apps.googleusercontent.com&redirect_uri=" + redirectUrl + "&scope=https://www.googleapis.com/auth/userinfo.email&response_type=code";
+	string loginUrl = "https://accounts.google.com/o/oauth2/auth?client_id=381224079549-pmkekmoko01ss0uqle22q0btsam7nluh.apps.googleusercontent.com&redirect_uri=" + redirectUrl + "&scope=profile email&response_type=code";
+}
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="utf-8">
+	<meta http-equiv="X-UA-Compatible" content="IE=edge">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<meta name="author" content="jkw">
+	<title></title>
+	<style type="text/css">
+		a#signin-google img {
+			width: 200px;
+		}
+	</style>
+</head>
+<body>
+	<h2>Logout!</h2>
+
+	<p>
+		화면이 꺼지지 않으면 직접 종료하세요.
+		<br />
+		로그아웃은 정상적으로 처리되었습니다.
+	</p>
+
+	<script type="text/javascript">
+		opener.location.href = opener.location.href;
+		self.close();
+	</script>
+</body>
+</html>

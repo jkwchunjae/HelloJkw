@@ -5,7 +5,8 @@
 	string desc;
 	try { desc = @Model.Desc; } catch { desc = ""; }
 
-	string popupUrl = Model.SiteBase + "/login";
+	string popupLoginUrl = Model.SiteBase + "/login";
+	string popupLogoutUrl = Model.SiteBase + "/logout";
 }
 <!DOCTYPE html>
 <html lang="ko">
@@ -72,7 +73,8 @@
 							</a>
 							<ul class="dropdown-menu">
 								<li><a class="page-scroll" href="/user">Edit user info</a></li>
-								<li><a class="page-scroll" href="/logout">Logout</a></li>
+								<li><button class="page-scroll btn-logout">Logout</button></li>
+								@*<li><a class="page-scroll" href="/logout">Logout</a></li>*@
 							</ul>
 						</li>
 					}
@@ -130,11 +132,11 @@
 
 		$(document).ready(function () {
 			$('.btn-login').click(function () {
-				window.open('@popupUrl', '', 'width=400px, height=400px, resizable=no, scrollbar=no, status=no;');
+				window.open('@popupLoginUrl', '', 'width=400px, height=400px, resizable=no, scrollbar=no, status=no;');
 			});
-			//$('.show-login').click(function () {
-			//	$('li.login-link').show();
-			//});
+			$('.btn-logout').click(function () {
+				window.open('@popupLogoutUrl', '', 'width=400px, height=400px, resizable=no, scrollbar=no, status=no;');
+			});
 		});
 	</script>
 	@if (!@Model.isDebug)

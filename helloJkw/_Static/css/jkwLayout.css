@@ -21,6 +21,10 @@ div.fixed-alert {
 	display: none;
 }
 
+button.btn-logout {
+	padding: 3px 20px;
+}
+
 img.navbar-user-image {
 	width: 100px;
 	height: 100px;

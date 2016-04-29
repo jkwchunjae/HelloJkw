@@ -166,8 +166,7 @@ namespace helloJkw
 					UserManager.Logout(session.User);
 					session.Logout();
 				}
-				Model.RedirectUrl = "/";
-				return View["redirect", Model];
+				return View["logout", Model];
 			};
 
 			Post["/user-setting", runAsync: true] = async (ctx, ct) =>
