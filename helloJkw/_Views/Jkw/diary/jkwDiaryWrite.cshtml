@@ -85,7 +85,7 @@
 	});
 
 	function setDate(date) {
-		var date8 = getDate8(date);
+		var date8 = getDateDot(date);
 		var daysStr = ['일', '월', '화', '수', '목', '금', '토'];
 		//$('#diary-date').val(date8 + ' ' + daysStr[date.day()]);
 		$('#diary-date').val(date8);
@@ -100,13 +100,13 @@
 		tomorrow.date(today.date() + 1);
 
 		var dateDesc = daysStr[date.day()] + ' ';
-		if (date8 == getDate8(today)) {
+		if (date8 == getDateDot(today)) {
 			dateDesc += '(오늘)';
-		} else if (date8 == getDate8(yesterday)) {
+		} else if (date8 == getDateDot(yesterday)) {
 			dateDesc += '(어제)';
-		} else if (date8 == getDate8(beforeYesterday)) {
+		} else if (date8 == getDateDot(beforeYesterday)) {
 			dateDesc += '(그저께)';
-		} else if (date8 == getDate8(tomorrow)) {
+		} else if (date8 == getDateDot(tomorrow)) {
 			dateDesc += '(내일)'; // 일기장에 내일이 웬말이냐
 		}
 
