@@ -338,6 +338,7 @@
     <Content Include="_Static\bootstrap\js\bootstrap.min.js" />
     <Content Include="_Static\bootstrap\js\npm.js" />
     <Content Include="_Static\css\carousel.css" />
+    <Content Include="_Static\css\fnb-operator.css" />
     <Content Include="_Static\css\jkwKboChart.css" />
     <Content Include="_Static\css\gameColorConquer.css" />
     <Content Include="_Static\css\fnb.css" />
