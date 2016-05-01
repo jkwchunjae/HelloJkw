@@ -38,6 +38,10 @@
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\packages\HtmlAgilityPack.1.4.9\lib\Net45\HtmlAgilityPack.dll</HintPath>
     </Reference>
+    <Reference Include="Microsoft.Web.Infrastructure, Version=1.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <HintPath>..\packages\Microsoft.Web.Infrastructure.1.0.0.0\lib\net40\Microsoft.Web.Infrastructure.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
     <Reference Include="MySql.Data, Version=6.9.7.0, Culture=neutral, PublicKeyToken=c5687fc88969c44d, processorArchitecture=MSIL">
       <HintPath>..\packages\MySql.Data.6.9.7\lib\net45\MySql.Data.dll</HintPath>
       <Private>True</Private>
@@ -59,10 +63,28 @@
       <Private>True</Private>
     </Reference>
     <Reference Include="System" />
+    <Reference Include="System.Configuration" />
     <Reference Include="System.Core" />
     <Reference Include="System.Drawing" />
-    <Reference Include="System.Web.Razor, Version=2.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
-      <HintPath>..\packages\Microsoft.AspNet.Razor.2.0.30506.0\lib\net40\System.Web.Razor.dll</HintPath>
+    <Reference Include="System.Web.Extensions" />
+    <Reference Include="System.Web.Helpers, Version=3.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <HintPath>..\packages\Microsoft.AspNet.WebPages.3.2.3\lib\net45\System.Web.Helpers.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="System.Web.Razor, Version=3.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <HintPath>..\packages\Microsoft.AspNet.Razor.3.2.3\lib\net45\System.Web.Razor.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="System.Web.WebPages, Version=3.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <HintPath>..\packages\Microsoft.AspNet.WebPages.3.2.3\lib\net45\System.Web.WebPages.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="System.Web.WebPages.Deployment, Version=3.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <HintPath>..\packages\Microsoft.AspNet.WebPages.3.2.3\lib\net45\System.Web.WebPages.Deployment.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="System.Web.WebPages.Razor, Version=3.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <HintPath>..\packages\Microsoft.AspNet.WebPages.3.2.3\lib\net45\System.Web.WebPages.Razor.dll</HintPath>
       <Private>True</Private>
     </Reference>
     <Reference Include="System.Xml.Linq" />
@@ -82,6 +104,9 @@
     <Content Include="Jkw\Kbo\KboMatch.cs" />
     <Compile Include="Jkw\Kbo\Season.cs" />
     <Compile Include="Jkw\Kbo\Standing.cs" />
+    <Compile Include="Jkw\Others\FnB\FnbMeeting.cs" />
+    <Compile Include="Jkw\Others\FnB\FnbAccounting.cs" />
+    <Compile Include="Jkw\Others\FnB\FnbMember.cs" />
     <Compile Include="Lucia\ImageResizer.cs" />
     <Compile Include="Lucia\LuciaDirInfo.cs" />
     <Compile Include="Lucia\LuciaStatic.cs" />
@@ -98,6 +123,7 @@
     <Compile Include="Modules\Jkw\JkwBlogManageModule.cs" />
     <Compile Include="Modules\Jkw\JkwDiaryModule.cs" />
     <Compile Include="Modules\Jkw\JkwBlogModule.cs" />
+    <Compile Include="Modules\Jkw\JkwFnbModule.cs" />
     <Compile Include="Modules\Jkw\JkwHomeModule.cs" />
     <Compile Include="Modules\Jkw\JkwKboChartModule.cs" />
     <Compile Include="Modules\Lucia\LuciaCategoryModule.cs" />
@@ -111,9 +137,13 @@
     <Compile Include="Utils\Utils.cs" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="App.config" />
+    <None Include="App.config">
+      <SubType>Designer</SubType>
+    </None>
     <None Include="packages.config" />
-    <None Include="web.config" />
+    <None Include="web.config">
+      <SubType>Designer</SubType>
+    </None>
     <None Include="_Static\Agency\font-awesome\fonts\fontawesome-webfont.eot" />
     <None Include="_Static\Agency\font-awesome\fonts\fontawesome-webfont.ttf" />
     <None Include="_Static\Agency\font-awesome\fonts\fontawesome-webfont.woff" />
@@ -178,6 +208,10 @@
     <None Include="_Views\Jkw\blog\jkwBlogPost.cshtml" />
     <None Include="_Views\Jkw\blog\jkwBlogTag.cshtml" />
     <None Include="_Views\Jkw\error.cshtml" />
+    <None Include="_Views\Jkw\fnb\fnbMember.cshtml" />
+    <None Include="_Views\Jkw\fnb\fnbLayout.cshtml" />
+    <None Include="_Views\Jkw\fnb\fnbHome.cshtml" />
+    <None Include="_Views\Jkw\logout.cshtml" />
     <None Include="_Views\Jkw\playground.cshtml" />
     <None Include="_Views\Jkw\login.cshtml" />
     <None Include="_Views\Jkw\redirectLogin.cshtml" />
@@ -193,7 +227,6 @@
     <None Include="_Views\Lucia\luciaProduct.cshtml" />
   </ItemGroup>
   <ItemGroup>
-    <Folder Include="Jkw\Others\" />
     <Folder Include="_Views\Games\ColorConquer\" />
     <Folder Include="_Views\Jkw\others\" />
   </ItemGroup>
@@ -307,6 +340,7 @@
     <Content Include="_Static\css\carousel.css" />
     <Content Include="_Static\css\jkwKboChart.css" />
     <Content Include="_Static\css\gameColorConquer.css" />
+    <Content Include="_Static\css\fnb.css" />
     <Content Include="_Static\css\jkwLayout.css" />
     <Content Include="_Static\css\jkwBlogHome.css" />
     <Content Include="_Static\css\luciaProduct.css" />
@@ -435,6 +469,8 @@
     <Content Include="_Static\image\jssor\play.png" />
     <Content Include="_Static\image\jssor\t01.png" />
     <Content Include="_Static\js\jkwBlogPost.js" />
+    <Content Include="_Static\js\jkw\fnb\meeting.js" />
+    <Content Include="_Static\js\jkw\fnb\member.js" />
     <Content Include="_Static\js\jkw\utils.js" />
     <Content Include="_Static\js\jssor\jquery-1.9.1.min.js" />
     <Content Include="_Static\js\jssor\jssor.js" />

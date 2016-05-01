@@ -1,0 +1,303 @@
+﻿@inherits Nancy.ViewEngines.Razor.NancyRazorViewBase<dynamic>
+@using Extensions;
+@using helloJkw.Jkw.Others.FnB;
+@using System.Collections.Generic;
+@using System.Linq;
+@{
+	Layout = "fnb/fnbLayout.cshtml";
+	DateTime date = (20150101).ToDate();
+}
+
+
+<header>
+	<div class="container">
+		<div class="intro-text">
+			<div class="intro-lead-in"></div>
+			<div class="intro-heading">Welcome To F&B!</div>
+			@*<a href="#services" class="page-scroll btn btn-xl">Tell Me More</a>*@
+		</div>
+	</div>
+</header>
+
+<section id="member">
+	<div class="container">
+		<div class="row">
+			<div class="col-lg-12 text-center">
+				<h2 class="section-heading">정회원</h2>
+			</div>
+		</div>
+		<div class="row text-center">
+			@foreach (var member in @Model.RegularMemberList)
+			{
+				<div class="member col-sm-3">
+					<img style="width:150px;height:150px;" src="jkw/others/fnb/member/@member.PictureName" class="img-circle"/>
+					<h4 class="service-heading">@member.Name</h4>
+					<p class="text-muted">테라 서버팀<br/>@member.JoinDate.ToString("yyyy.MM.dd")</p>
+					@if (Model.IsOperator)
+					{
+					<p class="button-list">
+						<button class="btn btn-warning btn-xs">준회원</button>
+						<button class="btn btn-danger btn-xs">탈퇴</button>
+					</p>
+					}
+				</div>
+			}
+			@if (@Model.IsOperator)
+			{
+				<div class="col-sm-3">
+					<a href="#" class="fa-stack fa-5x">
+						<i class="fa fa-circle fa-stack-2x text-primary"></i>
+						<i class="fa fa-plus fa-stack-1x fa-inverse"></i>
+					</a>
+					<h4 class="service-heading">정회원 추가</h4>
+				</div>
+			}
+		</div>
+	</div>
+	<div class="container">
+		<div class="row">
+			<div class="col-lg-12 text-center">
+				<h2 class="section-heading">준회원</h2>
+			</div>
+		</div>
+		<div class="row text-center">
+			@foreach (var member in @Model.AssociateMemberList)
+			{
+				<div class="member col-sm-3">
+					<img style="width:150px;height:150px;" src="jkw/others/fnb/member/@member.PictureName" class="img-circle" />
+					<h4 class="service-heading">@member.Name</h4>
+					<p class="text-muted">테라 서버팀<br />@member.JoinDate.ToString("yyyy.MM.dd")</p>
+					@if (Model.IsOperator)
+					{
+					<p class="button-list">
+						<button class="btn btn-info btn-xs">정회원</button>
+						<button class="btn btn-danger btn-xs">탈퇴</button>
+					</p>
+					}
+				</div>
+			}
+			@if (@Model.IsOperator)
+			{
+				<div class="col-sm-3">
+					<a href="#" class="fa-stack fa-5x">
+						<i class="fa fa-circle fa-stack-2x text-primary"></i>
+						<i class="fa fa-plus fa-stack-1x fa-inverse"></i>
+					</a>
+					<h4 class="service-heading">준회원 추가</h4>
+				</div>
+			}
+		</div>
+	</div>
+</section>
+
+
+<section id="meeting">
+	<div class="container">
+		<div class="row">
+			<div class="col-lg-12 text-center">
+				<h2 class="section-heading">모임</h2>
+			</div>
+		</div>
+		<div class="row text-center">
+			<table class="table table-striped" style="margin: auto; width:initial;">
+				<thead>
+					<tr>
+						<th>회차</th>
+						<th>날짜</th>
+						<th style="max-width:200px;">참석자</th>
+						<th>비고</th>
+						@if (@Model.IsOperator)
+						{
+							<th>버튼</th>
+						}
+					</tr>
+				</thead>
+				<tbody>
+				@if (@Model.IsOperator)
+				{
+					<tr>
+						<td><input type="number" id="add-meeting-no" class="form-control" style="width: 60px;" /></td>
+						<td>
+							<div class='input-group date' id='datetimepicker1'>
+								<input type='text' id="add-meeting-date" class="form-control" style="width:100px;"/>
+								<span class="input-group-addon">
+									<span class="glyphicon glyphicon-calendar"></span>
+								</span>
+							</div>
+						</td>
+						<td><textarea id="add-meeting-attendants" class="form-control" placeholder="이름, 이름, 이름,"></textarea></td>
+						<td><textarea id="add-meeting-others" class="form-control" placeholder=""></textarea></td>
+						<td><button id="button-add-meeting" class="btn btn-info btn-xs">추가</button></td>
+					</tr>
+				}
+				@foreach (var meeting in @Model.MeetingList)
+				{
+					IEnumerable<string> attendants = meeting.Attendants;
+					string attendantList = attendants.Select(x => FnbMember.GetMember(x))
+						.OrderBy(x => x.MemberType).ThenBy(x => x.JoinDate)
+							.Select((x, i) => new { Index = i, Member = x })
+							.GroupBy(x => x.Index / 5)
+							.Select(x => x.Select(t => t.Member.GetShortInfo()).StringJoin(", "))
+							.StringJoin("<br/>");
+					<tr>
+						<td class="meeting-no">@meeting.No</td>
+						<td class="meeting-date">@meeting.Date.ToString("yyyy-MM-dd")</td>
+						<td class="meeting-attendants align-left">@attendantList</td>
+						<td class="meeting-others align-left">@meeting.Others</td>
+						@if (@Model.IsOperator)
+						{
+							<td>
+								<button class="request-modify-meeting btn btn-warning btn-xs">수정</button>
+								<button class="save-meeting btn btn-success btn-xs">저장</button>
+								<button class="delete-meeting btn btn-danger btn-xs">삭제</button>
+							</td>
+						}
+					</tr>
+				}
+				</tbody>
+			</table>
+		</div>
+	</div>
+</section>
+
+<section id="account">
+	<div class="container">
+		<div class="row">
+			<div class="col-lg-12 text-center">
+				<h2 class="section-heading">회계</h2>
+			</div>
+		</div>
+		<div class="row text-center">
+			<table class="table table-striped" style="margin: auto; width:initial;">
+			@{ 
+				IEnumerable<FnbAccounting.AccountingData> accountingList = Model.Accounting;
+				long totalOutMoney = accountingList.Sum(x => x.OutMoney);
+				long totalInMoney = accountingList.Sum(x => x.InMoney);
+			}
+				<thead>
+					<tr>
+						<th>날짜</th>
+						<th>내용</th>
+						<th>지출 (@totalOutMoney.ToComma())</th>
+						<th>수입 (@totalInMoney.ToComma())</th>
+						@if (@Model.IsOperator)
+						{
+							<th>버튼</th>
+						}
+					</tr>
+				</thead>
+				<tbody>
+				@if (@Model.IsOperator)
+				{
+					<tr>
+						<td><input /></td>
+						<td><input /></td>
+						<td><input /></td>
+						<td><input /></td>
+						<td><button class="btn btn-info btn-xs">추가</button></td>
+					</tr>
+				}
+
+				@foreach (FnbAccounting.AccountingData data in @Model.Accounting)
+				{
+					string outMoney = data.OutMoney == 0L ? "-" : data.OutMoney.ToComma();
+					string inMoney = data.InMoney == 0L ? "-" : data.InMoney.ToComma();
+					<tr data-id="@data.Id">
+						<td>@data.Date.ToString("yyyy-MM-dd")</td>
+						<td>@data.Content</td>
+						<td class="money">@outMoney</td>
+						<td class="money">@inMoney</td>
+						@if (@Model.IsOperator)
+						{
+						<td><button class="btn btn-danger btn-xs">삭제</button></td>
+						}
+					</tr>
+				}
+				</tbody>
+			</table>
+		</div>
+	</div>
+</section>
+
+
+
+@section Css
+{
+	<link href="/Static/css/fnb.css" rel="stylesheet" />
+	<style type="text/css">
+
+		header {
+			background-image: url(@Model.BackGroundFileName);
+		}
+
+	</style>
+}
+
+@section Javascript
+{
+	<script type="text/javascript">
+		$(document).ready(function () {
+			@*
+				메인화면은 div 한단계 밖으로 뺀다.
+				css 를 잘 수정하면 될것도 같지만 귀찮..
+				나중에 전체 개편할 때 잘 해보자는 마음..
+			*@
+			$('div#layout-content').before($('div#layout-content').children());
+			$('div#layout-content').remove();
+
+			$('.member').hover(function () {
+				$(this).children('.button-list').css('visibility', 'visible');
+			}, function () {
+				$(this).children('.button-list').css('visibility', 'hidden');
+			});
+
+			$('#datetimepicker1').datetimepicker({
+				useStrict: true,
+				format: 'YYYY-MM-DD'
+			}).on('dp.change', function (e) {
+				$('#add-meeting-date').attr('data-date', getDate8(e.date));
+			});
+
+			$('#datetimepicker1 input').keydown(function () {
+				return false;
+			});
+
+
+			@* 모임 관리 시작 *@
+			
+			$('button#button-add-meeting').click(function () {
+				// 이게 메인
+				var fnAddMeeting = function () {
+					$.post('fnb/meeting/add', {
+						no: $('#add-meeting-no').val(),
+						date: $('#add-meeting-date').attr('data-date'),
+						attendants: $('#add-meeting-attendants').val(),
+						others: $('#add-meeting-others').val()
+					}, function (data) {
+						if (data == 'success') {
+						} else {
+							showAlert(data);
+						}
+					});
+				};
+
+				// 이름 체크하고 통과하면 데이터 추가 한다.
+				$.post('fnb/check/member', {
+					memberlist: $('#add-meeting-attendants').val()
+				}, function (data) {
+					if (data == 'success') {
+						fnAddMeeting();
+					} else {
+						showAlert(data);
+					}
+				});
+			});
+
+			@* 모임 관리 끝 *@
+		});
+	</script>
+}
+
+@section JavascriptRelease
+{
+}
