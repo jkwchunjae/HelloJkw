@@ -79,12 +79,12 @@ namespace helloJkw.Jkw.Others.FnB
 			}
 		}
 
-		public static void DeleteMeeting(DateTime date)
+		public static void DeleteMeeting(int no)
 		{
-			if (!_meetingList.Any(x => x.Date.Date == date.Date))
+			if (!_meetingList.Any(x => x.No == no))
 				throw new Exception("없는 날짜입니다.");
 
-			var meeting = _meetingList.First(x => x.Date.Date == date.Date);
+			var meeting = _meetingList.First(x => x.No == no);
 			_meetingList.Remove(meeting);
 			if (!Save())
 			{

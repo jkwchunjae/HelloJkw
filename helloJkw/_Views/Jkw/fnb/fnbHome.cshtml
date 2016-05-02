@@ -48,8 +48,10 @@
 							<span class="glyphicon glyphicon-calendar"></span>
 						</span>
 					</div>
-					<button class="btn-member-add btn btn-info" data-member-type="Regular">추가</button>
-					<button class="btn-member-add-clear btn btn-default" data-member-type="Regular">초기화</button>
+					<div style="margin-top: 10px;">
+						<button class="btn-member-add btn btn-info" data-member-type="Regular">추가</button>
+						<button class="btn-member-add-clear btn btn-default" data-member-type="Regular">초기화</button>
+					</div>
 				</div>
 			}
 		</div>
@@ -86,8 +88,10 @@
 							<span class="glyphicon glyphicon-calendar"></span>
 						</span>
 					</div>
-					<button class="btn-member-add btn btn-info" data-member-type="Associate">추가</button>
-					<button class="btn-member-add-clear btn btn-default" data-member-type="Associate">초기화</button>
+					<div style="margin-top: 10px;">
+						<button class="btn-member-add btn btn-info" data-member-type="Associate">추가</button>
+						<button class="btn-member-add-clear btn btn-default" data-member-type="Associate">초기화</button>
+					</div>
 				</div>
 			}
 		</div>
@@ -155,7 +159,7 @@
 					{
 						<td>
 							@*<button class="request-modify-meeting btn btn-warning btn-xs">수정</button>*@
-							<button class="delete-meeting btn btn-danger btn-xs">삭제</button>
+							<button class="button-delete-meeting btn btn-danger btn-xs" data-meeting-no="{{meeting.No}}">삭제</button>
 						</td>
 					}
 				</tr>
@@ -198,10 +202,10 @@
 								</span>
 							</div>
 						</td>
-						<td><input type="text" class="form-control" id="text-accouting-content"/></td>
-						<td><input type="number" class="form-control" id="text-accouting-outmoney" style="width: 100px;"/></td>
-						<td><input type="number" class="form-control" id="text-accouting-inmoney" style="width: 100px;"/></td>
-						<td><button class="btn btn-info btn-xs">추가</button></td>
+						<td><input type="text" class="form-control" id="text-accounting-content"/></td>
+						<td><input type="number" class="form-control" id="text-accounting-outMoney" min="0" style="width: 100px;"/></td>
+						<td><input type="number" class="form-control" id="text-accounting-inMoney" min="0" style="width: 100px;"/></td>
+						<td><button class="btn btn-info btn-xs" id="button-accounting-add">추가</button></td>
 					</tr>
 				}
 				<tr ng-repeat="accountingData in accountingDataList">
@@ -211,7 +215,7 @@
 					<td class="money">{{accountingData.InMoney}}</td>
 					@if (@Model.IsOperator)
 					{
-						<td><button class="btn btn-danger btn-xs">삭제</button></td>
+						<td><button class="button-accounting-delete btn btn-danger btn-xs" data-accounting-id="{{accountingData.Id}}">삭제</button></td>
 					}
 				</tr>
 				</tbody>
@@ -235,154 +239,18 @@
 		header {
 			background-image: url(@Model.BackGroundFileName);
 		}
-
-
 	</style>
 }
 
 @section Javascript
 {
-	<script src="/Static/js/jkw/fnb/member.js"></script>
+	<script src="/Static/js/jkw/fnb/fnbLoad.js"></script>
+@if (@Model.IsOperator)
+{
+	<script src="/Static/js/jkw/fnb/fnbOperator.js"></script>
+}
 	<script type="text/javascript">
 		$(document).ready(function () {
-			@*
-				메인화면은 div 한단계 밖으로 뺀다.
-				css 를 잘 수정하면 될것도 같지만 귀찮..
-				나중에 전체 개편할 때 잘 해보자는 마음..
-			*@
-			$('div#layout-content').before($('div#layout-content').children());
-			$('div#layout-content').remove();
-
-			$(document).on({
-				mouseenter: function () {
-					$(this).children('.button-list').css('visibility', 'visible');
-				},
-				mouseleave: function () {
-					$(this).children('.button-list').css('visibility', 'hidden');
-				}
-			}, '.member');
-
-			$('.datetimepicker').datetimepicker({
-				useStrict: true,
-				format: 'YYYY-MM-DD'
-			}).on('dp.change', function (e) {
-				$(this).attr('data-date', getDate8(e.date));
-			});
-
-			$('.datetimepicker input').keydown(function () {
-				return false;
-			});
-
-			function callbackMember(data) {
-				if (data == 'success') {
-					loadMemberRegular()
-					loadMemberAssociate()
-				} else {
-					showAlert(data)
-				}
-			}
-
-			function changeMemberType(memberName, newMemberType) {
-				$.post('fnb/member/changeType', {
-					memberName: memberName,
-					newMemberType: newMemberType
-				}, callbackMember)
-			}
-
-			$(document).on('click', 'button.btn-member-goto-regular', function () {
-				var memberName = $(this).attr('data-member-name')
-				changeMemberType(memberName, 'Regular')
-			})
-
-			$(document).on('click', 'button.btn-member-goto-associate', function () {
-				var memberName = $(this).attr('data-member-name')
-				changeMemberType(memberName, 'Associate')
-			})
-
-			$(document).on('click', 'button.btn-member-leave', function () {
-				var memberName = $(this).attr('data-member-name')
-				$.post('fnb/member/leave', {
-					memberName: memberName
-				}, callbackMember)
-			})
-
-			function clearMemberAdd(memberType) {
-				$('#member-name-' + memberType).val('')
-				$('#member-role-' + memberType).val('')
-				$('#member-team-' + memberType).val('')
-				$('#datetimepicker-' + memberType).data('DateTimePicker').clear();
-			}
-
-			$('.btn-member-add').click(function () {
-				var memberType = $(this).attr('data-member-type')
-				var memberData = {
-					name : $('#member-name-' + memberType).val(),
-					role : $('#member-role-' + memberType).val(),
-					team : $('#member-team-' + memberType).val(),
-					joinDate: $('#datetimepicker-' + memberType).attr('data-date'),
-					memberType: memberType
-				}
-
-				$.post('fnb/member/add', memberData, function (data) {
-					if (data == 'success') {
-						loadMemberRegular()
-						loadMemberAssociate()
-						clearMemberAdd(memberType)
-					} else {
-						showAlert(data)
-					}
-				})
-			})
-
-			$('.btn-member-add-clear').click(function () {
-				var memberType = $(this).attr('data-member-type')
-				clearMemberAdd(memberType)
-			})
-
-			@* 모임 관리 시작 *@
-
-			$(document).on('click', 'button.add-meeting-member-button', function () {
-				if ($(this).hasClass('active')) {
-					$(this).removeClass('btn-default').addClass('btn-success')
-				} else {
-					$(this).removeClass('btn-success').addClass('btn-default')
-				}
-			})
-			
-			$('button#button-add-meeting').click(function () {
-				// 이게 메인
-				var fnAddMeeting = function () {
-					var attendantsArray = new Array();
-					$('button.add-meeting-member-button').each(function () {
-						if ($(this).hasClass('active')) {
-							var name = $(this).attr('data-member-name');
-							attendantsArray.push(name);
-						}
-					})
-
-					$.post('fnb/meeting/add', {
-						no: $('#add-meeting-no').val(),
-						date: $('#datetimepicker-meeting').attr('data-date'),
-						attendants: attendantsArray.join(),
-						others: $('#add-meeting-others').val()
-					}, function (data) {
-						if (data == 'success') {
-							loadMeeting();
-							loadMemberRegular();
-							loadMemberAssociate();
-							$('#add-meeting-no').val('');
-							$('#datetimepicker-meeting').data('DateTimePicker').clear();
-							$('#add-meeting-others').val('');
-						} else {
-							showAlert(data);
-						}
-					});
-				};
-
-				fnAddMeeting();
-			});
-
-			@* 모임 관리 끝 *@
 		});
 	</script>
 }

@@ -15,10 +15,6 @@ app.controller('fnb-controller', function ($scope) {
 	loadMemberAssociate(); //  준회원
 	loadMeeting(); //  모임
 	loadAccountingData(); //  회계
-
-	$scope.aa = function () {
-		alert(1);
-	};
 });
 
 function loadMemberRegular () {

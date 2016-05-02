@@ -13,11 +13,18 @@ namespace helloJkw
 {
 	public class JkwFnbModule : JkwModule
 	{
+		static string _operatorPath = @"jkw/project/fnb/json/operator.json";
 		public bool IsOperator(Session session)
 		{
 			if (!session.IsLogin || session.IsExpired)
 				return false;
-			return true;
+
+			var operatorList = JsonConvert.DeserializeObject<List<string>>(File.ReadAllText(_operatorPath, Encoding.UTF8))
+				.Select(x => x.ToLower()).ToList();
+
+			if (session.User.Email == null)
+				throw new Exception("해당 계정에 이메일이 세팅되어 있지 않습니다.");
+			return operatorList.Contains(session.User.Email.ToLower());
 		}
 
 		public JkwFnbModule()
@@ -52,7 +59,14 @@ namespace helloJkw
 
 				#endregion
 
-				Model.IsOperator = session.IsLogin;
+				try
+				{
+					Model.IsOperator = IsOperator(session);
+				}
+				catch
+				{
+					Model.IsOperator = false;
+				}
 
 				return View["fnb/fnbHome.cshtml", Model];
 			};
@@ -88,6 +102,43 @@ namespace helloJkw
 					var newMemberType = (FnbMember.MemberType)Enum.Parse(typeof(FnbMember.MemberType), memberTypeStr);
 
 					FnbMember.ChangeMemberType(memberName, newMemberType);
+					return "success";
+				}
+				catch (Exception ex)
+				{
+					return ex.Message;
+				}
+			};
+
+			Post["/fnb/member/add"] = _ =>
+			{
+				if (!IsOperator(session))
+					return "관리자 권한이 없습니다.";
+
+				try
+				{
+					string name = Request.Form["name"];
+					string role = Request.Form["role"];
+					string team = Request.Form["team"];
+					var joinDate = ((string)Request.Form["joinDate"]).ToDate();
+					string memberTypeStr = Request.Form["memberType"];
+					var memberType = (FnbMember.MemberType)Enum.Parse(typeof(FnbMember.MemberType), memberTypeStr);
+
+					if (string.IsNullOrWhiteSpace(name))
+						throw new Exception("이름이 공백이면 안됩니다.");
+					if (string.IsNullOrWhiteSpace(team))
+						throw new Exception("팀이 공백이면 안됩니다.");
+
+					var member = new FnbMember.Member
+					{
+						Name = name.Trim(),
+						Role = role.Trim(),
+						Team = team.Trim(),
+						JoinDate = joinDate,
+						MemberType = memberType
+					};
+
+					FnbMember.AddMember(member);
 					return "success";
 				}
 				catch (Exception ex)
@@ -180,14 +231,34 @@ namespace helloJkw
 					string others = Request.Form["others"];
 
 					FnbMeeting.AddMeeting(new FnbMeeting.Meeting { No = no, Date = date, Attendants = attendants, Others = others });
+					return "success";
 				}
 				catch (Exception ex)
 				{
 					return ex.Message;
 				}
-
-				return "success";
 			};
+			#endregion
+
+			#region DeleteMeeting
+
+			Post["/fnb/meeting/delete"] = _ =>
+			{
+				if (!IsOperator(session))
+					return "관리자 권한이 없습니다.";
+
+				try
+				{
+					int no = Request.Form["no"];
+					FnbMeeting.DeleteMeeting(no);
+					return "success";
+				}
+				catch (Exception ex)
+				{
+					return ex.Message;
+				}
+			};
+
 			#endregion
 
 			#endregion
@@ -217,6 +288,75 @@ namespace helloJkw
 
 				var json = JsonConvert.SerializeObject(obj);
 				return json;
+			};
+
+			#endregion
+
+			#region Manage
+
+			Post["/fnb/accounting/add"] = _ =>
+			{
+				if (!IsOperator(session))
+					return "관리자 권한이 없습니다.";
+
+				try
+				{
+					var date = ((string)Request.Form["date"]).ToDate();
+					string content = Request.Form["content"];
+					string outMoneyStr = Request.Form["outMoney"];
+					string inMoneyStr = Request.Form["inMoney"];
+					long outMoney = outMoneyStr.ToLong();
+					long inMoney = inMoneyStr.ToLong();
+
+					if (date == DateTime.MinValue)
+						throw new Exception("날짜를 입력하세요");
+
+					if (string.IsNullOrWhiteSpace(content))
+						throw new Exception("내용을 입력하세요");
+
+					if (outMoney == 0 && inMoney == 0)
+						throw new Exception("지출, 수입 모두 0이면 안됩니다.");
+
+					if (outMoney != 0 && inMoney != 0)
+						throw new Exception("지출, 수입 모두 값이 있으면 안됩니다.");
+
+					if (outMoney < 0 || inMoney < 0)
+						throw new Exception("지출, 수입 양수만 가능합니다.");
+
+					var accountingData = new FnbAccounting.AccountingData
+					{
+						Id = FnbAccounting.GetAccountingData().Any() ? FnbAccounting.GetAccountingData().Max(x => x.Id) + 1 : 1,
+						Date = date,
+						Content = content,
+						OutMoney = outMoney,
+						InMoney = inMoney,
+					};
+
+					FnbAccounting.AddData(accountingData);
+					return "success";
+				}
+				catch (Exception ex)
+				{
+					return ex.Message;
+				}
+			};
+
+			Post["/fnb/accounting/delete"] = _ =>
+			{
+				if (!IsOperator(session))
+					return "관리자 권한이 없습니다.";
+
+				try
+				{
+					int id = Request.Form["id"];
+
+					FnbAccounting.DeleteData(id);
+					return "success";
+				}
+				catch (Exception ex)
+				{
+					return ex.Message;
+				}
 			};
 
 			#endregion

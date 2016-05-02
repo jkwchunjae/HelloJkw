@@ -69,18 +69,29 @@ namespace helloJkw.Jkw.Others.FnB
 			return _dataList.Where(x => x.Date >= beginDate && x.Date <= endDate).OrderByDescending(x => x.Date);
 		}
 
-		public static bool AddData(AccountingData newData)
+		public static void AddData(AccountingData newData)
 		{
 			_dataList.Add(newData);
-			return Save();
+			if (!Save())
+			{
+				_dataList.Remove(newData);
+				throw new Exception("추가 작업에 실패했습니다.");
+			}
 		}
 
-		public static bool DeleteData(AccountingData deleteData)
+		public static bool DeleteData(int id)
 		{
-			if (!_dataList.Contains(deleteData))
-				return false;
+			if (!_dataList.Any(x => x.Id == id))
+				throw new Exception("Id를 찾지 못했습니다.");
 
-			_dataList.Remove(deleteData);
+			var data = _dataList.First(x => x.Id == id);
+			_dataList.Remove(data);
+
+			if (!Save())
+			{
+				_dataList.Add(data);
+				throw new Exception("삭제 작업에 실패했습니다.");
+			}
 			return true;
 		}
 	}

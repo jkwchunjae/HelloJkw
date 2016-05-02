@@ -24,7 +24,18 @@ namespace helloJkw.Jkw.Others.FnB
 			public string Role;
 			public DateTime JoinDate;
 			public MemberType MemberType = MemberType.None;
-			public string PictureName;
+			public string PictureName
+			{
+				get
+				{
+					var images = Directory.GetFiles(_picturePath, "{0}.*".With(Name));
+					if (!images.Any())
+					{
+						return "person.png";
+					}
+					return Path.GetFileName(images.First());
+				}
+			}
 
 			public bool HasRole { get { return !string.IsNullOrWhiteSpace(Role); } }
 			public string JoinDateDot { get { return JoinDate.ToString("yyyy.MM.dd"); } }
@@ -52,6 +63,7 @@ namespace helloJkw.Jkw.Others.FnB
 			try
 			{
 				_memberList = JsonConvert.DeserializeObject<List<Member>>(File.ReadAllText(_path, Encoding.UTF8));
+				/*
 				var pictureDic = Directory.GetFiles(_picturePath)
 					.ToDictionary(x => Path.GetFileNameWithoutExtension(x), x => Path.GetFileName(x));
 				foreach (var member in _memberList)
@@ -65,6 +77,7 @@ namespace helloJkw.Jkw.Others.FnB
 						member.PictureName = "person.png";
 					}
 				}
+				*/
 			}
 			catch
 			{
@@ -105,13 +118,17 @@ namespace helloJkw.Jkw.Others.FnB
 			return new Member() { Name = memberName, JoinDate = DateTime.MaxValue, MemberType = MemberType.None };
 		}
 
-		public static bool AddMember(Member newMember)
+		public static void AddMember(Member newMember)
 		{
 			if (_memberList.Any(x => x.Name == newMember.Name))
 				throw new Exception("중복된 이름이 있습니다.");
 
 			_memberList.Add(newMember);
-			return Save();
+			if (!Save())
+			{
+				_memberList.Remove(newMember);
+				throw new Exception("추가 작업에 실패했습니다.");
+			}
 		}
 
 		public static void LeaveMember(string memberName)
