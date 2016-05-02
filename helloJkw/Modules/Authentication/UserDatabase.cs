@@ -78,15 +78,16 @@ namespace helloJkw
 						if (reader.Read())
 						{
 							return new User(
-								no: (int)reader["no"],
-								id: (string)reader["id"],
-								regDate: (DateTime)reader["regDate"]
+								no: reader.GetInt32("no"),
+								id: reader.GetString("id"),
+								regDate: reader.GetDateTime("regDate")
 							)
 							{
-								Name = (string)reader["name"],
-								Grade = (UserGrade)Enum.Parse(typeof(UserGrade), (string)reader["grade"]),
-								LastLogin = (DateTime)reader["lastdate"],
-								ImageUrl = (string)reader["imageurl"],
+								Name = reader.GetString("name"),
+								Grade = (UserGrade)Enum.Parse(typeof(UserGrade), reader.GetString("grade")),
+								LastLogin = reader.GetDateTime("lastdate"),
+								ImageUrl = reader.GetString("imageurl"),
+								Email = reader.GetString("email"),
 							};
 						}
 						else
