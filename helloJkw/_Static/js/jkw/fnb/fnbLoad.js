@@ -45,7 +45,7 @@ function loadMeeting() {
 		scope.meetingList = JSON.parse(data);
 		scope.$apply();
 
-		$('.meeting-others').each(function () {
+		$('.meeting-others .meeting-info').each(function () {
 			var newOthers = $(this).text().replace(/(?:\r\n|\r|\n)/g, '<br/>')
 			$(this).html(newOthers)
 		})
@@ -64,3 +64,14 @@ function loadAccountingData() {
 		scope.$apply();
 	});
 };
+
+function getMeeting(meetingNo){
+	var scope = getScope()
+
+	for (var index in scope.meetingList) {
+		var meeting = scope.meetingList[index]
+		if (meeting.No == meetingNo) {
+			return meeting
+		}
+	}
+}

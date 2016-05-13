@@ -2,3 +2,15 @@
 	width: 200px;
 	margin: auto;
 }
+
+.member-edit {
+	display: none;
+}
+
+.meeting-edit {
+	display: none;
+}
+
+.accounting-edit {
+	display: none;
+}

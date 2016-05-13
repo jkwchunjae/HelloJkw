@@ -24,15 +24,37 @@
 		</div>
 		<div class="row text-center">
 			<div ng-repeat="member in memberListRegular" class="member col-sm-3">
-				<img style="width:150px;height:150px;" src="jkw/others/fnb/member/{{member.PictureName}}" class="img-circle" />
-				<h4 class="service-heading">{{member.Name}} <span ng-show="{{member.HasRole}}">({{member.Role}})</span></h4>
-				<p class="text-muted">{{member.Team}}<br />{{member.JoinDateDot}}</p>
+				<div class="member-info" id="member-info-{{member.Name}}">
+					<img style="width:150px;height:150px;" src="jkw/others/fnb/member/{{member.PictureName}}" class="img-circle" />
+					<h4 class="service-heading">{{member.Name}} <span ng-show="{{member.HasRole}}">({{member.Role}})</span></h4>
+					<p class="text-muted">{{member.Team}}<br />{{member.JoinDateDot}}</p>
+					@if (Model.IsOperator)
+					{
+						<p class="button-list">
+							<button class="btn-member-goto-associate btn btn-warning btn-xs" data-member-name="{{member.Name}}">준회원</button>
+							<button class="btn-member-edit btn btn-info btn-xs" data-member-name="{{member.Name}}" data-member-joindate="{{member.JoinDateDot}}">수정</button>
+							<button class="btn-member-leave btn btn-danger btn-xs" data-member-name="{{member.Name}}">탈퇴</button>
+						</p>
+					}
+				</div>
 				@if (Model.IsOperator)
 				{
-					<p class="button-list">
-						<button class="btn-member-goto-associate btn btn-warning btn-xs" data-member-name="{{member.Name}}">준회원</button>
-						<button class="btn-member-leave btn btn-danger btn-xs" data-member-name="{{member.Name}}">탈퇴</button>
-					</p>
+					<div class="member-edit" id="member-edit-{{member.Name}}">
+						<h4>{{member.Name}} 수정</h4>
+						<img style="width:116px;height:116px;" src="jkw/others/fnb/member/{{member.PictureName}}" class="img-circle" />
+						<input value="{{member.Role}}" type="text" id="member-role-{{member.Name}}" class="member-add-data form-control" placeholder="역할" />
+						<input value="{{member.Team}}" type="text" id="member-team-{{member.Name}}" class="member-add-data form-control" placeholder="팀" />
+						<div class='member-add-data datetimepicker input-group date' id='datetimepicker-{{member.Name}}'>
+							<input type='text' class="form-control" placeholder="가입일" />
+							<span class="input-group-addon">
+								<span class="glyphicon glyphicon-calendar"></span>
+							</span>
+						</div>
+						<p class="button-list-edit">
+							<button class="btn-member-edit-save btn btn-success btn-xs" data-member-name="{{member.Name}}">저장</button>
+							<button class="btn-member-edit-cancel btn btn-default btn-xs" data-member-name="{{member.Name}}">취소</button>
+						</p>
+					</div>
 				}
 			</div>
 			@if (@Model.IsOperator)
@@ -64,15 +86,37 @@
 		</div>
 		<div class="row text-center">
 			<div ng-repeat="member in memberListAssociate" class="member col-sm-3">
-				<img style="width:150px;height:150px;" src="jkw/others/fnb/member/{{member.PictureName}}" class="img-circle" />
-				<h4 class="service-heading">{{member.Name}} <span ng-show="{{member.HasRole}}">({{member.Role}})</span></h4>
-				<p class="text-muted">{{member.Team}}<br />{{member.JoinDateDot}}</p>
-				@if (Model.IsOperator)
+				<div class="member-info" id="member-info-{{member.Name}}">
+					<img style="width:150px;height:150px;" src="jkw/others/fnb/member/{{member.PictureName}}" class="img-circle" />
+					<h4 class="service-heading">{{member.Name}} <span ng-show="{{member.HasRole}}">({{member.Role}})</span></h4>
+					<p class="text-muted">{{member.Team}}<br />{{member.JoinDateDot}}</p>
+					@if (Model.IsOperator)
+					{
+						<p class="button-list">
+							<button class="btn-member-goto-regular btn btn-success btn-xs" data-member-name="{{member.Name}}">정회원</button>
+							<button class="btn-member-edit btn btn-info btn-xs" data-member-name="{{member.Name}}" data-member-joindate="{{member.JoinDateDot}}">수정</button>
+							<button class="btn-member-leave btn btn-danger btn-xs" data-member-name="{{member.Name}}">탈퇴</button>
+						</p>
+					}
+				</div>
+				@if (@Model.IsOperator)
 				{
-					<p class="button-list">
-						<button class="btn-member-goto-regular btn btn-success btn-xs" data-member-name="{{member.Name}}">정회원</button>
-						<button class="btn-member-leave btn btn-danger btn-xs" data-member-name="{{member.Name}}">탈퇴</button>
-					</p>
+					<div class="member-edit" id="member-edit-{{member.Name}}">
+						<h4>{{member.Name}} 수정</h4>
+						<img style="width:116px;height:116px;" src="jkw/others/fnb/member/{{member.PictureName}}" class="img-circle" />
+						<input value="{{member.Role}}" type="text" id="member-role-{{member.Name}}" class="member-add-data form-control" placeholder="역할" />
+						<input value="{{member.Team}}" type="text" id="member-team-{{member.Name}}" class="member-add-data form-control" placeholder="팀" />
+						<div class='member-add-data datetimepicker input-group date' id='datetimepicker-{{member.Name}}'>
+							<input type='text' class="form-control" placeholder="가입일" />
+							<span class="input-group-addon">
+								<span class="glyphicon glyphicon-calendar"></span>
+							</span>
+						</div>
+						<p class="button-list-edit">
+							<button class="btn-member-edit-save btn btn-success btn-xs" data-member-name="{{member.Name}}">저장</button>
+							<button class="btn-member-edit-cancel btn btn-default btn-xs" data-member-name="{{member.Name}}">취소</button>
+						</p>
+					</div>
 				}
 			</div>
 			@if (@Model.IsOperator)
@@ -124,7 +168,7 @@
 				<tbody>
 				@if (@Model.IsOperator)
 				{
-					<tr>
+					<tr id="tr-add-meeting">
 						<td><input type="number" id="add-meeting-no" class="form-control" style="width: 60px;" /></td>
 						<td>
 							<div class="datetimepicker input-group date" id="datetimepicker-meeting">
@@ -144,22 +188,53 @@
 								</li>
 							</ul>
 						</td>
-						<td><textarea id="add-meeting-others" class="form-control" placeholder="" style="width: 150px;"></textarea></td>
+						<td><textarea id="add-meeting-others" class="form-control" placeholder="" style="width: 200px;"></textarea></td>
 						<td>
 							<button id="button-add-meeting" class="btn btn-info btn-sm">추가</button>
 						</td>
 					</tr>
 				}
-				<tr ng-repeat="meeting in meetingList">
+				<tr ng-repeat="meeting in meetingList" data-meeting-no="{{meeting.No}}">
 					<td class="meeting-no">{{meeting.No}}</td>
-					<td class="meeting-date">{{meeting.DateDot}}</td>
-					<td class="meeting-attendants align-left">{{meeting.AttendantList}}</td>
-					<td class="meeting-others align-left">{{meeting.Others}}</td>
+					<td class="meeting-date">
+						<div class="meeting-info">{{meeting.DateDot}}</div>
+						<div class="meeting-edit">
+							<div class="datetimepicker input-group date" id="datetimepicker-meeting-{{meeting.No}}">
+								<input type="text" class="form-control" style="width:100px;" />
+								<span class="input-group-addon">
+									<span class="glyphicon glyphicon-calendar"></span>
+								</span>
+							</div>
+						</div>
+					</td>
+					<td class="meeting-attendants align-left">
+						<div class="meeting-info">{{meeting.AttendantList}}</div>
+						<div class="meeting-edit">
+							<ul style="list-style: none; padding-left: 0;">
+								<li ng-repeat="member in memberListRegular" style="float: left;">
+									<button class="add-meeting-member-button btn btn-default btn-xs" data-member-name="{{member.Name}}" data-toggle="button" aria-pressed="false" autocomplete="off">{{member.Name}}</button>
+								</li>
+								<li ng-repeat="member in memberListAssociate" style="float: left;">
+									<button class="add-meeting-member-button btn btn-default btn-xs" data-member-name="{{member.Name}}" data-toggle="button" aria-pressed="false" autocomplete="off">{{member.Name}}</button>
+								</li>
+							</ul>	
+						</div>
+					</td>
+					<td class="meeting-others align-left">
+						<div class="meeting-info">{{meeting.Others}}</div>
+						<div class="meeting-edit"><textarea class="form-control" style="width: 200px;" data-others="{{meeting.Others}}"></textarea></div>
+					</td>
 					@if (@Model.IsOperator)
 					{
 						<td>
-							@*<button class="request-modify-meeting btn btn-warning btn-xs">수정</button>*@
-							<button class="button-delete-meeting btn btn-danger btn-xs" data-meeting-no="{{meeting.No}}">삭제</button>
+							<div class="meeting-info">
+								<button class="button-meeting-edit btn btn-warning btn-xs">수정</button>
+								<button class="button-meeting-delete btn btn-danger btn-xs" data-meeting-no="{{meeting.No}}">삭제</button>
+							</div>
+							<div class="meeting-edit">
+								<button class="button-meeting-edit-save btn btn-success btn-xs">저장</button>
+								<button class="button-meeting-edit-cancel btn btn-default btn-xs" data-meeting-no="{{meeting.No}}">취소</button>
+							</div>
 						</td>
 					}
 				</tr>
@@ -205,17 +280,49 @@
 						<td><input type="text" class="form-control" id="text-accounting-content"/></td>
 						<td><input type="number" class="form-control" id="text-accounting-outMoney" min="0" style="width: 100px;"/></td>
 						<td><input type="number" class="form-control" id="text-accounting-inMoney" min="0" style="width: 100px;"/></td>
-						<td><button class="btn btn-info btn-xs" id="button-accounting-add">추가</button></td>
+						<td><button class="btn btn-info btn-sm" id="button-accounting-add">추가</button></td>
 					</tr>
 				}
-				<tr ng-repeat="accountingData in accountingDataList">
-					<td>{{accountingData.DateDot}}</td>
-					<td>{{accountingData.Content}}</td>
-					<td class="money">{{accountingData.OutMoney}}</td>
-					<td class="money">{{accountingData.InMoney}}</td>
+				<tr ng-repeat="accountingData in accountingDataList" data-accounting-id="{{accountingData.Id}}">
+					<td class="accounting-date">
+						<div class="accounting-info">{{accountingData.DateDot}}</div>
+						<div class="accounting-edit">
+							<div class="datetimepicker input-group date" id="datetimepicker-accounting-{{accountingData.No}}">
+								<input type="text" class="form-control" style="width:100px;" />
+								<span class="input-group-addon">
+									<span class="glyphicon glyphicon-calendar"></span>
+								</span>
+							</div>
+						</div>
+					</td>
+					<td class="accounting-content">
+						<div class="accounting-info">{{accountingData.Content}}</div>
+						<div class="accounting-edit"> <input type="text" class="form-control" /> </div>
+					</td>
+					<td class="accounting-out-money" data-out-money="{{accountingData.OutMoney}}">
+						<div class="accounting-info money">{{accountingData.OutMoneyComma}}</div>
+						<div class="accounting-edit">
+							<input type="number" class="form-control" min="0" style="width: 100px;" />
+						</div>
+					</td>
+					<td class="accounting-in-money" data-in-money="{{accountingData.InMoney}}">
+						<div class="accounting-info money">{{accountingData.InMoneyComma}}</div>
+						<div class="accounting-edit">
+							<input type="number" class="form-control" min="0" style="width: 100px;" />
+						</div>
+					</td>
 					@if (@Model.IsOperator)
 					{
-						<td><button class="button-accounting-delete btn btn-danger btn-xs" data-accounting-id="{{accountingData.Id}}">삭제</button></td>
+						<td>
+							<div class="accounting-info">
+								<button class="button-accounting-edit btn btn-warning btn-xs">수정</button>
+								<button class="button-accounting-delete btn btn-danger btn-xs" data-accounting-id="{{accountingData.Id}}">삭제</button>
+							</div>
+							<div class="accounting-edit">
+								<button class="button-accounting-edit-save btn btn-success btn-xs">저장</button>
+								<button class="button-accounting-edit-cancel btn btn-default btn-xs">취소</button>
+							</div>
+						</td>
 					}
 				</tr>
 				</tbody>

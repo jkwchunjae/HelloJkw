@@ -146,6 +146,30 @@ namespace helloJkw.Jkw.Others.FnB
 			}
 		}
 
+		public static void EditMember(string memberName, Member newMember)
+		{
+			if (!_memberList.Any(x => x.Name == memberName))
+				throw new Exception("없는 이름입니다.");
+
+			var member = _memberList.First(x => x.Name == memberName);
+
+			var oldTeam = member.Team;
+			var oldRole = member.Role;
+			var oldJoinDate = member.JoinDate;
+
+			member.Team = newMember.Team;
+			member.Role = newMember.Role;
+			member.JoinDate = newMember.JoinDate;
+
+			if (!Save())
+			{
+				member.Team = oldTeam;
+				member.Role = oldRole;
+				member.JoinDate = oldJoinDate;
+				throw new Exception("정보 변경에 실패했습니다.");
+			}
+		}
+
 		public static void ChangeMemberType(string memberName, MemberType newMemberType)
 		{
 			var member = GetMember(memberName);

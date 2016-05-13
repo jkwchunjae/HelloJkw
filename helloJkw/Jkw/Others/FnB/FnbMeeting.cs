@@ -79,6 +79,30 @@ namespace helloJkw.Jkw.Others.FnB
 			}
 		}
 
+		public static void EditMeeting(int no, Meeting newMeeting)
+		{
+			if (!_meetingList.Any(x => x.No == no))
+				throw new Exception("잘못된 회차입니다.");
+
+			var meeting = _meetingList.First(x => x.No == no);
+
+			var oldDate = meeting.Date;
+			var oldAttendants = meeting.Attendants;
+			var oldOthers = meeting.Others;
+
+			meeting.Date = newMeeting.Date;
+			meeting.Attendants = newMeeting.Attendants;
+			meeting.Others = newMeeting.Others;
+
+			if (!Save())
+			{
+				meeting.Date = oldDate;
+				meeting.Attendants = oldAttendants;
+				meeting.Others = oldOthers;
+				throw new Exception("정보 변경에 실패했습니다.");
+			}
+		}
+
 		public static void DeleteMeeting(int no)
 		{
 			if (!_meetingList.Any(x => x.No == no))

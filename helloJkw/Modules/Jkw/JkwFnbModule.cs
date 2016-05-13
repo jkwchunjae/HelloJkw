@@ -128,6 +128,8 @@ namespace helloJkw
 						throw new Exception("이름이 공백이면 안됩니다.");
 					if (string.IsNullOrWhiteSpace(team))
 						throw new Exception("팀이 공백이면 안됩니다.");
+					if (joinDate == DateTime.MinValue)
+						throw new Exception("날짜에 오류가 있습니다.");
 
 					var member = new FnbMember.Member
 					{
@@ -139,6 +141,35 @@ namespace helloJkw
 					};
 
 					FnbMember.AddMember(member);
+					return "success";
+				}
+				catch (Exception ex)
+				{
+					return ex.Message;
+				}
+			};
+
+			Post["/fnb/member/edit"] = _ =>
+			{
+				if (!IsOperator(session))
+					return "권리자 권한이 없습니다.";
+
+				try
+				{
+					string name = Request.Form["name"];
+					string role = Request.Form["role"];
+					string team = Request.Form["team"];
+					var joinDate = ((string)Request.Form["joinDate"]).ToDate();
+
+					var member = new FnbMember.Member
+					{
+						Name = name.Trim(),
+						Team = team.Trim(),
+						Role = role.Trim(),
+						JoinDate = joinDate
+					};
+
+					FnbMember.EditMember(name, member);
 					return "success";
 				}
 				catch (Exception ex)
@@ -180,11 +211,12 @@ namespace helloJkw
 					{
 						No = e.No,
 						DateDot = e.Date.ToString("yyyy.MM.dd"),
+						e.Attendants,
 						AttendantList = e.Attendants.Select(x => FnbMember.GetMember(x))
 							.OrderBy(x => x.MemberType).ThenBy(x => x.JoinDate)
 							.Select((x, i) => new { Index = i, Member = x })
 							.GroupBy(x => x.Index / 5)
-							.Select(x => x.Select(t => t.Member.GetShortInfo()).StringJoin(", "))
+							.Select(x => x.Select(t => t.Member.Name).StringJoin(", "))
 							.StringJoin("<br/>"),
 						Others = e.Others,
 					});
@@ -230,6 +262,9 @@ namespace helloJkw
 						.ToList();
 					string others = Request.Form["others"];
 
+					if (date == DateTime.MinValue)
+						throw new Exception("날짜에 오류가 있습니다.");
+
 					FnbMeeting.AddMeeting(new FnbMeeting.Meeting { No = no, Date = date, Attendants = attendants, Others = others });
 					return "success";
 				}
@@ -238,6 +273,45 @@ namespace helloJkw
 					return ex.Message;
 				}
 			};
+			#endregion
+
+			#region EditMeeting
+
+			Post["/fnb/meeting/edit"] = _ =>
+			{
+				if (!IsOperator(session))
+					return "관리자 권한이 없습니다.";
+
+				try
+				{
+					int no = Request.Form["no"];
+					var date = ((string)Request.Form["date"]).ToDate();
+					var attendants = ((string)Request.Form["attendants"])
+						.Split(new[] { ',', ' ' })
+						.Where(x => !string.IsNullOrWhiteSpace(x))
+						.ToList();
+					string others = Request.Form["others"];
+
+					if (date == DateTime.MinValue)
+						throw new Exception("날짜에 오류가 있습니다.");
+
+					var meeting = new FnbMeeting.Meeting
+					{
+						No = no,
+						Date = date,
+						Attendants = attendants,
+						Others = others,
+					};
+
+					FnbMeeting.EditMeeting(no, meeting);
+					return "success";
+				}
+				catch (Exception ex)
+				{
+					return ex.Message;
+				}
+			};
+
 			#endregion
 
 			#region DeleteMeeting
@@ -275,8 +349,10 @@ namespace helloJkw
 						x.Id,
 						DateDot = x.Date.ToString("yyyy.MM.dd"),
 						x.Content,
-						InMoney = x.InMoney != 0 ? x.InMoney.ToComma() : "-",
-						OutMoney = x.OutMoney != 0 ? x.OutMoney.ToComma() : "-",
+						x.InMoney,
+						x.OutMoney,
+						InMoneyComma = x.InMoney != 0 ? x.InMoney.ToComma() : "-",
+						OutMoneyComma = x.OutMoney != 0 ? x.OutMoney.ToComma() : "-",
 					});
 				var totalOutMoney = FnbAccounting.GetAccountingData().Sum(x => x.OutMoney).ToComma();
 				var totalInMoney = FnbAccounting.GetAccountingData().Sum(x => x.InMoney).ToComma();
@@ -303,10 +379,8 @@ namespace helloJkw
 				{
 					var date = ((string)Request.Form["date"]).ToDate();
 					string content = Request.Form["content"];
-					string outMoneyStr = Request.Form["outMoney"];
-					string inMoneyStr = Request.Form["inMoney"];
-					long outMoney = outMoneyStr.ToLong();
-					long inMoney = inMoneyStr.ToLong();
+					long outMoney = ((string)Request.Form["outMoney"]).ToLong();
+					long inMoney = ((string)Request.Form["inMoney"]).ToLong();
 
 					if (date == DateTime.MinValue)
 						throw new Exception("날짜를 입력하세요");
@@ -333,6 +407,52 @@ namespace helloJkw
 					};
 
 					FnbAccounting.AddData(accountingData);
+					return "success";
+				}
+				catch (Exception ex)
+				{
+					return ex.Message;
+				}
+			};
+
+			Post["/fnb/accounting/edit"] = _ =>
+			{
+				if (!IsOperator(session))
+					return "관리자 권한이 없습니다.";
+
+				try
+				{
+					int id = Request.Form["id"];
+					var date = ((string)Request.Form["date"]).ToDate();
+					string content = Request.Form["content"];
+					long outMoney = ((string)Request.Form["outMoney"]).ToLong();
+					long inMoney = ((string)Request.Form["inMoney"]).ToLong();
+
+					if (date == DateTime.MinValue)
+						throw new Exception("날짜를 입력하세요");
+
+					if (string.IsNullOrWhiteSpace(content))
+						throw new Exception("내용을 입력하세요");
+
+					if (outMoney == 0 && inMoney == 0)
+						throw new Exception("지출, 수입 모두 0이면 안됩니다.");
+
+					if (outMoney != 0 && inMoney != 0)
+						throw new Exception("지출, 수입 모두 값이 있으면 안됩니다.");
+
+					if (outMoney < 0 || inMoney < 0)
+						throw new Exception("지출, 수입 양수만 가능합니다.");
+
+					var accountingData = new FnbAccounting.AccountingData
+					{
+						Id = id,
+						Date = date,
+						Content = content,
+						OutMoney = outMoney,
+						InMoney = inMoney,
+					};
+
+					FnbAccounting.EditData(id, accountingData);
 					return "success";
 				}
 				catch (Exception ex)

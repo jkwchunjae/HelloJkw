@@ -79,6 +79,33 @@ namespace helloJkw.Jkw.Others.FnB
 			}
 		}
 
+		public static void EditData(int id, AccountingData newData)
+		{
+			if (!_dataList.Any(x => x.Id == id))
+				throw new Exception("잘못된 ID 입니다. (ID = {0})".With(id));
+
+			var data = _dataList.First(x => x.Id == id);
+
+			var oldDate = data.Date;
+			var oldContent = data.Content;
+			var oldOutMoney = data.OutMoney;
+			var oldInMoney = data.InMoney;
+
+			data.Date = newData.Date;
+			data.Content = newData.Content;
+			data.OutMoney = newData.OutMoney;
+			data.InMoney = newData.InMoney;
+
+			if (!Save())
+			{
+				data.Date = oldDate;
+				data.Content = oldContent;
+				data.OutMoney = oldOutMoney;
+				data.InMoney = oldInMoney;
+				throw new Exception("정보 변경에 실패했습니다.");
+			}
+		}
+
 		public static bool DeleteData(int id)
 		{
 			if (!_dataList.Any(x => x.Id == id))
