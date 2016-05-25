@@ -94,6 +94,7 @@
     <Compile Include="Modules\Authentication\UserManager.cs" />
     <Compile Include="Modules\Games\ColorConquer\ColorConquerMain.cs" />
     <Compile Include="Modules\Games\GameCenter.cs" />
+    <Compile Include="Modules\Games\Telestrations\TelestrationsModule.cs" />
     <Compile Include="Modules\Jkw\JkwBlogManageModule.cs" />
     <Compile Include="Modules\Jkw\JkwDiaryModule.cs" />
     <Compile Include="Modules\Jkw\JkwBlogModule.cs" />
@@ -170,6 +171,7 @@
     <None Include="_Static\js\jssor\jssor.slider.min.compress.bat" />
     <None Include="_Static\js\jssor\jssor.slider.mini.compress.bat" />
     <None Include="_Views\Games\colorConquerMain.cshtml" />
+    <None Include="_Views\Games\Telestrations\telestrationsMain.cshtml" />
     <None Include="_Views\Jkw\diary\jkwDiaryShowDates.cshtml" />
     <None Include="_Views\Jkw\diary\jkwDiaryModify.cshtml" />
     <None Include="_Views\Jkw\diary\jkwDiaryWrite.cshtml" />

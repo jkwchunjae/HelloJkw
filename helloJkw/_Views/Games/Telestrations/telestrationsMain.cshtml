@@ -1,0 +1,42 @@
+﻿@inherits Nancy.ViewEngines.Razor.NancyRazorViewBase<dynamic>
+@{
+	Layout = "Layout.cshtml";
+}
+
+<ul class="keyword">
+
+@foreach (string keyword in @Model.KeywordList)
+{
+	<li>@keyword</li>
+}
+</ul>
+
+@if (@Model.isLogin)
+{
+	<button id="btn-reset">리셋</button>
+}
+
+@section Css
+{
+	<style type="text/css">
+		ul.keyword {
+			margin-top: 50px;
+		}
+		ul.keyword li {
+			font-size: xx-large;
+		}
+	</style>
+}
+
+@section Javascript
+{
+<script type="text/javascript">
+	$('#btn-reset').click(function () {
+		$.post('/games/Telestrations/reset', function () { })
+	})
+</script>
+}
+
+@section JavascriptRelease
+{
+}
