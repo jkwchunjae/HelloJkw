@@ -74,7 +74,8 @@
 
 @section Javascript
 {
-	<script type="text/javascript" src="/Static/js/jkwBlogPost.js"></script>
+	<script type="text/javascript" src="/Static/js/jkwBlogPostQnA.js"></script>
+	<script type="text/javascript" src="/Static/js/jkwBlogPostImageList.js"></script>
 	@if (@Model.isDebug)
 	{
 	<script type="text/javascript">
@@ -115,6 +116,12 @@
 		.exam pre, .problem pre {
 			margin: 0 32px;
 			width: initial;
+		}
+
+		.image-list img {
+			max-width: 700px;
+			max-height: 700px;
+			display: none;
 		}
 	</style>
 }
