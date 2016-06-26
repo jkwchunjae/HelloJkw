@@ -92,6 +92,7 @@
     <Compile Include="Modules\Authentication\User.cs" />
     <Compile Include="Modules\Authentication\UserDatabase.cs" />
     <Compile Include="Modules\Authentication\UserManager.cs" />
+    <Compile Include="Modules\Games\Baduk\BadukModule.cs" />
     <Compile Include="Modules\Games\ColorConquer\ColorConquerMain.cs" />
     <Compile Include="Modules\Games\GameCenter.cs" />
     <Compile Include="Modules\Games\Telestrations\TelestrationsModule.cs" />
@@ -170,6 +171,7 @@
     <None Include="_Static\js\jssor\jssor.slider.debug.min.compress.bat" />
     <None Include="_Static\js\jssor\jssor.slider.min.compress.bat" />
     <None Include="_Static\js\jssor\jssor.slider.mini.compress.bat" />
+    <None Include="_Views\Games\Baduk\badukMain.cshtml" />
     <None Include="_Views\Games\colorConquerMain.cshtml" />
     <None Include="_Views\Games\Telestrations\telestrationsMain.cshtml" />
     <None Include="_Views\Jkw\diary\jkwDiaryShowDates.cshtml" />

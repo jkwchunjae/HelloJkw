@@ -23,7 +23,7 @@
 			</div>
 		</div>
 		<div class="row text-center">
-			<div class="col-md-4">
+			<div class="col-md-4 project-item">
 				<a href="/kbochart" class="fa-stack fa-4x">
 					<i class="fa fa-circle fa-stack-2x text-primary"></i>
 					<i class="fa fa-line-chart fa-stack-1x fa-inverse"></i>
@@ -32,7 +32,7 @@
 				<p class="text-muted">시즌별 구단의 게임차를 기준으로 나타난 그래프</p>
 				@*<p class="text-muted">Lorem ipsum dolor sit amet, consectetur adipisicing elit. Minima maxime quam architecto quo inventore harum ex magni, dicta impedit.</p>*@
 			</div>
-			<div class="col-md-4">
+			<div class="col-md-4 project-item">
 				<a href="http://luciahandmadecard.com/" class="fa-stack fa-4x">
 					<i class="fa fa-circle fa-stack-2x text-primary"></i>
 					<i class="fa fa-laptop fa-stack-1x fa-inverse"></i>
@@ -48,7 +48,7 @@
 				<h4 class="service-heading">jkw's Blog!</h4>
 				<p class="text-muted">전경원의 소소한 블로그</p>
 			</div>*@
-			<div class="col-md-4">
+			<div class="col-md-4 project-item">
 				<a href="/diary" class="fa-stack fa-4x">
 					<i class="fa fa-circle fa-stack-2x text-primary"></i>
 					<i class="fa fa-paper-plane fa-stack-1x fa-inverse"></i>
@@ -56,14 +56,6 @@
 				<h4 class="service-heading">Diary</h4>
 				<p class="text-muted">일촌공개 일기장</p>
 			</div>
-			@*<div class="col-md-4">
-					<span class="fa-stack fa-4x">
-						<i class="fa fa-circle fa-stack-2x text-primary"></i>
-						<i class="fa fa-lock fa-stack-1x fa-inverse"></i>
-					</span>
-					<h4 class="service-heading">Web Security</h4>
-					<p class="text-muted">Lorem ipsum dolor sit amet, consectetur adipisicing elit. Minima maxime quam architecto quo inventore harum ex magni, dicta impedit.</p>
-				</div>*@
 		</div>
 	</div>
 </section>
@@ -135,9 +127,13 @@
 	<link href="/Static/css/jkwBlogHome.css" rel="stylesheet">
 	<link href="/Static/css/prism.css" rel="stylesheet">
 	<style type="text/css">
-			header {
-				background-image: url(@Model.BackGroundFileName);
-			}
+		header {
+			background-image: url(@Model.BackGroundFileName);
+		}
+
+		div.project-item {
+			margin-bottom: 30px;
+		}
 	</style>
 }
 

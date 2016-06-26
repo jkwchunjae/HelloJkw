@@ -1,0 +1,319 @@
+﻿@inherits Nancy.ViewEngines.Razor.NancyRazorViewBase<dynamic>
+@{
+	Layout = "Layout.cshtml";
+}
+
+
+<div class="utils">
+	<div class="util-item">
+		<span class="util-name">칸수</span>
+		<div class="btn-group" data-toggle="buttons">
+			<label class="btn btn-success active">
+				<input type="radio" name="board-size" value="19" checked="checked" /> 19칸
+			</label>
+			<label class="btn btn-success">
+				<input type="radio" name="board-size" value="13" /> 13칸
+			</label>
+			<label class="btn btn-success">
+				<input type="radio" name="board-size" value="9" /> 9칸
+			</label>
+		</div>
+	</div>
+	<div class="util-item">
+		<span class="util-name">돌 변경 방법</span>
+		<div class="btn-group" data-toggle="buttons">
+			<label class="btn btn-info active" title="바둑돌이 자동으로 바뀝니다. 우클릭으로 취소합니다.">
+				<input type="radio" name="stone-change-mode" value="0" checked="checked" /> 자동
+			</label>
+			<label class="btn btn-info" title="돌 색을 수동으로 지정해야 합니다. 우클릭으로 취소합니다.">
+				<input type="radio" name="stone-change-mode" value="1" /> 수동
+			</label>
+		</div>
+	</div>
+	<div class="util-item">
+		<span class="util-name">돌 색</span>
+		<div class="btn-group" data-toggle="buttons">
+			<label class="btn btn-default active">
+				<input type="radio" name="stone-color" value="0" checked="checked" />
+				<img src="/jkw/games/Baduk/black-go-stone24.png" />
+			</label>
+			<label class="btn btn-default">
+				<input type="radio" name="stone-color" value="1" />
+				<img src="/jkw/games/Baduk/white-go-stone24.png" />
+			</label>
+		</div>
+	</div>
+</div>
+
+<div class="board-section" style="display: none;">
+	<div class="board">
+	</div>
+	<div class="board-navigate">
+		<div class="input-group" role="group" style="width: 210px;">
+			<div class="input-group-btn">
+				<button type="button" class="btn btn-default btn-navi" data-offset="-1">&lt;</button>
+				<button type="button" class="btn btn-default btn-navi" data-offset="-5">&lt; 5</button>
+			</div>
+			<input type="text" value="0" class="form-control" name="board-index" readonly="readonly" style="text-align: center;" />
+			<div class="input-group-btn">
+				<button type="button" class="btn btn-default btn-navi" data-offset="5">5 &gt;</button>
+				<button type="button" class="btn btn-default btn-navi" data-offset="1">&gt;</button>
+			</div>
+		</div>
+	</div>
+</div>
+
+@section Css
+{
+<style type="text/css">
+	ul#board-size {
+		border-style: none;
+		padding: 0;
+	}
+	
+	ul#board-size li {
+		display: inline-block;
+	}
+
+	div.board-section {
+		float: left;
+		display: inline;
+	}
+
+	div.utils {
+		float: left;
+		padding-right: 20px;
+		display: inline;
+	}
+
+	div.util-item {
+		margin-bottom: 10px;
+	}
+
+	div.util-item span.util-name {
+		display: block;
+	}
+
+	img.image-stone {
+		/*width: 32px;*/
+		/*height: 34px;*/
+	}
+
+	td.board-cell {
+	}
+</style>
+}
+
+@section Javascript
+{
+<script type="text/javascript" src="/Static/js/linq.js_ver2.2.0.2/linq.js"></script>
+<script type="text/javascript" src="/Static/js/linq.js_ver2.2.0.2/jquery.linq.js"></script>
+<script type="text/javascript">
+$(function () {
+	var enumStoneChangeMode = {
+		Auto: 0, Manual: 1
+	}
+	var enumStoneColor = {
+		Black: 0, White: 1, None: 2
+	}
+	var enumStoneAction = {
+		Set: 0, Remove: 1
+	}
+
+	var util = {
+		BoardSize: 19,
+		StoneChangeMode: enumStoneChangeMode.Auto,
+		StoneColor: enumStoneColor.Black
+	}
+
+	var record = {
+		currentIndex: 0,
+		indexMaximum: 0,
+		stoneLog: [],
+		currentBoard: []
+	}
+
+	$('input[name="board-size"]').change(function () {
+		util.BoardSize = $(this).val()
+		drawBlankBoard(util.BoardSize, false)
+	})
+	$('input[name="stone-change-mode"]').change(function () {
+		util.StoneChangeMode = parseInt($(this).val(), 10)
+	})
+	$('input[name="stone-color"]').change(function () {
+		util.StoneColor = parseInt($(this).val(), 10)
+	})
+
+	drawBlankBoard(util.BoardSize, false);
+
+	$(document).on('click', 'td.board-cell', function () {
+		var rowIndex = parseInt($(this).attr('data-row'), 10)
+		var columnIndex = parseInt($(this).attr('data-column'), 10)
+
+		if (record.currentBoard[rowIndex][columnIndex] != enumStoneColor.None)
+			return false;
+
+		SetStone(rowIndex, columnIndex, util.StoneColor)
+		record.indexMaximum = record.currentIndex
+
+		switch (util.StoneChangeMode) {
+			case enumStoneChangeMode.Auto:
+				switch (util.StoneColor) {
+					case enumStoneColor.Black:
+						util.StoneColor = enumStoneColor.White
+						$('input[name="stone-color"][value="' + enumStoneColor.Black + '"]').parent().removeClass('active')
+						$('input[name="stone-color"][value="' + enumStoneColor.White + '"]').parent().addClass('active')
+						break;
+					case enumStoneColor.White:
+						util.StoneColor = enumStoneColor.Black
+						$('input[name="stone-color"][value="' + enumStoneColor.Black + '"]').parent().addClass('active')
+						$('input[name="stone-color"][value="' + enumStoneColor.White + '"]').parent().removeClass('active')
+						break;
+				}
+				break;
+			case enumStoneChangeMode.Manual:
+				switch (util.StoneColor) {
+					case enumStoneColor.Black:
+						break;
+					case enumStoneColor.White:
+						break;
+				}
+				break;
+		}
+
+	})
+
+	$(document).on('contextmenu', 'td.board-cell', function () {
+		var rowIndex = parseInt($(this).attr('data-row'), 10)
+		var columnIndex = parseInt($(this).attr('data-column'), 10)
+
+		switch (util.StoneChangeMode) {
+			case enumStoneChangeMode.Auto:
+				RemoveStone(rowIndex, columnIndex, util.StoneColor)
+				record.indexMaximum = record.currentIndex
+				switch (util.StoneColor) {
+					case enumStoneColor.Black:
+						util.StoneColor = enumStoneColor.White
+						break;
+					case enumStoneColor.White:
+						util.StoneColor = enumStoneColor.Black
+						break;
+				}
+				break;
+			case enumStoneChangeMode.Manual:
+				RemoveStone(rowIndex, columnIndex, util.StoneColor)
+				record.indexMaximum = record.currentIndex
+				break;
+		}
+		return false;
+	})
+	
+	function SetStone(row, column, stoneColor) {
+		record.stoneLog[++record.currentIndex] = {
+			row: row,
+			column: column,
+			stoneAction: enumStoneAction.Set,
+			color: stoneColor
+		}
+		record.currentBoard[row][column] = stoneColor
+		var td = $('td[data-row="' + row + '"][data-column="' + column + '"]')
+		var imgBlack = $(td).find('img.stone-black')
+		var imgWhite = $(td).find('img.stone-white')
+		switch (stoneColor) {
+			case enumStoneColor.Black:
+				$(imgBlack).css('display', 'block')
+				$(imgWhite).css('display', 'none')
+				break;
+			case enumStoneColor.White:
+				$(imgBlack).css('display', 'none')
+				$(imgWhite).css('display', 'block')
+				break;
+		}
+
+		$('input[name=board-index]').val(record.currentIndex)
+	}
+
+	function RemoveStone(row, column, stoneColor) {
+		record.stoneLog[++record.currentIndex] = {
+			row: row,
+			column: column,
+			stoneAction: enumStoneAction.Remove,
+			color: stoneColor
+		}
+		record.currentBoard[{ row: row, column: column }] = enumStoneColor.None
+		var td = $('td[data-row="' + row + '"][data-column="' + column + '"]')
+		$(td).find('img.stone-black').css('display', 'none')
+		$(td).find('img.stone-white').css('display', 'none')
+
+		$('input[name=board-index]').val(record.currentIndex)
+	}
+
+	$(document).on('click', 'button.btn-navi', function () {
+		var offset = parseInt($(this).attr('data-offset'))
+		if (offset < 0) {
+			for (var i = 1; i <= Math.abs(offset) ; i++) {
+			}
+		} else {
+		}
+	})
+
+	function drawBlankBoard(size, askReset) {
+		var pointArray = new Array()
+		pointArray[19] = [4, 10, 16]
+		pointArray[13] = [4, 7, 10]
+		pointArray[9] = [5]
+
+		$('table#board').remove();
+		var table = document.createElement('table')
+		$(table).attr('id', 'board')
+		record.currentBoard = new Array()
+		for (var row = 1; row <= size; row++) {
+			record.currentBoard[row] = new Array()
+
+			var tr = document.createElement('tr')
+			var flagTop = row == 1 ? '1' : '0';
+			var flagBottom = row == size ? '1' : '0';
+			var flagPointRow = Enumerable.From(pointArray[size]).Where('x => x == ' + row).Count() == 0 ? false : true
+
+			for (var column = 1; column <= size; column++) {
+				record.currentBoard[row][column] = enumStoneColor.None
+
+				var td = document.createElement('td')
+				$(td).addClass('board-cell')
+				$(td).attr({ 'data-row': row, 'data-column': column })
+				var flagLeft = column == 1 ? '1' : '0';
+				var flagRight = column == size ? '1' : '0';
+				var flagBoard = flagLeft + flagTop + flagRight + flagBottom;
+				var flagPointColumn = Enumerable.From(pointArray[size]).Where('x => x == ' + column).Count() == 0 ? false : true
+				var flagPoint = (flagPointRow && flagPointColumn) ? '_point' : ''
+
+				var img = document.createElement('img')
+				$(img).addClass('image-stone')
+				$(img).attr('src', '/jkw/games/Baduk/baduk_board_' + flagBoard + flagPoint + '.png')
+				var stoneImgBlack = document.createElement('img')
+				$(stoneImgBlack).addClass('image-stone stone-black')
+				$(stoneImgBlack).attr('src', '/jkw/games/Baduk/black-go-stone24.png')
+				$(stoneImgBlack).css({ 'position': 'absolute', 'display': 'none' })
+				var stoneImgWhite = document.createElement('img')
+				$(stoneImgWhite).addClass('image-stone stone-white')
+				$(stoneImgWhite).attr('src', '/jkw/games/Baduk/white-go-stone24.png')
+				$(stoneImgWhite).css({ 'position': 'absolute', 'display': 'none' })
+				$(td).append(stoneImgBlack)
+				$(td).append(stoneImgWhite)
+				$(td).append(img)
+				$(tr).append(td)
+			}
+			$(table).append(tr)
+		}
+		$('div.board').append(table)
+	}
+
+})
+
+
+</script>
+}
+
+@section JavascriptRelease
+{
+}
