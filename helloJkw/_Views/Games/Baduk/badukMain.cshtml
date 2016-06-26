@@ -240,7 +240,7 @@ $(function () {
 			stoneAction: enumStoneAction.Remove,
 			color: stoneColor
 		}
-		record.currentBoard[{ row: row, column: column }] = enumStoneColor.None
+		record.currentBoard[row][column] = enumStoneColor.None
 		var td = $('td[data-row="' + row + '"][data-column="' + column + '"]')
 		$(td).find('img.stone-black').css('display', 'none')
 		$(td).find('img.stone-white').css('display', 'none')
