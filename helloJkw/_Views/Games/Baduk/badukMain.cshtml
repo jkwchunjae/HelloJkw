@@ -4,7 +4,7 @@
 }
 
 
-<div class="utils">
+<div class="section utils">
 	<div class="util-item">
 		<span class="util-name">칸수</span>
 		<div class="btn-group" data-toggle="buttons">
@@ -45,7 +45,7 @@
 	</div>
 </div>
 
-<div class="board-section">
+<div class="section board-section">
 	<div class="board">
 	</div>
 	<div class="board-navigate" style="display: none;">
@@ -63,6 +63,18 @@
 	</div>
 </div>
 
+<div class="section memo-section">
+	<textarea id="text-memo" style="width: 400px;display:block;margin-bottom: 10px; height: 500px;">@Model.Memo</textarea>
+@if (Model.isLogin)
+{
+	<button class="btn btn-default" id="btn-memo-save" style="display: block;">저장</button>
+}
+else
+{
+	<span>로그인하면 저장 버튼 보여요</span>
+}
+</div>
+
 @section Css
 {
 <style type="text/css">
@@ -75,15 +87,17 @@
 		display: inline-block;
 	}
 
-	div.board-section {
+	div.section {
 		float: left;
-		display: inline;
+		padding-right: 20px;
+	}
+
+	div.board-section {
+		/*display: inline;*/
 	}
 
 	div.utils {
-		float: left;
-		padding-right: 20px;
-		display: inline;
+		/*display: inline;*/
 	}
 
 	div.util-item {
@@ -308,6 +322,14 @@ $(function () {
 		$('div.board').append(table)
 	}
 
+	$('#btn-memo-save').click(function () {
+		$.post('/games/Baduk/save-memo',
+		{
+			memo: $('#text-memo').val()
+		}, function (data) {
+			showAlert(data)
+		})
+	})
 })
 
 
