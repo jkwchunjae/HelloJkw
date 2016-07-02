@@ -6,7 +6,7 @@
 
 <div class="section utils">
 	<div class="util-item">
-		<span class="util-name">칸수</span>
+		@*<span class="util-name">칸수</span>*@
 		<div class="btn-group" data-toggle="buttons">
 			<label class="btn btn-success active">
 				<input type="radio" name="board-size" value="19" checked="checked" /> 19칸
@@ -20,7 +20,7 @@
 		</div>
 	</div>
 	<div class="util-item">
-		<span class="util-name">돌 변경 방법</span>
+		@*<span class="util-name">돌 변경 방법</span>*@
 		<div class="btn-group" data-toggle="buttons">
 			<label class="btn btn-info active" title="바둑돌이 자동으로 바뀝니다. 우클릭으로 취소합니다.">
 				<input type="radio" name="stone-change-mode" value="0" checked="checked" /> 자동
@@ -31,7 +31,7 @@
 		</div>
 	</div>
 	<div class="util-item">
-		<span class="util-name">돌 색</span>
+		@*<span class="util-name">돌 색</span>*@
 		<div class="btn-group" data-toggle="buttons">
 			<label class="btn btn-default active">
 				<input type="radio" name="stone-color" value="0" checked="checked" />
@@ -43,21 +43,49 @@
 			</label>
 		</div>
 	</div>
+	@if (Model.isLogin)
+	{
+	<div class="util-item input-group">
+		<input type="text" class="form-control" />
+		<span class="input-group-btn">
+			<button type="button" class="btn btn-default" id="btn-save">저장</button>
+		</span>
+	</div>
+	<div class="util-item">
+		<button type="button" class="btn btn-default" id="btn-propose">건의하기</button>
+	</div>
+	}
 </div>
 
 <div class="section board-section">
 	<div class="board">
 	</div>
-	<div class="board-navigate" style="display: none;">
-		<div class="input-group" role="group" style="width: 210px;">
-			<div class="input-group-btn">
-				<button type="button" class="btn btn-default btn-navi" data-offset="-1">&lt;</button>
-				<button type="button" class="btn btn-default btn-navi" data-offset="-5">&lt; 5</button>
+	<div class="board-control">
+		<div class="board-navigate">
+			<div class="input-group" role="group">
+				<div class="input-group-btn">
+					<button type="button" class="btn btn-default btn-navi" data-offset="-1">&lt;</button>
+					<button type="button" class="btn btn-default btn-navi" data-offset="-5">&lt; 5</button>
+				</div>
+				<input type="text" class="form-control" name="board-index" readonly="readonly" />
+				<div class="input-group-btn">
+					<button type="button" class="btn btn-default btn-navi" data-offset="5">5 &gt;</button>
+					<button type="button" class="btn btn-default btn-navi" data-offset="1">&gt;</button>
+				</div>
 			</div>
-			<input type="text" value="0" class="form-control" name="board-index" readonly="readonly" style="text-align: center;" />
-			<div class="input-group-btn">
-				<button type="button" class="btn btn-default btn-navi" data-offset="5">5 &gt;</button>
-				<button type="button" class="btn btn-default btn-navi" data-offset="1">&gt;</button>
+		</div>
+		<div class="board-info">
+			<div class="input-group" role="group" style="width: 210px;">
+				<div class="input-group-btn">
+					<div class="dead-stone">
+						<img src="/jkw/games/Baduk/black-go-stone24.png" />
+						<span class="badge" id="dead-count-black">3</span>
+					</div>
+					<div class="dead-stone">
+						<img src="/jkw/games/Baduk/white-go-stone24.png" />
+						<span class="badge" id="dead-count-white">3</span>
+					</div>
+				</div>
 			</div>
 		</div>
 	</div>
@@ -82,7 +110,7 @@ else
 		border-style: none;
 		padding: 0;
 	}
-	
+
 	ul#board-size li {
 		display: inline-block;
 	}
@@ -93,11 +121,10 @@ else
 	}
 
 	div.board-section {
-		/*display: inline;*/
 	}
 
 	div.utils {
-		/*display: inline;*/
+		max-width: 180px;
 	}
 
 	div.util-item {
@@ -114,6 +141,32 @@ else
 	}
 
 	td.board-cell {
+	}
+
+	.board-control > div {
+		display: inline-block;
+		margin-right: 10px;
+	}
+	
+	.dead-stone {
+		display: inline-block;
+		padding: 4px;
+	}
+
+	.btn-dead-stone img {
+		height: 20px;
+	}
+
+	div.board-navigate div.input-group {
+		width: 230px;
+	}
+
+	div.board-navigate input {
+		text-align: center;
+	}
+
+	div.board-info div.input-group {
+		width: 110px;
 	}
 </style>
 }
@@ -137,14 +190,59 @@ $(function () {
 	var util = {
 		BoardSize: 19,
 		StoneChangeMode: enumStoneChangeMode.Auto,
-		StoneColor: enumStoneColor.Black
+		StoneColor: enumStoneColor.Black,
+		SetColor: function (color) {
+			switch (color) {
+				case enumStoneColor.Black:
+					util.StoneColor = enumStoneColor.Black
+					$('input[name="stone-color"][value="' + enumStoneColor.Black + '"]').parent().addClass('active')
+					$('input[name="stone-color"][value="' + enumStoneColor.White + '"]').parent().removeClass('active')
+					break;
+				case enumStoneColor.White:
+					util.StoneColor = enumStoneColor.White
+					$('input[name="stone-color"][value="' + enumStoneColor.Black + '"]').parent().removeClass('active')
+					$('input[name="stone-color"][value="' + enumStoneColor.White + '"]').parent().addClass('active')
+					break;
+			}
+		}
 	}
 
 	var record = {
 		currentIndex: 0,
 		indexMaximum: 0,
 		stoneLog: [],
-		currentBoard: []
+		currentBoard: [],
+		deadStone: [],
+
+		Init : function(){
+			record.currentIndex = 0
+			record.indexMaximum = 0
+			record.stoneLog = []
+			record.currentBoard = []
+
+			record.SetDeadStone(enumStoneColor.Black, 0)
+			record.SetDeadStone(enumStoneColor.White, 0)
+			record.SetCurrentIndex(0)
+		},
+
+		SetCurrentIndex: function (index) {
+			record.currentIndex = index
+			$('input[name=board-index]').val(record.currentIndex + ' / ' + record.indexMaximum)
+		},
+
+		IncreaseDeadStone: function (color) {
+			record.SetDeadStone(color, record.deadStone[color] + 1)
+		},
+
+		DecreaseDeadStone: function (color) {
+			record.SetDeadStone(color, record.deadStone[color] - 1)
+		},
+
+		SetDeadStone: function (color, count) {
+			record.deadStone[color] = count
+			var deadCountBadge = color == enumStoneColor.Black ? $('#dead-count-black') : $('#dead-count-white')
+			$(deadCountBadge).text(count)
+		}
 	}
 
 	$('input[name="board-size"]').change(function () {
@@ -164,61 +262,32 @@ $(function () {
 		var rowIndex = parseInt($(this).attr('data-row'), 10)
 		var columnIndex = parseInt($(this).attr('data-column'), 10)
 
-		if (record.currentBoard[rowIndex][columnIndex] != enumStoneColor.None)
-			return false;
+		var currentColor = record.currentBoard[rowIndex][columnIndex]
+		if (currentColor != enumStoneColor.None) {
+			RemoveStone(rowIndex, columnIndex, currentColor)
+			record.IncreaseDeadStone(currentColor)
+			record.indexMaximum = record.currentIndex
+		} else {
+			SetStone(rowIndex, columnIndex, util.StoneColor)
+			record.indexMaximum = record.currentIndex
 
-		SetStone(rowIndex, columnIndex, util.StoneColor)
-		record.indexMaximum = record.currentIndex
-
-		switch (util.StoneChangeMode) {
-			case enumStoneChangeMode.Auto:
-				switch (util.StoneColor) {
-					case enumStoneColor.Black:
-						util.StoneColor = enumStoneColor.White
-						$('input[name="stone-color"][value="' + enumStoneColor.Black + '"]').parent().removeClass('active')
-						$('input[name="stone-color"][value="' + enumStoneColor.White + '"]').parent().addClass('active')
-						break;
-					case enumStoneColor.White:
-						util.StoneColor = enumStoneColor.Black
-						$('input[name="stone-color"][value="' + enumStoneColor.Black + '"]').parent().addClass('active')
-						$('input[name="stone-color"][value="' + enumStoneColor.White + '"]').parent().removeClass('active')
-						break;
-				}
-				break;
-			case enumStoneChangeMode.Manual:
-				switch (util.StoneColor) {
-					case enumStoneColor.Black:
-						break;
-					case enumStoneColor.White:
-						break;
-				}
-				break;
+			if (util.StoneChangeMode == enumStoneChangeMode.Auto) {
+				util.SetColor(util.StoneColor == enumStoneColor.White ? enumStoneColor.Black : enumStoneColor.White)
+			}
 		}
-
 	})
 
 	$(document).on('contextmenu', 'td.board-cell', function () {
 		var rowIndex = parseInt($(this).attr('data-row'), 10)
 		var columnIndex = parseInt($(this).attr('data-column'), 10)
 
-		switch (util.StoneChangeMode) {
-			case enumStoneChangeMode.Auto:
-				RemoveStone(rowIndex, columnIndex, util.StoneColor)
-				record.indexMaximum = record.currentIndex
-				switch (util.StoneColor) {
-					case enumStoneColor.Black:
-						util.StoneColor = enumStoneColor.White
-						break;
-					case enumStoneColor.White:
-						util.StoneColor = enumStoneColor.Black
-						break;
-				}
-				break;
-			case enumStoneChangeMode.Manual:
-				RemoveStone(rowIndex, columnIndex, util.StoneColor)
-				record.indexMaximum = record.currentIndex
-				break;
-		}
+		var currentColor = record.currentBoard[rowIndex][columnIndex]
+		if (currentColor == enumStoneColor.None)
+			return false;
+
+		RemoveStone(rowIndex, columnIndex, currentColor)
+		record.IncreaseDeadStone(currentColor)
+		record.indexMaximum = record.currentIndex
 		return false;
 	})
 	
@@ -229,6 +298,11 @@ $(function () {
 			stoneAction: enumStoneAction.Set,
 			color: stoneColor
 		}
+		record.indexMaximum = record.currentIndex
+		SetStoneRaw(row, column, stoneColor)
+	}
+
+	function SetStoneRaw(row, column, stoneColor) {
 		record.currentBoard[row][column] = stoneColor
 		var td = $('td[data-row="' + row + '"][data-column="' + column + '"]')
 		var imgBlack = $(td).find('img.stone-black')
@@ -244,7 +318,7 @@ $(function () {
 				break;
 		}
 
-		$('input[name=board-index]').val(record.currentIndex)
+		record.SetCurrentIndex(record.currentIndex)
 	}
 
 	function RemoveStone(row, column, stoneColor) {
@@ -254,21 +328,59 @@ $(function () {
 			stoneAction: enumStoneAction.Remove,
 			color: stoneColor
 		}
+		record.indexMaximum = record.currentIndex
+		RemoveStoneRaw(row, column)
+	}
+
+	function RemoveStoneRaw(row, column) {
 		record.currentBoard[row][column] = enumStoneColor.None
 		var td = $('td[data-row="' + row + '"][data-column="' + column + '"]')
 		$(td).find('img.stone-black').css('display', 'none')
 		$(td).find('img.stone-white').css('display', 'none')
 
-		$('input[name=board-index]').val(record.currentIndex)
+		record.SetCurrentIndex(record.currentIndex)
 	}
 
 	$(document).on('click', 'button.btn-navi', function () {
 		var offset = parseInt($(this).attr('data-offset'))
 		if (offset < 0) {
-			for (var i = 1; i <= Math.abs(offset) ; i++) {
+			for (var i = record.currentIndex; i > Math.max(0, record.currentIndex + offset); i--) {
+				var currentLog = record.stoneLog[i]
+				switch (currentLog.stoneAction) {
+					case enumStoneAction.Set:
+						RemoveStoneRaw(currentLog.row, currentLog.column)
+						break;
+					case enumStoneAction.Remove:
+						SetStoneRaw(currentLog.row, currentLog.column, currentLog.color)
+						record.DecreaseDeadStone(currentLog.color)
+						break;
+				}
 			}
+			record.currentIndex = Math.max(0, record.currentIndex + offset)
 		} else {
+			for (var i = record.currentIndex + 1; i <= Math.min(record.indexMaximum, record.currentIndex + offset); i++) {
+				var currentLog = record.stoneLog[i]
+				switch (currentLog.stoneAction) {
+					case enumStoneAction.Set:
+						SetStoneRaw(currentLog.row, currentLog.column, currentLog.color)
+						break;
+					case enumStoneAction.Remove:
+						RemoveStoneRaw(currentLog.row, currentLog.column)
+						record.IncreaseDeadStone(currentLog.color)
+						break;
+				}
+			}
+			record.currentIndex = Math.min(record.indexMaximum, record.currentIndex + offset)
 		}
+
+		if (util.StoneChangeMode == enumStoneChangeMode.Auto) {
+			if (record.currentIndex == 0) {
+				util.SetColor(enumStoneColor.Black)
+			} else {
+				util.SetColor(record.stoneLog[record.currentIndex].color == enumStoneColor.Black ? enumStoneColor.White : enumStoneColor.Black)
+			}
+		}
+		record.SetCurrentIndex(record.currentIndex)
 	})
 
 	function drawBlankBoard(size, askReset) {
@@ -278,6 +390,8 @@ $(function () {
 		pointArray[9] = [5]
 
 		$('table#board').remove();
+		record.Init()
+
 		var table = document.createElement('table')
 		$(table).attr('id', 'board')
 		record.currentBoard = new Array()
