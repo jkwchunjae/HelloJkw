@@ -1,0 +1,22 @@
+﻿@inherits Nancy.ViewEngines.Razor.NancyRazorViewBase<dynamic>
+@{
+	string popupLoginUrl = Model.SiteBase + "/login";
+}
+
+<!DOCTYPE html>
+<html lang="en" xmlns="http://www.w3.org/1999/xhtml">
+<head>
+	<meta charset="utf-8" />
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<title>Word-Blank</title>
+</head>
+<body>
+	<button class="btn-login">로그인</button> 해주세요.
+	<script src="/Static/js/jquery-2.1.3.min.js"></script>
+	<script type="text/javascript">
+		$('.btn-login').click(function () {
+			window.open('@popupLoginUrl', '', 'width=400px, height=400px, resizable=no, scrollbar=no, status=no;');
+		});
+	</script>
+</body>
+</html>
