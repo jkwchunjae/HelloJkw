@@ -1,0 +1,29 @@
+﻿body {
+	padding: 20px;
+}
+
+a:hover.split-str {
+	background-color: #ccc;
+}
+
+div.ui.cards > div.card.study-card {
+	width: 70%;
+}
+
+a.split-str {
+	color: black;
+}
+
+div.card > div.content > div.header {
+	margin-bottom: 10px;
+}
+
+@media only screen and (max-width: 767px) {
+	body {
+		padding: 20px 10px;
+	}
+
+	div.ui.cards > div.card.study-card {
+		width: 95%;
+	}
+}

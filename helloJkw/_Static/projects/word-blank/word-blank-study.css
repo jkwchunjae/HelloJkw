@@ -2,12 +2,7 @@
 	background-color: gray;
 }
 
-a:hover.split-str {
-	background-color: #ccc;
-}
-
 a.split-str {
 	text-decoration: underline;
 	margin-right: 4px;
-	color: black;
 }

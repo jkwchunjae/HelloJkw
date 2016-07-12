@@ -17,8 +17,11 @@ namespace helloJkw
 		{
 			Get["/wb"] = _ =>
 			{
+#if DEBUG
+#else
 				if (!session.IsLogin)
 					return View["word-blank/wordBlankLogin.cshtml", Model];
+#endif
 
 				Model.PathList = "";
 				Model.Type = "study";
@@ -27,8 +30,11 @@ namespace helloJkw
 
 			Get["/wb/study/{pathList?}"] = _ =>
 			{
+#if DEBUG
+#else
 				if (!session.IsLogin)
 					return View["word-blank/wordBlankLogin.cshtml", Model];
+#endif
 
 				Model.PathList = _.pathList;
 				Model.Type = "study";
@@ -37,8 +43,11 @@ namespace helloJkw
 
 			Get["/wb/exam/{pathList?}"] = _ =>
 			{
+#if DEBUG
+#else
 				if (!session.IsLogin)
 					return View["word-blank/wordBlankLogin.cshtml", Model];
+#endif
 
 				Model.PathList = _.pathList;
 				Model.Type = "exam";
@@ -47,13 +56,20 @@ namespace helloJkw
 
 			Post["/wb/load"] = _ =>
 			{
+#if DEBUG
+#else
 				if (!session.IsLogin)
 					return "로그인 해주세요.";
+#endif
 
+#if DEBUG
+				string email = "jkwchunjae@gmail.com";
+#else
 				string email = session.User.Email;
+#endif
 				string json = Request.Form["data"];
 				var pathList = JsonConvert.DeserializeObject<string>(json).Trim().Split(' ').Where(x => x.Length > 0);
-				var textList = LoadText(email, pathList);
+				var textList = LoadText(email, pathList).Select(x => x.Item2);
 				var nextPathList = textList.Where(x => x.Path.Count() > pathList.Count())
 					.Select(x => x.Path[pathList.Count()])
 					.Distinct().OrderBy(x => x).ToList();
@@ -61,16 +77,23 @@ namespace helloJkw
 				dynamic obj = new ExpandoObject();
 				obj.PathList = pathList.Select((x, i) => new { PathName = x, PathPath = pathList.Select((e, j) => new { Path = e, Index = j }).Where(e => e.Index <= i).Select(e => e.Path).StringJoin(" ") }).ToList();
 				obj.NextPathList = nextPathList;
-				obj.TextList = textList;
+				obj.TextList = textList.Take(10);
 				return JsonConvert.SerializeObject(obj);
 			};
 
 			Post["wb/word-blank"] = _ =>
 			{
+#if DEBUG
+#else
 				if (!session.IsLogin)
 					return "로그인 해주세요.";
+#endif
 
+#if DEBUG
+				string email = "jkwchunjae@gmail.com";
+#else
 				string email = session.User.Email;
+#endif
 				string name = Request.Form["name"];
 				int index = (int)Request.Form["index"];
 				int length = (int)Request.Form["length"];
@@ -93,14 +116,70 @@ namespace helloJkw
 				}
 				return "success";
 			};
+
+			Post["wb/add-editor"] = _ =>
+			{
+#if DEBUG
+#else
+				if (!session.IsLogin)
+					return "로그인 해주세요.";
+#endif
+
+#if DEBUG
+				string email = "jkwchunjae@gmail.com";
+#else
+				string email = session.User.Email;
+#endif
+				string json = Request.Form["pathList"];
+				string editor = Request.Form["editor"];
+				var pathList = JsonConvert.DeserializeObject<string>(json).Trim().Split(' ').Where(x => x.Length > 0);
+				var textList = LoadText(email, pathList);
+				foreach (var tuple in textList.Where(x => !x.Item2.Editor.Contains(editor)))
+				{
+					var path = tuple.Item1;
+					var text = tuple.Item2;
+					text.Editor.Add(editor);
+					File.WriteAllText(path, text.ToJson(""), Encoding.UTF8);
+				}
+				return "";
+			};
+
+			Post["wb/remove-editor"] = _ =>
+			{
+#if DEBUG
+#else
+				if (!session.IsLogin)
+					return "로그인 해주세요.";
+#endif
+
+#if DEBUG
+				string email = "jkwchunjae@gmail.com";
+#else
+				string email = session.User.Email;
+#endif
+				string json = Request.Form["pathList"];
+				string editor = Request.Form["editor"];
+				var pathList = JsonConvert.DeserializeObject<string>(json).Trim().Split(' ').Where(x => x.Length > 0);
+				var textList = LoadText(email, pathList);
+				foreach (var tuple in textList.Where(x => x.Item2.Editor.Contains(editor)))
+				{
+					var path = tuple.Item1;
+					var text = tuple.Item2;
+					text.Editor.Remove(editor);
+					File.WriteAllText(path, text.ToJson(""), Encoding.UTF8);
+				}
+				return "";
+			};
 		}
 
-		public List<Text> LoadText(string email, IEnumerable<string> pathList)
+		public List<Tuple<string, Text>> LoadText(string email, IEnumerable<string> pathList, int takeCount = int.MaxValue)
 		{
 			var filenamePrefix = pathList.MakeFileName();
 			return Directory.GetFiles(RootPath, filenamePrefix + "*.json", SearchOption.AllDirectories)
-				.Select(x => JsonConvert.DeserializeObject<Text>(File.ReadAllText(x, Encoding.UTF8)))
-				.Where(x => x.Owner == email || x.Editor.Contains(email))
+				.Select(x => new { Path = x, Text = JsonConvert.DeserializeObject<Text>(File.ReadAllText(x, Encoding.UTF8)) })
+				.Where(x => x.Text.Owner == email || x.Text.Editor.Contains(email))
+				.Take(takeCount)
+				.Select(x => Tuple.Create(x.Path, x.Text))
 				.ToList();
 		}
 
@@ -136,7 +215,7 @@ namespace helloJkw
 
 		public void SetContent(string content)
 		{
-			Content = content.Trim().Split(' ').Select((x, i) => new Word() { Index = i, Str = x, BlankStr = "" }).ToList();
+			Content = content.Replace("\r", "").Split('\n').SelectMany(x => x.Split(' ')).Where(x => x.Length > 0).Select((x, i) => new Word() { Index = i, Str = x, BlankStr = "" }).ToList();
 		}
 	}
 
