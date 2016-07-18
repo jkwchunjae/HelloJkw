@@ -22,3 +22,27 @@ th .money {
 td .money {
 	text-align: right;
 }
+
+div.member {
+	width: 20%;
+	float: left;
+}
+
+img.member-picture {
+	width: 150px;
+	height: 150px;
+}
+
+@media screen and (max-width: 768px){
+	img.member-picture {
+		width: 70%;
+		height: 70%;
+		/*width: 100px;*/
+		/*height: 100px;*/
+	}
+
+	div.member {
+		width: 33%;
+		float: left;
+	}
+}

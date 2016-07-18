@@ -1,6 +1,11 @@
 ﻿.member-add-data {
-	width: 200px;
+	width: 80%;
 	margin: auto;
+}
+
+div.member-operator {
+	width: 20%;
+	float: left;
 }
 
 .member-edit {
@@ -13,4 +18,14 @@
 
 .accounting-edit {
 	display: none;
+}
+
+@media screen and (max-width: 768px) {
+	.member-add-data {
+		width: 70%;
+	}
+
+	div.member-operator {
+		width: 100%;
+	}
 }

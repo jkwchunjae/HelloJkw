@@ -100,6 +100,10 @@ $(document).on('click', 'button.btn-member-edit-save', function () {
 	})
 })
 
+$(document).on('click', 'button.btn-member-leave', function () {
+	showAlert('더블클릭!')
+})
+
 $(document).on('dblclick', 'button.btn-member-leave', function () {
 	var memberName = $(this).attr('data-member-name')
 	$.post('fnb/member/leave', {
