@@ -214,10 +214,8 @@ namespace helloJkw
 						e.Attendants,
 						AttendantList = e.Attendants.Select(x => FnbMember.GetMember(x))
 							.OrderBy(x => x.MemberType).ThenBy(x => x.JoinDate)
-							.Select((x, i) => new { Index = i, Member = x })
-							.GroupBy(x => x.Index / 5)
-							.Select(x => x.Select(t => t.Member.Name).StringJoin(", "))
-							.StringJoin("<br/>"),
+							.Select(x => x.Name)
+							.StringJoin(","),
 						Others = e.Others,
 					});
 				var json = JsonConvert.SerializeObject(meetingList);

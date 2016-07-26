@@ -29,8 +29,17 @@ div.member {
 }
 
 img.member-picture {
-	width: 150px;
-	height: 150px;
+	width: 100px;
+	height: 100px;
+}
+
+.meeting-attendants div.meeting-info {
+	max-width: 500px;
+}
+
+.meeting-attendants span.name {
+	display: inline-block;
+	margin-right: 4px;
 }
 
 @media screen and (max-width: 768px){

@@ -45,6 +45,19 @@ function loadMeeting() {
 		scope.meetingList = JSON.parse(data);
 		scope.$apply();
 
+		$('.meeting-attendants .meeting-info').each(function () {
+			var thiss = $(this)
+			if ($(thiss).text() == '')
+				return;
+			var list = $(thiss).text().split(',')
+			$(thiss).text('')
+			list.map(function (name) {
+				var span = document.createElement('span')
+				$(span).addClass('name').text(name + ',')
+				$(thiss).append(span)
+			})
+		})
+
 		$('.meeting-others .meeting-info').each(function () {
 			var newOthers = $(this).text().replace(/(?:\r\n|\r|\n)/g, '<br/>')
 			$(this).html(newOthers)
