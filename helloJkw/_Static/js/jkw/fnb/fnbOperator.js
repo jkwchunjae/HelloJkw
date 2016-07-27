@@ -1,6 +1,13 @@
 ﻿$(document).ready(function () {
 })
 
+function loadAllMember()
+{
+	loadMemberRegular()
+	loadMemberAssociate()
+	loadMemberLeave()
+}
+
 $(document).on('keyup', 'textarea', function () {
 	$(this).css('height', 'auto');
 	$(this).height(this.scrollHeight);
@@ -37,8 +44,7 @@ function changeMemberType(memberName, newMemberType) {
 		newMemberType: newMemberType
 	}, function (data) {
 		if (data == 'success') {
-			loadMemberRegular()
-			loadMemberAssociate()
+			loadAllMember()
 		} else {
 			showAlert(data)
 		}
@@ -92,8 +98,7 @@ $(document).on('click', 'button.btn-member-edit-save', function () {
 		joinDate: joinDate
 	}, function (data) {
 		if (data == 'success') {
-			loadMemberRegular()
-			loadMemberAssociate()
+			loadAllMember()
 		} else {
 			showAlert(data)
 		}
@@ -101,17 +106,29 @@ $(document).on('click', 'button.btn-member-edit-save', function () {
 })
 
 $(document).on('click', 'button.btn-member-leave', function () {
-	showAlert('더블클릭!')
-})
-
-$(document).on('dblclick', 'button.btn-member-leave', function () {
 	var memberName = $(this).attr('data-member-name')
 	$.post('fnb/member/leave', {
 		memberName: memberName
 	}, function (data) {
 		if (data == 'success') {
-			loadMemberRegular()
-			loadMemberAssociate()
+			loadAllMember()
+		} else {
+			showAlert(data)
+		}
+	})
+})
+
+$(document).on('click', 'button.btn-member-delete', function () {
+	showAlert('더블클릭!')
+})
+
+$(document).on('dblclick', 'button.btn-member-delete', function () {
+	var memberName = $(this).attr('data-member-name')
+	$.post('fnb/member/delete', {
+		memberName: memberName
+	}, function (data) {
+		if (data == 'success') {
+			loadAllMember()
 		} else {
 			showAlert(data)
 		}
@@ -137,8 +154,7 @@ $('.btn-member-add').click(function () {
 
 	$.post('fnb/member/add', memberData, function (data) {
 		if (data == 'success') {
-			loadMemberRegular()
-			loadMemberAssociate()
+			loadAllMember()
 			clearMemberAdd(memberType)
 		} else {
 			showAlert(data)
@@ -176,8 +192,7 @@ $('button#button-add-meeting').click(function () {
 	}, function (data) {
 		if (data == 'success') {
 			loadMeeting();
-			loadMemberRegular();
-			loadMemberAssociate();
+			loadAllMember()
 			$('#add-meeting-no').val('');
 			$('#datetimepicker-meeting').data('DateTimePicker').clear();
 			$('#add-meeting-others').val('');
@@ -247,8 +262,7 @@ $(document).on('click', 'button.button-meeting-edit-save', function () {
 	}, function (data) {
 		if (data == 'success') {
 			loadMeeting();
-			loadMemberRegular();
-			loadMemberAssociate();
+			loadAllMember();
 		} else {
 			showAlert(data);
 		}

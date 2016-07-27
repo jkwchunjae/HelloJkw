@@ -19,7 +19,7 @@
 	<div class="container">
 		<div class="row">
 			<div class="col-lg-12 text-center">
-				<h2 class="section-heading">정회원</h2>
+				<h2 class="section-heading">정회원 ({{memberCountRegular}})</h2>
 			</div>
 		</div>
 		<div class="row text-center">
@@ -81,7 +81,7 @@
 	<div class="container">
 		<div class="row" style="margin-top: 30px;">
 			<div class="col-lg-12 text-center">
-				<h2 class="section-heading">준회원</h2>
+				<h2 class="section-heading">준회원 ({{memberCountAssociate}})</h2>
 			</div>
 		</div>
 		<div class="row text-center">
@@ -140,6 +140,72 @@
 			}
 		</div>
 	</div>
+	@if (Model.IsOperator)
+	{
+	<div class="container">
+		<div class="row" style="margin-top: 30px;">
+			<div class="col-lg-12 text-center">
+				<h2 class="section-heading">탈퇴회원 ({{memberCountLeave}})</h2>
+			</div>
+		</div>
+		<div class="row text-center">
+			<div ng-repeat="member in memberListLeave" class="member col-sm-3">
+				<div class="member-info" id="member-info-{{member.Name}}">
+					<img src="jkw/others/fnb/member/{{member.PictureName}}" class="img-circle member-picture" />
+					<h4 class="service-heading">{{member.Name}} <span ng-show="{{member.HasRole}}">({{member.Role}})</span></h4>
+					<p class="text-muted">{{member.Team}}<br />{{member.JoinDateDot}}</p>
+					@if (Model.IsOperator)
+					{
+						<p class="button-list">
+							<button class="btn-member-goto-regular btn btn-success btn-xs" data-member-name="{{member.Name}}">정회원</button>
+							<button class="btn-member-goto-associate btn btn-success btn-xs" data-member-name="{{member.Name}}">준회원</button>
+							<button class="btn-member-edit btn btn-info btn-xs" data-member-name="{{member.Name}}" data-member-joindate="{{member.JoinDateDot}}">수정</button>
+							<button class="btn-member-delete btn btn-danger btn-xs" data-member-name="{{member.Name}}">삭제</button>
+						</p>
+					}
+				</div>
+				@if (@Model.IsOperator)
+				{
+					<div class="member-edit" id="member-edit-{{member.Name}}">
+						<h4>{{member.Name}} 수정</h4>
+						<img style="width:116px;height:116px;" src="jkw/others/fnb/member/{{member.PictureName}}" class="img-circle" />
+						<input value="{{member.Role}}" type="text" id="member-role-{{member.Name}}" class="member-add-data form-control" placeholder="역할" />
+						<input value="{{member.Team}}" type="text" id="member-team-{{member.Name}}" class="member-add-data form-control" placeholder="팀" />
+						<div class='member-add-data datetimepicker input-group date' id='datetimepicker-{{member.Name}}'>
+							<input type='text' class="form-control" placeholder="가입일" />
+							<span class="input-group-addon">
+								<span class="glyphicon glyphicon-calendar"></span>
+							</span>
+						</div>
+						<p class="button-list-edit">
+							<button class="btn-member-edit-save btn btn-success btn-xs" data-member-name="{{member.Name}}">저장</button>
+							<button class="btn-member-edit-cancel btn btn-default btn-xs" data-member-name="{{member.Name}}">취소</button>
+						</p>
+					</div>
+				}
+			</div>
+			@if (@Model.IsOperator)
+			{
+				<div class="member-operator">
+					<h4 class="service-heading">탈퇴회원 추가</h4>
+					<input type="text" id="member-name-Leave" class="member-add-data form-control" placeholder="이름" />
+					<input type="text" id="member-role-Leave" class="member-add-data form-control" placeholder="역할" />
+					<input type="text" id="member-team-Leave" class="member-add-data form-control" placeholder="팀" />
+					<div class='member-add-data datetimepicker input-group date' id='datetimepicker-Leave'>
+						<input type='text' id="add-meeting-date" class="form-control" placeholder="가입일" />
+						<span class="input-group-addon">
+							<span class="glyphicon glyphicon-calendar"></span>
+						</span>
+					</div>
+					<div style="margin-top: 10px;">
+						<button class="btn-member-add btn btn-info" data-member-type="Leave">추가</button>
+						<button class="btn-member-add-clear btn btn-default" data-member-type="Leave">초기화</button>
+					</div>
+				</div>
+			}
+		</div>
+	</div>
+	}
 </section>
 
 
@@ -220,6 +286,9 @@
 									<button class="add-meeting-member-button btn btn-default btn-xs" data-member-name="{{member.Name}}" data-toggle="button" aria-pressed="false" autocomplete="off">{{member.Name}}</button>
 								</li>
 								<li ng-repeat="member in memberListAssociate" style="float: left;">
+									<button class="add-meeting-member-button btn btn-default btn-xs" data-member-name="{{member.Name}}" data-toggle="button" aria-pressed="false" autocomplete="off">{{member.Name}}</button>
+								</li>
+								<li ng-repeat="member in memberListLeave" style="float: left;">
 									<button class="add-meeting-member-button btn btn-default btn-xs" data-member-name="{{member.Name}}" data-toggle="button" aria-pressed="false" autocomplete="off">{{member.Name}}</button>
 								</li>
 							</ul>	

@@ -196,6 +196,24 @@ namespace helloJkw
 				}
 			};
 
+			Post["/fnb/member/delete"] = _ =>
+			{
+				if (!IsOperator(session))
+					return "관리자 권한이 없습니다.";
+
+				try
+				{
+					string memberName = Request.Form["memberName"];
+
+					FnbMember.DeleteMember(memberName);
+					return "success";
+				}
+				catch (Exception ex)
+				{
+					return ex.Message;
+				}
+			};
+
 			#endregion
 
 			#endregion

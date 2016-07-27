@@ -14,7 +14,7 @@ namespace helloJkw.Jkw.Others.FnB
 		/// <summary> 정회원, 준회원 </summary>
 		public enum MemberType
 		{
-			Regular, Associate, None
+			None, Regular, Associate, Leave, 
 		}
 
 		public class Member
@@ -133,6 +133,11 @@ namespace helloJkw.Jkw.Others.FnB
 
 		public static void LeaveMember(string memberName)
 		{
+			ChangeMemberType(memberName, MemberType.Leave);
+		}
+
+		public static void DeleteMember(string memberName)
+		{
 			if (!_memberList.Any(x => x.Name == memberName))
 				throw new Exception("없는 이름입니다.");
 
@@ -142,7 +147,7 @@ namespace helloJkw.Jkw.Others.FnB
 			if (!Save())
 			{
 				_memberList.Add(member);
-				throw new Exception("탈퇴 작업에 실패했습니다.");
+				throw new Exception("삭제 작업에 실패했습니다.");
 			}
 		}
 

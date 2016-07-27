@@ -6,6 +6,10 @@ var getScope = function () {
 app.controller('fnb-controller', function ($scope) {
 	$scope.memberListRegular = new Array();
 	$scope.memberListAssociate = new Array();
+	$scope.memberListLeave = new Array();
+	$scope.memberCountRegular = 0;
+	$scope.memberCountAssociate = 0;
+	$scope.memberCountLeave = 0;
 	$scope.meetingList = new Array();
 	$scope.accountingDataList = new Array();
 	$scope.totalOutMoney = '0';
@@ -13,6 +17,7 @@ app.controller('fnb-controller', function ($scope) {
 
 	loadMemberRegular(); //  정회원
 	loadMemberAssociate(); //  준회원
+	loadMemberLeave(); //  탈퇴한 회원
 	loadMeeting(); //  모임
 	loadAccountingData(); //  회계
 });
@@ -23,6 +28,7 @@ function loadMemberRegular () {
 		memberType: 'Regular'
 	}, function (data) {
 		scope.memberListRegular = JSON.parse(data);
+		scope.memberCountRegular = scope.memberListRegular.length;
 		scope.$apply();
 	});
 };
@@ -33,6 +39,18 @@ function loadMemberAssociate () {
 		memberType: 'Associate'
 	}, function (data) {
 		scope.memberListAssociate = JSON.parse(data);
+		scope.memberCountAssociate = scope.memberListAssociate.length;
+		scope.$apply();
+	});
+};
+
+function loadMemberLeave() {
+	var scope = getScope();
+	$.post('fnb/member/request', {
+		memberType: 'Leave'
+	}, function (data) {
+		scope.memberListLeave = JSON.parse(data);
+		scope.memberCountLeave = scope.memberListLeave.length;
 		scope.$apply();
 	});
 };
