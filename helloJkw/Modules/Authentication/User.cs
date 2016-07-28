@@ -27,6 +27,7 @@ namespace helloJkw
 		public UserGrade Grade;
 		public bool IsUseGoogleImage;
 		public string DiaryName;
+		public List<string> DiaryAcceptedList;
 
 		public readonly DateTime RegDate;
 		public DateTime LastLogin;
@@ -97,6 +98,7 @@ namespace helloJkw
 	{
 		public string Id;
 		public string DiaryName;
+		public List<string> DiaryAcceptedList;
 
 		public UserInfoJson()
 		{ }
@@ -105,6 +107,15 @@ namespace helloJkw
 		{
 			Id = user.Id;
 			DiaryName = user.DiaryName;
+			DiaryAcceptedList = user.DiaryAcceptedList;
+		}
+
+		public bool IsDiaryAcceptedUser(User user)
+		{
+			if (user == null) return false;
+			if (Id == user.Id) return true;
+			if (DiaryAcceptedList == null) return false;
+			return DiaryAcceptedList.Contains(user.Email);
 		}
 	}
 }

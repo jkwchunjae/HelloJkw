@@ -46,6 +46,14 @@ namespace helloJkw
 				if (!DiaryManager.IsValidDiaryName(diaryName))
 					diaryName = defaultDiaryName;
 
+				var diaryUserInfo = UserManager.GetUserInfoByDiaryName(diaryName);
+				if (diaryUserInfo == null)
+					return View["diary/jkwDiarySomethingWrong", Model];
+
+				// 내 일기장 아닌데 허용 목록에 없으면 커트
+				if (!diaryUserInfo.IsDiaryAcceptedUser(session.User))
+					return View["diary/jkwDiarySomethingWrong", Model];
+
 				bool withSecure = session.User.DiaryName == diaryName;
 
 				var diaryList = _.date != null

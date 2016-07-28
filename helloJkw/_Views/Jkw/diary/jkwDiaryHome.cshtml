@@ -27,21 +27,9 @@
 		<a href="/diary/write/@Model.DiaryName" class="btn btn-success btn-diary-action" id="diary-write" title="키보드 N">쓰기</a>
 		<a href="/diary/modify/@Model.DiaryName/@Model.Date.ToString("yyyyMMdd")" class="btn btn-warning btn-diary-action" id="diary-modify">수정</a>
 		}
+		<a href="/diary/showdates/@Model.DiaryName" class="btn btn-default btn-diary-action">일기 전체</a>
 		@*<a href="/diary/home" class="btn btn-default btn-diary-action" id="diary-home">일기장 홈</a>*@
 	</div>
-	<div id="disqus_thread"></div>
-	<script type="text/javascript">
-		/* * * CONFIGURATION VARIABLES * * */
-		var disqus_shortname = 'hellojkw';
-
-		/* * * DON'T EDIT BELOW THIS LINE * * */
-		(function () {
-			var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
-			dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
-			(document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
-		})();
-	</script>
-	<noscript>Please enable JavaScript to view the <a href="https://disqus.com/?ref_noscript" rel="nofollow">comments powered by Disqus.</a></noscript>
 </div>
 
 @section Css

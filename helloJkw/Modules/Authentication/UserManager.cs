@@ -15,32 +15,35 @@ namespace helloJkw
 	{
 		/* 로그인되어있는 유저를 관리한다. */
 		static ConcurrentDictionary<string /* google id number */, User> _userDic = new ConcurrentDictionary<string, User>();
-		static string _jsonPath = @"jkw/db/userInfoJson.txt";
+		const string _jsonPath = @"jkw/db/userInfo.json";
 		static ConcurrentDictionary<string /* google id number */, UserInfoJson> _userInfoJsonDic = new ConcurrentDictionary<string, UserInfoJson>();
 
-		public static void SaveJson()
+		static UserManager()
 		{
-			SaveJson(_jsonPath);
+			LoadUserInfo(_jsonPath);
 		}
 
-		public static void SaveJson(string path)
+		public static bool SaveUserInfo()
 		{
 			// write lock
-			var json = _userDic.Select(x => new UserInfoJson(x.Value))
-				.Select(x => JsonConvert.SerializeObject(x))
-				.StringJoin("[\n\t", ",\n\t", "\n]");
-			File.WriteAllText(path, json, Encoding.UTF8);
+			try
+			{
+				var json = _userInfoJsonDic
+					.Select(x => JsonConvert.SerializeObject(x.Value))
+					.StringJoin("[\n\t", ",\n\t", "\n]");
+				File.WriteAllText(_jsonPath, json, Encoding.UTF8);
+				return true;
+			}
+			catch
+			{
+				return false;
+			}
 		}
 
-		public static ConcurrentDictionary<string /* google id number */, UserInfoJson> LoadJson(bool reload = false)
-		{
-			return LoadJson(_jsonPath, reload);
-		}
-
-		public static ConcurrentDictionary<string /* google id number */, UserInfoJson> LoadJson(string path, bool reload = false)
+		public static ConcurrentDictionary<string /* google id number */, UserInfoJson> LoadUserInfo(string path = _jsonPath)
 		{
 			// write lock
-			var userInfoJsonList = JsonConvert.DeserializeObject<List<UserInfoJson>>(File.ReadAllText(path));
+			var userInfoJsonList = JsonConvert.DeserializeObject<List<UserInfoJson>>(File.ReadAllText(path, Encoding.UTF8));
 			_userInfoJsonDic.Clear();
 			foreach (var userInfoJson in userInfoJsonList)
 			{
@@ -53,10 +56,22 @@ namespace helloJkw
 		{
 			if (user == null) return new UserInfoJson();
 
-			var userInfoJsonDic = LoadJson();
+			var userInfoJsonDic = LoadUserInfo(_jsonPath);
 			UserInfoJson userInfoJson;
 			userInfoJsonDic.TryGetValue(user.Id, out userInfoJson);
 			return userInfoJson;
+		}
+
+		public static UserInfoJson GetUserInfoByDiaryName(string diaryName)
+		{
+			// read lock
+			if (_userInfoJsonDic.IsEmpty)
+				LoadUserInfo(_jsonPath);
+
+			return _userInfoJsonDic
+				.Select(x => x.Value)
+				.Where(x => x.DiaryName == diaryName)
+				.FirstOrDefault();
 		}
 
 		public static User GetUser(string id)
