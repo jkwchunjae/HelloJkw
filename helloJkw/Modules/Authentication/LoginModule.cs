@@ -76,6 +76,7 @@ namespace helloJkw
 					//Logger.Log("login: {0}".With(user.Name));
 					//Logger.Log("login / {0}".With(session.SessionId));
 					session.Login(user);
+					sessionId = session.SessionId;
 					#endregion
 				}
 				#region Exceptions

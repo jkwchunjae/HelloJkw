@@ -49,6 +49,24 @@ namespace helloJkw
 			return null;
 		}
 
+		public static bool ChangeSessionId(Session session, string newSessionId)
+		{
+			Session tmpSession;
+			if (_sessionDic.Where(x => x.Value == session).Any())
+			{
+				var sessionIdList = _sessionDic.Where(x => x.Value == session).Select(x => x.Key).ToList();
+				foreach (var sessionId in sessionIdList)
+				{
+					_sessionDic.TryRemove(sessionId, out tmpSession);
+				}
+			}
+			if (_sessionDic.TryAdd(newSessionId, session))
+			{
+				return true;
+			}
+			return false;
+		}
+
 		public static void RemoveExpiredSession()
 		{
 			lock (_sessionDic)

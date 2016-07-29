@@ -42,6 +42,12 @@ namespace helloJkw
 		public void Login(User user)
 		{
 			_user = user;
+			var newSessionId = Guid.NewGuid().ToString();
+			if (SessionManager.ChangeSessionId(this, newSessionId))
+			{
+				_sessionId = newSessionId;
+			}
+
 			RefreshExpire();
 		}
 
