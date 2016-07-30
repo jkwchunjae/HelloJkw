@@ -6,7 +6,7 @@ a:hover.split-str {
 	background-color: #ccc;
 }
 
-div.ui.cards > div.card.study-card {
+div.ui.cards > .card.study-card {
 	width: 70%;
 }
 
@@ -14,8 +14,20 @@ a.split-str {
 	color: black;
 }
 
-div.card > div.content > div.header {
+.card > div.content > div.header {
 	margin-bottom: 10px;
+}
+
+div#div-mode {
+	display: block;
+}
+
+div#div-navi {
+	display: block;
+}
+
+div.split-str > div {
+	display: inline-block;
 }
 
 @media only screen and (max-width: 767px) {
@@ -23,7 +35,7 @@ div.card > div.content > div.header {
 		padding: 20px 10px;
 	}
 
-	div.ui.cards > div.card.study-card {
+	div.ui.cards > .card.study-card {
 		width: 95%;
 	}
 }

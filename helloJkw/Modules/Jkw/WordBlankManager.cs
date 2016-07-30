@@ -25,6 +25,7 @@ namespace helloJkw
 
 				Model.PathList = "";
 				Model.Type = "study";
+				Model.Take = Request.Query["take"] == null ? 10 : ((string)Request.Query["take"]).ToInt();
 				return View["word-blank/wordBlankMain.cshtml", Model];
 			};
 
@@ -38,6 +39,7 @@ namespace helloJkw
 
 				Model.PathList = _.pathList;
 				Model.Type = "study";
+				Model.Take = Request.Query["take"] == null ? 10 : ((string)Request.Query["take"]).ToInt();
 				return View["word-blank/wordBlankMain.cshtml", Model];
 			};
 
@@ -51,6 +53,7 @@ namespace helloJkw
 
 				Model.PathList = _.pathList;
 				Model.Type = "exam";
+				Model.Take = Request.Query["take"] == null ? 10 : ((string)Request.Query["take"]).ToInt();
 				return View["word-blank/wordBlankMain.cshtml", Model];
 			};
 
@@ -68,6 +71,8 @@ namespace helloJkw
 				string email = session.User.Email;
 #endif
 				string json = Request.Form["data"];
+				string takeString = Request.Form["take"];
+				int takeCount = Request.Form["take"] == null ? 10 : ((string)Request.Form["take"]).ToInt();
 				var pathList = JsonConvert.DeserializeObject<string>(json).Trim().Split(' ').Where(x => x.Length > 0);
 				var textList = LoadText(email, pathList).Select(x => x.Item2);
 				var nextPathList = textList.Where(x => x.Path.Count() > pathList.Count())
@@ -77,7 +82,7 @@ namespace helloJkw
 				dynamic obj = new ExpandoObject();
 				obj.PathList = pathList.Select((x, i) => new { PathName = x, PathPath = pathList.Select((e, j) => new { Path = e, Index = j }).Where(e => e.Index <= i).Select(e => e.Path).StringJoin(" ") }).ToList();
 				obj.NextPathList = nextPathList;
-				obj.TextList = textList.Take(10);
+				obj.TextList = textList.Take(takeCount);
 				return JsonConvert.SerializeObject(obj);
 			};
 

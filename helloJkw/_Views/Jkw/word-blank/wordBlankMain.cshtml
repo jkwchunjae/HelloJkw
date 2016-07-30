@@ -79,13 +79,13 @@
 	}
 </head>
 <body ng-app="app-wb" ng-controller="wb-controller">
-	<div class="ui huge breadcrumb" style="display: block">
+	<div class="ui huge breadcrumb" id="div-mode">
 		<a class="section" href="/wb/study/@Model.PathList">빈칸만들기</a>
 		<div class="divider">/</div>
 		<a class="section" href="/wb/exam/@Model.PathList">시험보기</a>
 	</div>
 
-	<div class="ui huge breadcrumb" style="display: block">
+	<div class="ui huge breadcrumb" id="div-navi">
 		<div style="display: inline;">
 			<a class="section" href="/wb/@Model.Type">Home</a>
 		</div>
@@ -95,13 +95,13 @@
 		</div>
 	</div>
 
-	<div class="ui action input">
+	<div class="ui action input" id="div-editor">
 		<input type="email" id="editor-email" placeholder="Editor 추가 (email)"/>
 		<button class="ui button" ng-click="AddEditor()">추가</button>
 		<button class="ui button" ng-click="RemoveEditor()">제거</button>
 	</div>
 
-	<div class="ui huge list">
+	<div class="ui huge list" id="div-next-list">
 		<div class="item" ng-repeat="nextPath in NextPathList">
 			<i class="user icon"></i>
 			<div class="content">
@@ -111,17 +111,20 @@
 	</div>
 
 	<div class="ui cards">
-		<div class="card study-card" ng-repeat="text in TextList" style="display: inline-table;">
+		<div class="card study-card page-break-avoid" ng-repeat="text in TextList" style="display: block;">
 			<div class="content">
 				<div class="header">
 					<span ng-repeat="path in text.Path" style="margin-right: 5px;">{{path}}</span>
 				</div>
 				<div class="content">
 					<div class="split-str" ng-repeat="word in text.Content">
-						<a class="split-str {{str.IsBlank}}" data-name="{{text.Name}}" data-index="{{word.Index}}" data-length="{{str.Length}}" ng-repeat="str in word.SplitStr">{{str.Str}}</a>
+						<div class="{{str.IsBlank}}" ng-repeat="str in word.SplitStr">
+							<a class="split-str {{str.IsBlank}}" data-name="{{text.Name}}" data-index="{{word.Index}}" data-length="{{str.Length}}">{{str.Str}}</a>
+						</div>
 					</div>
 				</div>
 			</div>
+			@*<div class="page-break"></div>*@
 		</div>
 	</div>
 
@@ -160,7 +163,8 @@
 		function loadTextList(pathList) {
 			$.post('/wb/load',
 				{
-					data: JSON.stringify(pathList)
+					data: JSON.stringify(pathList),
+					take: @Model.Take
 				}, function (json) {
 					//alert(json)
 					var obj = JSON.parse(json)
@@ -173,9 +177,9 @@
 					$('a.split-str').each(function () {
 						if ($(this).text() != '<br/>')
 							return;
-						var div = $(this).parent()
+						var div = $(this).parent().parent()
 						//$(div).insertAfter('<br/>')
-						$(div).css('display', 'block')
+						$(div).css('display', 'block').css('height', '3px')
 						$(this).text('')
 					})
 				})

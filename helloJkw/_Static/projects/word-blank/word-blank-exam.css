@@ -1,11 +1,46 @@
 ﻿div.split-str a.true {
-	background-color: black;
+	color: white;
 }
 
-a:hover.split-str {
+div.split-str a:hover.split-str.true {
 	background-color: #ccc;
+	color: black;
 }
 
 a.split-str {
 	margin-right: 0px;
+}
+
+div.split-str > .true {
+	border-bottom: 1px solid black;
+}
+
+@media print {
+	div.split-str a.true {
+		opacity: 0;
+	}
+
+	div#div-mode {
+		display: none;
+	}
+
+	div#div-navi {
+		display: none;
+	}
+
+	div#div-editor {
+		display: none;
+	}
+
+	div#div-next-list {
+		display: none;
+	}
+
+	div.ui.cards > .card.study-card {
+		width: 100%;
+	}
+
+	.page-break-avoid {
+		page-break-inside: avoid;
+	}
 }
