@@ -36,11 +36,10 @@ div.split-str > .true {
 		display: none;
 	}
 
-	div.ui.cards > .card.study-card {
+	.card.study-card {
 		width: 100%;
-	}
-
-	.page-break-avoid {
-		page-break-inside: avoid;
+		border: none;
+		border-radius: 0;
+		border-bottom: 1px solid gray;
 	}
 }

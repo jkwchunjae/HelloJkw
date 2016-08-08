@@ -110,21 +110,18 @@
 		</div>
 	</div>
 
-	<div class="ui cards">
-		<div class="card study-card page-break-avoid" ng-repeat="text in TextList" style="display: block;">
+	<div class="card study-card page-break-avoid" ng-repeat="text in TextList" style="display: block;">
+		<div class="content">
+			<div class="header">
+				<span ng-repeat="path in text.Path" style="margin-right: 5px;">{{path}}</span>
+			</div>
 			<div class="content">
-				<div class="header">
-					<span ng-repeat="path in text.Path" style="margin-right: 5px;">{{path}}</span>
-				</div>
-				<div class="content">
-					<div class="split-str" ng-repeat="word in text.Content">
-						<div class="{{str.IsBlank}}" ng-repeat="str in word.SplitStr">
-							<a class="split-str {{str.IsBlank}}" data-name="{{text.Name}}" data-index="{{word.Index}}" data-length="{{str.Length}}">{{str.Str}}</a>
-						</div>
+				<div class="split-str" ng-repeat="word in text.Content">
+					<div class="{{str.IsBlank}}" ng-repeat="str in word.SplitStr">
+						<a class="split-str {{str.IsBlank}}" data-name="{{text.Name}}" data-index="{{word.Index}}" data-length="{{str.Length}}">{{str.Str}}</a>
 					</div>
 				</div>
 			</div>
-			@*<div class="page-break"></div>*@
 		</div>
 	</div>
 

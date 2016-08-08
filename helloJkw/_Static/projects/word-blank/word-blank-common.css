@@ -1,4 +1,7 @@
-﻿body {
+﻿@import url(http://fonts.googleapis.com/earlyaccess/nanumgothic.css);
+
+body {
+	font-family: 'Nanum Gothic', sans-serif;
 	padding: 20px;
 }
 
@@ -6,12 +9,22 @@ a:hover.split-str {
 	background-color: #ccc;
 }
 
-div.ui.cards > .card.study-card {
+.card.study-card {
 	width: 70%;
+	border: 1px solid gray;
+	border-radius: 0.5em;
+	margin: 1em 0;
+	padding: 1em;
+}
+
+.card.study-card .header {
+	font-weight: bold;
+	font-size: larger;
 }
 
 a.split-str {
 	color: black;
+	cursor: pointer;
 }
 
 .card > div.content > div.header {
@@ -30,12 +43,16 @@ div.split-str > div {
 	display: inline-block;
 }
 
+div.card.study-card.page-break-avoid {
+	page-break-inside: avoid;
+}
+
 @media only screen and (max-width: 767px) {
 	body {
 		padding: 20px 10px;
 	}
 
-	div.ui.cards > .card.study-card {
+	.card.study-card {
 		width: 95%;
 	}
 }
