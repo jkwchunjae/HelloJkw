@@ -73,8 +73,8 @@
 				<button class="btn btn-xs btn-danger" ng-click="leaveRoom()">나가기</button>
 			</div>
 			<div class="row" id="start-game-section">
-				<div class="col-xs-8">
-					<select class="form-control" id="size" ng-model="size" ng-init="size=11">
+				<div class="col-xs-3">
+					<select class="form-control" id="size" ng-model="size" ng-init="size=15">
 						<option value="7">7</option>
 						<option value="9">9</option>
 						<option value="11">11</option>
@@ -82,7 +82,9 @@
 						<option value="15">15</option>
 					</select>
 				</div>
-				<button class="btn btn-default col-xs-4" ng-click="startGame()">게임시작</button>
+				<button class="btn btn-default col-xs-3" id="btn-insert-ai" ng-click="insertAi()">AI추가</button>
+				<button class="btn btn-default col-xs-3" id="btn-remove-ai" ng-click="removeAi()">AI제거</button>
+				<button class="btn btn-default col-xs-3" ng-click="startGame()">게임시작</button>
 			</div>
 			<div class="row" id="game-control">
 				<button class="btn btn-warning" ng-click="giveupGame()">기권</button>
@@ -268,6 +270,20 @@
 			sendMessage(message);
 		};
 
+		$scope.insertAi = function () {
+			var message = {
+				packetType: 'TryInsertAi'
+			};
+			sendMessage(message);
+		};
+
+		$scope.removeAi = function () {
+			var message = {
+				packetType: 'TryRemoveAi'
+			};
+			sendMessage(message);
+		};
+
 		var Log = function (message) {
 			@if (@Model.isDebug) {
 				string script = @"
@@ -416,10 +432,10 @@
 				$scope.userList.push({ userName: user.userName, userImage: user.userImage, roomName: user.roomName });
 
 				if (user.userType == 'Alice') {
-					$scope.AliceName = user.userName;
+					$scope.AliceName = user.userName + (user.isAi ? ' (AI)' : '');
 					$scope.AliceImage = user.userImage;
 				} else if (user.userType == 'Bob') {
-					$scope.BobName = user.userName;
+					$scope.BobName = user.userName + (user.isAi ? ' (AI)' : '');
 					$scope.BobImage = user.userImage;
 				}
 
@@ -427,7 +443,7 @@
 					if (user.userType == 'Alice' || user.userType == 'Bob') {
 						player.isPlayer = true;
 					}
-					if (user.isManager == 'true' && !player.isGameRunning) {
+					if (user.isManager && !player.isGameRunning) {
 						$('#start-game-section').css('display', 'block');
 					}
 				}
