@@ -416,11 +416,6 @@
 				$scope.userList.push({ userName: user.userName, userImage: user.userImage, roomName: user.roomName });
 
 				if (user.userType == 'Alice') {
-					if ($scope.BobName == user.userName) {
-						var tmp = $scope.BobScore;
-						$scope.BobScore = $scope.AliceScore;
-						$scope.AliceScore = tmp;
-					}
 					$scope.AliceName = user.userName;
 					$scope.AliceImage = user.userImage;
 				} else if (user.userType == 'Bob') {
@@ -428,13 +423,13 @@
 					$scope.BobImage = user.userImage;
 				}
 
-				if (user.userType == 'Alice' && user.userName == player.name) {
-					if (!player.isGameRunning) {
+				if (user.userName == player.name) {
+					if (user.userType == 'Alice' || user.userType == 'Bob') {
+						player.isPlayer = true;
+					}
+					if (user.isManager == 'true' && !player.isGameRunning) {
 						$('#start-game-section').css('display', 'block');
 					}
-					player.isPlayer = true;
-				} else if (user.userType == 'Bob' && user.userName == player.name) {
-					player.isPlayer = true;
 				}
 			});
 			$scope.$apply();
@@ -519,13 +514,16 @@
 			$('#game-control').css('display', 'none');
 			player.isGameRunning = false;
 
+			var showTime = 10 * 1000; // 10초
 			if (data.winnerName == player.name) {
-				showAlert('이겼습니다! ' + data.winnerScore + ':' + data.loserScore);
+				showAlert('이겼습니다! ' + data.winnerScore + ':' + data.loserScore, showTime);
 			} else if (data.loserName == player.name) {
-				showAlert('졌습니다.' + data.winnerScore + ':' + data.loserScore);
+				showAlert('졌습니다.' + data.winnerScore + ':' + data.loserScore, showTime);
 			} else {
-				showAlert('게임종료. ' + data.winnerName + ' ' + data.winnerScore + ' : ' + data.loserScore + ' ' + data.loserName);
+				showAlert('게임종료. ' + data.winnerName + ' ' + data.winnerScore + ' : ' + data.loserScore + ' ' + data.loserName, showTime);
 			}
+
+			SetScore(data.aliceScore, data.bobScore);
 		};
 	});
 
