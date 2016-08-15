@@ -114,6 +114,7 @@
     <Compile Include="Utils\Utils.cs" />
     <Content Include="_Static\projects\word-blank\word-blank-exam.css" />
     <Content Include="_Static\projects\word-blank\word-blank-exam.js" />
+    <Content Include="_Static\projects\word-blank\word-blank-common.css" />
     <Content Include="_Static\projects\word-blank\word-blank-study.css" />
     <Content Include="_Static\projects\word-blank\word-blank-study.js" />
   </ItemGroup>
