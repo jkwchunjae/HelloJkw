@@ -87,13 +87,10 @@ namespace helloJkw
 		{
 			Get["/games/Buzzer"] = _ =>
 			{
-				var userName = "";
 #if DEBUG
-				userName = "TESTER";
+				var userName = "TESTER";
 #else
-				if (!session.IsLogin)
-					return "로그인하세요.";
-				userName = session.User.Name;
+				var userName = session.IsLogin ? session.User.Name : "TESTER";
 #endif
 
 				Model.UserName = userName;
