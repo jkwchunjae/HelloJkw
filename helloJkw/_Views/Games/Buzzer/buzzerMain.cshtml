@@ -1,0 +1,58 @@
+﻿@inherits Nancy.ViewEngines.Razor.NancyRazorViewBase<dynamic>
+@{
+	Layout = "Layout.cshtml";
+	string playerImage = Model.isLogin ? Model.user.ImageUrl : "";
+}
+
+<div class="playground" ng-app="app-buzzer" ng-controller="controller-buzzer">
+	<button id="pushbutton">PUSH</button>
+
+	<ul>
+		<li ng-repeat="record in recordList">
+			{{record.UserName}} {{record.Diff}} ms
+		</li>
+	</ul>
+
+	@if (Model.IsManager)
+	{
+		<button id="resetbutton">RESET</button>
+	}
+
+</div>
+
+@section Css
+{
+<style type="text/css">
+	#pushbutton {
+		width: 100%;
+		height: 200px;
+	}
+</style>
+}
+
+@section Javascript
+{
+<script type="text/javascript">
+	var app = angular.module('app-buzzer', []);
+	var getScope = function () {
+		return angular.element(document.querySelector('[ng-controller="controller-buzzer"]')).scope();
+	};
+
+	$('#pushbutton').click(function () {
+		$.post('buzzer/push', function (json) {
+			var scope = getScope();
+
+			scope.recordList = JSON.parse(json)
+			scope.$apply()
+		})
+	})
+
+	$('#resetbutton').click(function () {
+		$.post('buzzer/reset')
+	})
+
+	app.controller('controller-buzzer', function ($scope) {
+		$scope.recordList = new Array();
+	})
+</script>
+}
