@@ -38,8 +38,9 @@ namespace helloJkw
 				var games = Directory.GetDirectories(_rootPath)
 					.Select(path => new { engName = Path.GetFileName(path), path })
 					.Select(e => new { e.engName, json = (dynamic)JsonConvert.DeserializeObject(File.ReadAllText(Path.Combine(e.path, "info.txt"))) })
-					.Select(e => new { e.engName, korName = e.json.korName, isPublish = (bool)e.json.isPublish, e.json, thumbnail = Directory.GetFiles(Path.Combine(_staticPath, e.engName), "*thumbnail*").GetRandom().ReplaceToSlash().ReplaceJkwStatic() })
+					.Select(e => new { e.engName, korName = e.json.korName, isPublish = (bool)e.json.isPublish, index = (int)e.json.index, e.json, thumbnail = Directory.GetFiles(Path.Combine(_staticPath, e.engName), "*thumbnail*").GetRandom().ReplaceToSlash().ReplaceJkwStatic() })
 					.Where(x => x.isPublish)
+					.OrderBy(x => x.index)
 					.ToList();
 
 				_cacheGameInfo = games.ToDictionary(e => e.engName, e => new GameInfo() { EngName = e.engName, KorName = e.korName, Thumbnail = e.thumbnail, JsonObj = e.json });
