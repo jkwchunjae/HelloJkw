@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 using Newtonsoft.Json;
 using System.IO;
 using Extensions;
+using Newtonsoft.Json.Linq;
 
 namespace helloJkw
 {
@@ -32,7 +33,7 @@ namespace helloJkw
 
 	public static class BuzzerHelper
 	{
-		static string _managerPath = @"jkw/games/Buzzer/manager.txt";
+		static string _infoPath = @"jkw/games/Buzzer/info.txt";
 
 		static List<Record> _recordList = new List<Record>();
 		static Record _firstRecord;
@@ -74,10 +75,19 @@ namespace helloJkw
 			if (!session.IsLogin)
 				return false;
 
-			var managerSet = JsonConvert.DeserializeObject<List<string>>(File.ReadAllText(_managerPath, Encoding.UTF8))
+			dynamic obj = JsonConvert.DeserializeObject(File.ReadAllText(_infoPath, Encoding.UTF8));
+
+			var managerSet = ((JArray)obj.manager).Select(x => (string)x).ToList()
 				.ToHashSet();
 
 			return managerSet.Contains(session.User.Email);
+		}
+
+		/// <summary> 로그인을 해야만 시스템을 이용할 수 있는지 알기 위한 함수 </summary>
+		public static bool MustLogin()
+		{
+			dynamic obj = JsonConvert.DeserializeObject(File.ReadAllText(_infoPath, Encoding.UTF8));
+			return (bool)obj.login;
 		}
 	}
 
@@ -95,19 +105,16 @@ namespace helloJkw
 
 				Model.UserName = userName;
 				Model.IsManager = BuzzerHelper.IsManager(session);
+				Model.MustLogin = BuzzerHelper.MustLogin();
 				return View["Games/Buzzer/buzzerMain.cshtml", Model];
 			};
 
 			Post["/games/buzzer/push"] = _ =>
 			{
-				var userName = "";
-#if DEBUG
-				userName = "TESTER";
-#else
-				if (!session.IsLogin)
+				var mustLogin = BuzzerHelper.MustLogin();
+				if (mustLogin && !session.IsLogin)
 					return "";
-				userName = session.User.Name;
-#endif
+				var userName = mustLogin ? session.User.Name : (string)Request.Form["userName"];
 
 				return BuzzerHelper.Push(userName);
 			};

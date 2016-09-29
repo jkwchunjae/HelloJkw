@@ -5,6 +5,14 @@
 }
 
 <div class="playground" ng-app="app-buzzer" ng-controller="controller-buzzer">
+	@if (Model.MustLogin)
+	{
+		<input type="text" id="username" style="display: none;"/>
+	}
+	else
+	{
+		<input type="text" id="username"/>
+	}
 	<button id="pushbutton">PUSH</button>
 
 	<ul>
@@ -39,7 +47,9 @@
 	};
 
 	$('#pushbutton').click(function () {
-		$.post('buzzer/push', function (json) {
+		$.post('buzzer/push', {
+			userName: $('#username').val()
+		}, function (json) {
 			var scope = getScope();
 
 			scope.recordList = JSON.parse(json)
