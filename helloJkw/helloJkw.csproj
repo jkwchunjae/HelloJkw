@@ -113,6 +113,7 @@
     <Compile Include="Utils\DB.cs" />
     <Compile Include="Utils\HitCounter.cs" />
     <Compile Include="Utils\Utils.cs" />
+    <Content Include="_Static\css\baduk.css" />
     <Content Include="_Static\projects\word-blank\word-blank-exam.css" />
     <Content Include="_Static\projects\word-blank\word-blank-exam.js" />
     <Content Include="_Static\projects\word-blank\word-blank-common.css" />

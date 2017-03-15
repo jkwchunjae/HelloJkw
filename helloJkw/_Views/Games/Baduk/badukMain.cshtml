@@ -1,4 +1,5 @@
 ﻿@inherits Nancy.ViewEngines.Razor.NancyRazorViewBase<dynamic>
+@using helloJkw;
 @{
 	Layout = "Layout.cshtml";
 }
@@ -7,7 +8,7 @@
 <div class="section utils">
 	<div class="util-item">
 		@*<span class="util-name">칸수</span>*@
-		<div class="btn-group" data-toggle="buttons">
+		<div id="div-size" class="btn-group" data-toggle="buttons">
 			<label class="btn btn-success active">
 				<input type="radio" name="board-size" value="19" checked="checked" /> 19칸
 			</label>
@@ -21,7 +22,7 @@
 	</div>
 	<div class="util-item">
 		@*<span class="util-name">돌 변경 방법</span>*@
-		<div class="btn-group" data-toggle="buttons">
+		<div id="div-changeMode" class="btn-group" data-toggle="buttons">
 			<label class="btn btn-info active" title="바둑돌이 자동으로 바뀝니다. 우클릭으로 취소합니다.">
 				<input type="radio" name="stone-change-mode" value="0" checked="checked" /> 자동
 			</label>
@@ -32,27 +33,44 @@
 	</div>
 	<div class="util-item">
 		@*<span class="util-name">돌 색</span>*@
-		<div class="btn-group" data-toggle="buttons">
+		<div id="div-stoneColor" class="btn-group" data-toggle="buttons">
 			<label class="btn btn-default active">
-				<input type="radio" name="stone-color" value="0" checked="checked" />
+				<input type="radio" name="stone-color" value="1" checked="checked" />
 				<img src="/jkw/games/Baduk/black-go-stone24.png" />
 			</label>
 			<label class="btn btn-default">
-				<input type="radio" name="stone-color" value="1" />
+				<input type="radio" name="stone-color" value="2" />
 				<img src="/jkw/games/Baduk/white-go-stone24.png" />
 			</label>
+		</div>
+	</div>
+	<div class="util-item">
+		<div id="div-refresh" class="btn-group">
+			<button type="button" id="refresh" class="btn btn-default">초기화</button>
+			<button type="button" id="remove-stone" class="btn btn-default">판비우기</button>
 		</div>
 	</div>
 	@if (Model.isLogin)
 	{
 	<div class="util-item input-group">
-		<input type="text" class="form-control" />
+		<input type="text" id="text-subject" class="form-control" placeholder="제목"/>
 		<span class="input-group-btn">
 			<button type="button" class="btn btn-default" id="btn-save">저장</button>
 		</span>
 	</div>
-	<div class="util-item">
+	@*<div class="util-item">
 		<button type="button" class="btn btn-default" id="btn-propose">건의하기</button>
+	</div>*@
+	<div class="util-item">
+		<span style="font-size: 1.2em; font-weight: bold;">저장목록</span>
+		<ul id="savelist">
+		</ul>
+	</div>
+	}
+	else
+	{
+	<div class="util-item">
+	로그인하면 저장기능을 사용할 수 있습니다.
 	</div>
 	}
 </div>
@@ -91,84 +109,16 @@
 	</div>
 </div>
 
-<div class="section memo-section">
-	<textarea id="text-memo" style="width: 400px;display:block;margin-bottom: 10px; height: 500px;">@Model.Memo</textarea>
 @if (Model.isLogin)
 {
-	<button class="btn btn-default" id="btn-memo-save" style="display: block;">저장</button>
-}
-else
-{
-	<span>로그인하면 저장 버튼 보여요</span>
-}
+<div class="section memo-section">
+	<textarea id="text-memo" placeholder="메모: 각 파일별로 저장됩니다." style="width: 400px;display:block;margin-bottom: 10px; height: 500px;"></textarea>
 </div>
+}
 
 @section Css
 {
-<style type="text/css">
-	ul#board-size {
-		border-style: none;
-		padding: 0;
-	}
-
-	ul#board-size li {
-		display: inline-block;
-	}
-
-	div.section {
-		float: left;
-		padding-right: 20px;
-	}
-
-	div.board-section {
-	}
-
-	div.utils {
-		max-width: 180px;
-	}
-
-	div.util-item {
-		margin-bottom: 10px;
-	}
-
-	div.util-item span.util-name {
-		display: block;
-	}
-
-	img.image-stone {
-		/*width: 32px;*/
-		/*height: 34px;*/
-	}
-
-	td.board-cell {
-	}
-
-	.board-control > div {
-		display: inline-block;
-		margin-right: 10px;
-	}
-	
-	.dead-stone {
-		display: inline-block;
-		padding: 4px;
-	}
-
-	.btn-dead-stone img {
-		height: 20px;
-	}
-
-	div.board-navigate div.input-group {
-		width: 230px;
-	}
-
-	div.board-navigate input {
-		text-align: center;
-	}
-
-	div.board-info div.input-group {
-		width: 110px;
-	}
-</style>
+	<link href="/Static/css/baduk.css" rel="stylesheet" />
 }
 
 @section Javascript
@@ -176,12 +126,21 @@ else
 <script type="text/javascript" src="/Static/js/linq.js_ver2.2.0.2/linq.js"></script>
 <script type="text/javascript" src="/Static/js/linq.js_ver2.2.0.2/jquery.linq.js"></script>
 <script type="text/javascript">
+
+	var changeFlag = false
+
+	window.onbeforeunload = function () {
+		if (changeFlag) {
+			return "페이지를 나오면 현재 데이터를 잃게 됩니다."
+		}
+	}
+
 $(function () {
 	var enumStoneChangeMode = {
 		Auto: 0, Manual: 1
 	}
 	var enumStoneColor = {
-		Black: 0, White: 1, None: 2
+		None: 0, Black: 1, White: 2
 	}
 	var enumStoneAction = {
 		Set: 0, Remove: 1
@@ -246,7 +205,7 @@ $(function () {
 	}
 
 	$('input[name="board-size"]').change(function () {
-		util.BoardSize = $(this).val()
+		util.BoardSize = parseInt($(this).val(), 10)
 		drawBlankBoard(util.BoardSize, false)
 	})
 	$('input[name="stone-change-mode"]').change(function () {
@@ -256,7 +215,7 @@ $(function () {
 		util.StoneColor = parseInt($(this).val(), 10)
 	})
 
-	drawBlankBoard(util.BoardSize, false);
+	drawBlankBoard(util.BoardSize, false)
 
 	$(document).on('click', 'td.board-cell', function () {
 		var rowIndex = parseInt($(this).attr('data-row'), 10)
@@ -275,6 +234,8 @@ $(function () {
 				util.SetColor(util.StoneColor == enumStoneColor.White ? enumStoneColor.Black : enumStoneColor.White)
 			}
 		}
+
+		changeFlag = true
 	})
 
 	$(document).on('contextmenu', 'td.board-cell', function () {
@@ -283,14 +244,15 @@ $(function () {
 
 		var currentColor = record.currentBoard[rowIndex][columnIndex]
 		if (currentColor == enumStoneColor.None)
-			return false;
+			return false
 
 		RemoveStone(rowIndex, columnIndex, currentColor)
 		record.IncreaseDeadStone(currentColor)
 		record.indexMaximum = record.currentIndex
-		return false;
+		changeFlag = true
+		return false
 	})
-	
+
 	function SetStone(row, column, stoneColor) {
 		record.stoneLog[++record.currentIndex] = {
 			row: row,
@@ -389,7 +351,9 @@ $(function () {
 		pointArray[13] = [4, 7, 10]
 		pointArray[9] = [5]
 
-		$('table#board').remove();
+		$('table#board').remove()
+		$('#text-memo').val('')
+		$('#text-subject').val('')
 		record.Init()
 
 		var table = document.createElement('table')
@@ -434,15 +398,221 @@ $(function () {
 			$(table).append(tr)
 		}
 		$('div.board').append(table)
+
+		changeFlag = false
 	}
 
-	$('#btn-memo-save').click(function () {
-		$.post('/games/Baduk/save-memo',
+	$('#refresh').click(function () {
+		if (changeFlag) {
+			if (!confirm('계속 하면 현재 데이터를 잃게 됩니다. 계속하시겠습니까?')) {
+				return;
+			}
+		}
+
+		$('div#div-size input[value="' + 19 + '"]').closest('.btn').button('toggle')
+		$('div#div-changeMode input[value="' + enumStoneChangeMode.Auto + '"]').closest('.btn').button('toggle')
+		$('div#div-stoneColor input[value="' + enumStoneColor.Black + '"]').closest('.btn').button('toggle')
+
+		util.BoardSize = 19
+		util.StoneChangeMode = enumStoneChangeMode.Auto
+		util.StoneColor = enumStoneColor.Black
+
+		drawBlankBoard(util.BoardSize, false)
+	})
+
+	$('#remove-stone').click(function () {
+		if (changeFlag) {
+			if (!confirm('계속 하면 현재 데이터를 잃게 됩니다. 계속하시겠습니까?')) {
+				return;
+			}
+		}
+
+		drawBlankBoard(util.BoardSize, false)
+	})
+
+	$('#btn-save').click(function () {
+		SaveData(0)
+	})
+
+	function SaveData(confirm) {
+		$.post('/games/Baduk/save',
 		{
-			memo: $('#text-memo').val()
-		}, function (data) {
-			showAlert(data)
+			subject: $('#text-subject').val(),
+			size: util.BoardSize,
+			changeMode: util.StoneChangeMode,
+			currentColor: util.StoneColor,
+			currentIndex: record.currentIndex,
+			indexMaximum: record.indexMaximum,
+			memo: $('#text-memo').val(),
+			stoneLog: JSON.stringify(record.stoneLog),
+			confirm: confirm
+		},
+		function (json) {
+			var data = JSON.parse(json)
+			if (data.Status == 'success') {
+				showAlert(data.Message)
+				changeFlag = false
+				loadSaveList()
+			}
+			else if (data.Status == 'fail') {
+				showAlert(data.Message)
+			}
+			else if (data.Status == 'confirm') {
+				if (window.confirm(data.Message)) {
+					SaveData(1)
+				}
+			}
 		})
+	}
+
+	$(document).on('click', 'ul#savelist li a', function () {
+		if (changeFlag) {
+			if (!confirm('계속 하면 현재 데이터를 잃게 됩니다. 계속하시겠습니까?')) {
+				return;
+			}
+		}
+
+		var subject = $(this).text()
+		$.post('/games/Baduk/loaddata', 
+		{
+			subject: subject
+		},
+		function (json) {
+			var data = JSON.parse(json)
+			if (data.Status == 'success') {
+				var data = JSON.parse(data.JsonText)
+
+				$('div#div-size input[value="' + data.Size + '"]').closest('.btn').button('toggle')
+				$('div#div-changeMode input[value="' + data.ChangeMode + '"]').closest('.btn').button('toggle')
+				$('div#div-stoneColor input[value="' + data.CurrentColor + '"]').closest('.btn').button('toggle')
+
+				util.BoardSize = data.Size
+				util.StoneChangeMode = data.ChangeMode
+				util.StoneColor = data.CurrentColor
+
+				drawBlankBoard(util.BoardSize, false)
+
+				for (var i = 0; i < data.CurrentIndex; i++) {
+					var logData = data.StoneLog[i]
+					switch (logData.Action) {
+						case enumStoneAction.Set:
+							SetStone(logData.Row, logData.Column, logData.Color)
+							break;
+						case enumStoneAction.Remove:
+							RemoveStone(logData.Row, logData.Column, logData.Color)
+							record.IncreaseDeadStone(logData.Color)
+							break;
+					}
+				}
+
+				for (var i = data.CurrentIndex; i < data.StoneLog.length; i++) {
+					var logData = data.StoneLog[i]
+					record.stoneLog[i + 1] = {
+						row: logData.Row,
+						column: logData.Column,
+						stoneAction: logData.Action,
+						color: logData.Color,
+					}
+				}
+
+				record.indexMaximum = data.IndexMaximum
+				record.SetCurrentIndex(data.CurrentIndex)
+
+				$('input#text-subject').val(data.Subject)
+				$('#text-memo').val(data.Memo)
+
+				changeFlag = false
+			}
+			else if (data.Status == 'fail') {
+				showAlert(data.Message)
+			}
+		})
+	})
+
+	$(document).on('click', 'i.favorite-subject', function () {
+		var favorite = $(this).attr('data-favorite') == 'true'
+		$.post('/games/Baduk/favorite',
+		{
+			subject: $(this).attr('data-subject'),
+			favorite: !favorite
+		},
+		function (json) {
+			var result = JSON.parse(json)
+			if (result.Status == 'success') {
+				loadSaveList()
+			} else {
+				showAlert(result.Message)
+			}
+		})
+	})
+
+	$(document).on('mouseover', 'ul#savelist > li', function () {
+		$(this).find('div.div-trash').css('display', 'inline')
+	})
+	.on('mouseout', 'ul#savelist > li', function () {
+		$(this).find('div.div-trash').css('display', 'none')
+	})
+	.on('click', 'i.delete-data', function () {
+		if (confirm('삭제하시겠습니까?')) {
+			$.post('/games/Baduk/delete',
+			{
+				subject: $(this).attr('data-subject')
+			},
+			function (json) {
+				var result = JSON.parse(json)
+				if (result.Status == 'success') {
+					loadSaveList()
+					showAlert('삭제되었습니다')
+				} else {
+					showAlert(result.Message)
+				}
+			})
+		}
+	})
+
+	function loadSaveList() {
+		$.post('/games/Baduk/loadsavelist',
+		{
+		},
+		function (json) {
+			var list = JSON.parse(json)
+			$('ul#savelist').html('')
+
+			for (var i = 0; i < list.length; i++) {
+				var star = document.createElement('i')
+				$(star).attr('data-subject', list[i].Subject)
+				$(star).attr('data-favorite', list[i].Favorite)
+				$(star).addClass('fa').addClass('favorite-subject').css('cursor', 'pointer')
+				if (list[i].Favorite) {
+					$(star).addClass('fa-star').addClass('star')
+				} else {
+					$(star).addClass('fa-star-o').addClass('unstar')
+				}
+				var div = document.createElement('div')
+				$(div).css('display', 'inline')
+				$(div).append(star)
+				var a = document.createElement('a')
+				$(a).text(list[i].Subject).attr('href', '#')
+
+				var trash = document.createElement('i')
+				$(trash).addClass('fa').addClass('fa-trash-o').addClass('delete-data')
+					.css('cursor', 'pointer')
+					.attr('data-subject', list[i].Subject)
+				var div2 = document.createElement('div')
+				$(div2).css('display', 'none').css('margin-left', '10px').addClass('div-trash')
+				$(div2).append(trash)
+
+				var li = document.createElement('li')
+				$(li).append(div).append(a).append(div2)
+				$('ul#savelist').append(li)
+			}
+		})
+	}
+
+	loadSaveList()
+
+	$('#text-memo').keydown(function () {
+		changeFlag = true
 	})
 })
 

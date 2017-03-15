@@ -1,0 +1,83 @@
+﻿a, a:hover, a:focus, a:active, a.active {
+	color: black;
+}
+
+ul#board-size {
+	border-style: none;
+	padding: 0;
+}
+
+ul#board-size li {
+	display: inline-block;
+}
+
+div.section {
+	float: left;
+	padding-right: 20px;
+}
+
+div.board-section {
+}
+
+div.utils {
+	max-width: 180px;
+}
+
+div.util-item {
+	margin-bottom: 10px;
+}
+
+div.util-item span.util-name {
+	display: block;
+}
+
+img.image-stone {
+	/*width: 32px;*/
+	/*height: 34px;*/
+}
+
+td.board-cell {
+}
+
+.board-control > div {
+	display: inline-block;
+	margin-right: 10px;
+}
+
+.dead-stone {
+	display: inline-block;
+	padding: 4px;
+}
+
+.btn-dead-stone img {
+	height: 20px;
+}
+
+div.board-navigate div.input-group {
+	width: 230px;
+}
+
+div.board-navigate input {
+	text-align: center;
+}
+
+div.board-info div.input-group {
+	width: 110px;
+}
+
+ul#savelist {
+	list-style: none;
+	padding: 0 0 0 20px;
+}
+
+ul#savelist div {
+	margin-right: 5px;
+}
+
+ul#savelist div:hover .unstar:before {
+	content: "\f005";
+}
+
+ul#savelist div:hover .star:before {
+	content: "\f006";
+}
