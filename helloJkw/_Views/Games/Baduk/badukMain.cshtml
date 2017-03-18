@@ -50,7 +50,7 @@
 			<button type="button" id="remove-stone" class="btn btn-default">판비우기</button>
 		</div>
 	</div>
-	@if (Model.isLogin)
+	@if (Model.isLogin || Model.isDebug)
 	{
 	<div class="util-item input-group">
 		<input type="text" id="text-subject" class="form-control" placeholder="제목"/>
@@ -435,7 +435,7 @@ $(function () {
 	})
 
 	function SaveData(confirm) {
-		$.post('/games/Baduk/save',
+		$.post('/games/Baduk/savedata',
 		{
 			subject: $('#text-subject').val(),
 			size: util.BoardSize,

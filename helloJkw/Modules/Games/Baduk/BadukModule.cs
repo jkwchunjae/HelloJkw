@@ -66,7 +66,7 @@ namespace helloJkw
 				}
 			};
 
-			Post["/games/Baduk/save"] = _ =>
+			Post["/games/Baduk/savedata"] = _ =>
 			{
 				dynamic result = new ExpandoObject();
 #if !DEBUG
@@ -81,14 +81,15 @@ namespace helloJkw
 				var email = "test@hellojkw.com";
 #endif
 				string subject = Request.Form["subject"];
-				subject = subject.Trim();
+				subject = string.IsNullOrWhiteSpace(subject) ? "" : subject.Trim();
 				string filepath = "{pathData}/{email}/{subject}.txt".WithVar(new { pathData, email, subject });
 				int size = Request.Form["size"];
 				int currentIndex = Request.Form["currentIndex"];
 				int indexMaximum = Request.Form["indexMaximum"];
 				string memo = Request.Form["memo"];
+				memo = string.IsNullOrWhiteSpace(memo) ? "" : memo;
 				string stoneLogJson = Request.Form["stoneLog"];
-				StoneChangeMode changeMode = (StoneChangeMode)((int)Request.Form["stoneChangeMode"]);
+				StoneChangeMode changeMode = (StoneChangeMode)((int)Request.Form["changeMode"]);
 				StoneColor currentColor = (StoneColor)((int)Request.Form["currentColor"]);
 				int confirm = Request.Form["confirm"];
 
@@ -206,7 +207,7 @@ namespace helloJkw
 				var jsonText = File.ReadAllText(filepath, Encoding.UTF8);
 				var badukData = JsonConvert.DeserializeObject<BadukData>(jsonText);
 
-				if (badukData.OwnerEmail != email && !badukData.EditorEmail.Contains(email))
+				if (badukData.OwnerEmail != email && badukData.EditorEmail != null && !badukData.EditorEmail.Contains(email))
 				{
 					result.Status = "fail";
 					result.Message = "권한이 없습니다.";
@@ -249,7 +250,7 @@ namespace helloJkw
 				var jsonText = File.ReadAllText(filepath, Encoding.UTF8);
 				var badukData = JsonConvert.DeserializeObject<BadukData>(jsonText);
 
-				if (badukData.OwnerEmail != email && !badukData.EditorEmail.Contains(email))
+				if (badukData.OwnerEmail != email && badukData.EditorEmail != null && !badukData.EditorEmail.Contains(email))
 				{
 					result.Status = "fail";
 					result.Message = "권한이 없습니다.";
@@ -324,7 +325,7 @@ namespace helloJkw
 	{
 		public string Subject { get; set; }
 		public bool Favorite { get; set; }
-		public DateTime CreateDate { get; set; } = DateTime.Now;
+		public DateTime CreateDate { get; set; }
 		public DateTime LastModifyDate { get; set; }
 		public string OwnerEmail { get; set; }
 		public List<string> EditorEmail { get; set; }
@@ -335,6 +336,11 @@ namespace helloJkw
 		public int IndexMaximum { get; set; }
 		public string Memo { get; set; }
 		public List<StoneData> StoneLog { get; set; }
+
+		public BadukData()
+		{
+			CreateDate = DateTime.Now;
+		}
 	}
 
 	public class StoneData
