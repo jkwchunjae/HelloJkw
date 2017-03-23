@@ -23,7 +23,9 @@ namespace helloJkw
 				.Select(x => x.ToLower()).ToList();
 
 			if (session.User.Email == null)
-				throw new Exception("해당 계정에 이메일이 세팅되어 있지 않습니다.");
+				return false;
+				//throw new Exception("해당 계정에 이메일이 세팅되어 있지 않습니다.");
+
 			return operatorList.Contains(session.User.Email.ToLower());
 		}
 
@@ -40,33 +42,18 @@ namespace helloJkw
 
 				#endregion
 
-				#region MemberList
+				string visible = Request.Query.Visible;
+				visible = string.IsNullOrWhiteSpace(visible) ? "" : visible.ToLower();
+				Model.Visible = visible;
+				Model.VisibleAll = string.IsNullOrWhiteSpace(visible);
 
-				Model.RegularMemberList = FnbMember.GetMember(FnbMember.MemberType.Regular);
-				Model.AssociateMemberList = FnbMember.GetMember(FnbMember.MemberType.Associate);
+				string visibleMenu = Request.Query.menu;
+				Model.VisibleMenu = string.IsNullOrWhiteSpace(visibleMenu) ? true : visibleMenu.ToLower() == "true";
 
-				#endregion
+				string visibleHeader = Request.Query.header;
+				Model.VisibleHeader = string.IsNullOrWhiteSpace(visibleHeader) ? true : visibleHeader.ToLower() == "true";
 
-				#region Meetings
-
-				Model.MeetingList = FnbMeeting.GetMeeting();
-
-				#endregion
-
-				#region Accounting
-
-				Model.Accounting = FnbAccounting.GetAccountingData();
-
-				#endregion
-
-				try
-				{
-					Model.IsOperator = IsOperator(session);
-				}
-				catch
-				{
-					Model.IsOperator = false;
-				}
+				Model.IsOperator = IsOperator(session);
 
 				return View["fnb/fnbHome.cshtml", Model];
 			};
@@ -229,6 +216,7 @@ namespace helloJkw
 					{
 						No = e.No,
 						DateDot = e.Date.ToString("yyyy.MM.dd"),
+						WeekDay = e.Date.GetWeekday(DateLanguage.KR, WeekdayFormat.D),
 						e.Attendants,
 						AttendantList = e.Attendants.Select(x => FnbMember.GetMember(x))
 							.OrderBy(x => x.MemberType).ThenBy(x => x.JoinDate)

@@ -14,7 +14,8 @@
 	</div>
 </header>
 
-
+@if (Model.VisibleAll || ((string)Model.Visible).Contains("member"))
+{
 <section id="member">
 	<div class="container">
 		<div class="row">
@@ -207,9 +208,10 @@
 	</div>
 	}
 </section>
+}
 
-
-
+@if (Model.VisibleAll || ((string)Model.Visible).Contains("meeting"))
+{
 <section id="meeting">
 	<div class="container">
 		<div class="row">
@@ -221,10 +223,10 @@
 			<table class="table table-striped" style="margin: auto; width:auto; max-width: 850px;">
 				<thead>
 					<tr>
-						<th>회차</th>
+						<th style="min-width: 35px; padding-left: 0; padding-right: 0;">회차</th>
 						<th>날짜</th>
-						<th style="max-width:200px;">참석자</th>
-						<th>비고</th>
+						<th style="max-width: 200px;">참석자</th>
+						<th style="max-width: 200px;">비고</th>
 						@if (@Model.IsOperator)
 						{
 							<th>버튼</th>
@@ -261,9 +263,9 @@
 					</tr>
 				}
 				<tr ng-repeat="meeting in meetingList" data-meeting-no="{{meeting.No}}">
-					<td class="meeting-no">{{meeting.No}}</td>
+					<td class="meeting-no" style="min-width: 35px;">{{meeting.No}}</td>
 					<td class="meeting-date">
-						<div class="meeting-info">{{meeting.DateDot}}</div>
+						<div class="meeting-info">{{meeting.DateDot}}&nbsp;({{meeting.WeekDay}})</div>
 						@if (@Model.IsOperator)
 						{
 						<div class="meeting-edit">
@@ -276,7 +278,7 @@
 						</div>
 						}
 					</td>
-					<td class="meeting-attendants align-left">
+					<td class="meeting-attendants align-left" style="max-width: 500px;">
 						<div class="meeting-info">{{meeting.AttendantList}}</div>
 						@if (@Model.IsOperator)
 						{
@@ -295,7 +297,7 @@
 						</div>
 						}
 					</td>
-					<td class="meeting-others align-left">
+					<td class="meeting-others align-left" style="max-width: 200px;">
 						<div class="meeting-info">{{meeting.Others}}</div>
 						@if (@Model.IsOperator)
 						{
@@ -323,7 +325,10 @@
 		</div>
 	</div>
 </section>
+}
 
+@if (Model.VisibleAll || ((string)Model.Visible).Contains("account"))
+{
 <section id="account">
 	<div class="container">
 		<div class="row">
@@ -410,7 +415,7 @@
 		</div>
 	</div>
 </section>
-
+}
 
 
 @section Css
@@ -426,6 +431,18 @@
 		header {
 			background-image: url(@Model.BackGroundFileName);
 		}
+
+@if (!Model.VisibleMenu)
+{
+	string visibleMenuCss = ".navbar { display: none; }";
+	@visibleMenuCss;
+}
+
+@if (!Model.VisibleHeader)
+{
+	string visibleHeaderCss = "header { display: none; }";
+	@visibleHeaderCss;
+}
 	</style>
 }
 
