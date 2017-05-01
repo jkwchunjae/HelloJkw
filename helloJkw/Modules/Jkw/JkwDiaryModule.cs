@@ -117,6 +117,20 @@ namespace helloJkw
 			};
 			#endregion
 
+			#region Get /diary/search/{diaryName}
+			Get["/diary/search/{diaryName}"] = _ =>
+			{
+				if (!session.IsLogin)
+					return View["diary/jkwDiaryRequireLogin", Model];
+
+				string diaryName = _.diaryName;
+				bool withSecure = session.User.DiaryName == diaryName;
+				//DiaryManager.
+
+				return View["diary/jkwDiarySearch", Model];
+			};
+			#endregion
+
 			#endregion
 
 			#region Write Diary

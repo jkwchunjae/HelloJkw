@@ -28,6 +28,10 @@
 		<a href="/diary/modify/@Model.DiaryName/@Model.Date.ToString("yyyyMMdd")" class="btn btn-warning btn-diary-action" id="diary-modify">수정</a>
 		}
 		<a href="/diary/showdates/@Model.DiaryName" class="btn btn-default btn-diary-action">일기 전체</a>
+		@if (@Model.IsMine)
+		{
+		<a href="/diary/search/@Model.DiaryName" class="btn btn-default btn-diary-action">일기 검색</a>
+		}
 		@*<a href="/diary/home" class="btn btn-default btn-diary-action" id="diary-home">일기장 홈</a>*@
 	</div>
 </div>

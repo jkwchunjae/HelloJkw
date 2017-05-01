@@ -57,6 +57,9 @@ namespace helloJkw
 					return new List<Diary>();
 
 				var diaryList = Directory.GetFiles(currentPath, "*." + _diaryExt)
+#if DEBUG
+					.Take(10)
+#endif
 					.Select(x => new { Diary = JsonConvert.DeserializeObject<Diary>(File.ReadAllText(x, Encoding.UTF8)), FileName = Path.GetFileNameWithoutExtension(x) })
 					.Select(x => new { x.Diary, FileIndex = x.FileName.Substring(9, x.FileName.Length - 9).ToInt()})
 					.OrderBy(x => x.Diary.Date)
@@ -100,6 +103,11 @@ namespace helloJkw
 				.Select(x => x.Date)
 				.Distinct()
 				.OrderBy(x => x);
+		}
+
+		public static IEnumerable<Diary> GetDiary(string diaryName, DateTime beginDate, DateTime endDate, bool withSecure)
+		{
+			return LoadDiaryByDate(diaryName, beginDate, endDate, withSecure);
 		}
 
 		public static DateTime GetPrevDate(string diaryName, DateTime date, bool withSecure)
