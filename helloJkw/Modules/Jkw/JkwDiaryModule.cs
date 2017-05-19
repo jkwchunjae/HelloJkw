@@ -117,6 +117,20 @@ namespace helloJkw
 			};
 			#endregion
 
+			#region Get /diary/search/{diaryName}
+			Get["/diary/search/{diaryName}"] = _ =>
+			{
+				if (!session.IsLogin)
+					return View["diary/jkwDiaryRequireLogin", Model];
+
+				string diaryName = _.diaryName;
+				bool withSecure = session.User.DiaryName == diaryName;
+				//DiaryManager.
+
+				return View["diary/jkwDiarySearch", Model];
+			};
+			#endregion
+
 			#endregion
 
 			#region Write Diary
@@ -233,6 +247,60 @@ namespace helloJkw
 				}
 
 				return "success";
+			};
+			#endregion
+
+			#endregion
+
+			#region Search Diary
+
+			#region Post /diary/search
+			Post["/diary/search"] = _ =>
+			{
+				dynamic result = new ExpandoObject();
+				result.result = false;
+				result.Message = "";
+
+				if (!session.IsLogin)
+				{
+					result.Message = "로그인을 해주세요.";
+					return JsonConvert.SerializeObject(result);
+				}
+
+				var diaryName = session.User.DiaryName;
+
+				var beginDateNum = ((string)Request.Form["beginDate"]).ToInt();
+				var endDateNum = ((string)Request.Form["endDate"]).ToInt();
+				var weekday = ((string)Request.Form["weekday"]).ToInt();
+				var searchText = (string)Request.Form["searchText"];
+				var beginDate = beginDateNum.ToDate();
+				var endDate = endDateNum.ToDate();
+
+				if (beginDateNum == 0 || endDateNum == 0)
+				{
+					result.Message = "날짜를 확인해주세요.";
+					return JsonConvert.SerializeObject(result);
+				}
+
+				try
+				{
+					var diaryList = DiaryManager.SearchDiary(diaryName, beginDate, endDate, weekday, searchText, withSecure: false);
+					result.result = true;
+					result.DiaryList = diaryList.Select(x => new
+					{
+						Date = x.Date.ToString("yyyy.MM.dd"),
+						Weekday = x.Date.GetWeekday(DateLanguage.KR, WeekdayFormat.D),
+						x.Text
+					})
+					.ToList();
+					return JsonConvert.SerializeObject(result);
+				}
+				catch (Exception ex)
+				{
+					ex.WriteLog();
+					result.Message = ex.Message;
+					return JsonConvert.SerializeObject(result);
+				}
 			};
 			#endregion
 

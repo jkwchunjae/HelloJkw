@@ -1,0 +1,197 @@
+﻿@{
+    Layout = "Layout.cshtml";
+}
+
+<div id="diary-search">
+	<div class="form-group col-sm-6">
+		<label for="input-begindate" class="control-label">시작일</label>
+		<div class="search-field">
+			<input type="text" class="form-control" id="input-begindate" placeholder="">
+		</div>
+	</div>
+	<div class="form-group col-sm-6">
+		<label for="input-enddate" class="control-label">종료일</label>
+		<div class="search-field">
+			<input type="text" class="form-control" id="input-enddate" placeholder="">
+		</div>
+	</div>
+	<div class="form-group col-sm-6">
+		<label for="input-weekdays" class="control-label">요일</label>
+		<div class="search-field">
+			<select class="form-control" id="input-weekday">
+				<option value="-1">전체</option>
+				<option value="0">일</option>
+				<option value="1">월</option>
+				<option value="2">화</option>
+				<option value="3">수</option>
+				<option value="4">목</option>
+				<option value="5">금</option>
+				<option value="6">토</option>
+			</select>
+		</div>
+	</div>
+	<div class="form-group col-sm-6">
+		<label for="input-keyword" class="control-label">검색어</label>
+		<div class="search-field">
+			<input type="text" class="form-control" id="input-keyword" placeholder="">
+		</div>
+	</div>
+	<button class="btn btn-success" id="btn-search" style="width: 100%;">검색</button>
+</div>
+
+<span id="result-count-message">총 <span id="result-count">0</span>개의 데이터가 검색되었습니다.</span>
+<table class="table table-bordered">
+	<thead>
+		<tr>
+			<th>날짜</th>
+			<th>내용</th>
+		</tr>
+	</thead>
+	<tbody id="search-table">
+	</tbody>
+</table>
+
+@section Css
+{
+    <link href="/Static/bootstrap-datepicker/css/bootstrap-datepicker3.min.css" rel="stylesheet">
+
+<style type="text/css">
+	div#diary-search {
+		max-width: 600px;
+	}
+
+	div#diary-search > div {
+		/*display: block;*/
+	}
+
+	div#diary-search > div > * {
+		display: inline-block;
+	}
+
+	div#diary-search > div > label {
+		width: 25%;
+	}
+
+	div#diary-search > div > div.search-field {
+		width: 70%;
+	}
+
+	#result-count-message {
+		display: block;
+		margin-top: 10px;
+	}
+
+	table.table-bordered {
+		margin-top: 3px;
+	}
+
+	table.table-bordered .td-text {
+		padding: 0;
+	}
+
+	table.table-bordered .td-text pre {
+		margin: 0;
+		max-width: 100vw;
+		border: 0;
+	}
+</style>
+}
+
+@section Javascript
+{
+<script src="/Static/bootstrap/js/moment.js"></script>
+<script src="/Static/bootstrap/js/bootstrap-datetimepicker.js"></script>
+<script type="text/javascript">
+	$("nav.navbar").addClass("navbar-shrink");
+
+	$(function () {
+		$('#btn-search').click(function () {
+			$.post('/diary/search',
+			{
+				beginDate: $('#input-begindate').val(),
+				endDate: $('#input-enddate').val(),
+				weekday: $('#input-weekday').val(),
+				searchText: $('#input-keyword').val()
+			},
+			function (jsonText) {
+				var data = JSON.parse(jsonText)
+				if (data.result) {
+					var tbody = $('#search-table')
+					$(tbody).empty()
+
+					var diaryCount = data.DiaryList.length;
+					$('#result-count').text(diaryCount)
+					if (diaryCount == 0) {
+						var tr = document.createElement('tr')
+						var td = document.createElement('td')
+						$(td).attr('colspan', '2').text('검색된 데이터가 없습니다.')
+						$(tr).append(td)
+						$(tbody).append(tr)
+					}
+					else {
+						for (var i = 0; i < diaryCount; i++) {
+							var diaryDate = data.DiaryList[i].Date
+							var diaryWeekday = data.DiaryList[i].Weekday
+							var diaryText = data.DiaryList[i].Text
+
+							var tr = document.createElement('tr')
+							var tdDate = document.createElement('td')
+							var tdText = document.createElement('td')
+							$(tdDate).text(diaryDate + ' (' + diaryWeekday + ')')
+							var pre = document.createElement('pre')
+							$(pre).text(diaryText)
+							$(tdText).addClass('td-text').append(pre)
+							$(tr).append(tdDate).append(tdText)
+							$(tbody).append(tr)
+						}
+					}
+				}
+				else {
+					showAlert(data.Message)
+				}
+			})
+		})
+
+		$('#diary-date-group').datetimepicker({
+			useStrict: true,
+			format: 'YYYY.MM.DD'
+		}).on('dp.change', function (e) {
+			setDate(e.date);
+		});
+	})
+
+	function setDate(date) {
+		var date8 = getDateDot(date);
+		var daysStr = ['일', '월', '화', '수', '목', '금', '토'];
+		//$('#diary-date').val(date8 + ' ' + daysStr[date.day()]);
+		$('#diary-date').val(date8);
+		$('#diary-date').attr('data-date', date.year() * 10000 + (date.month() + 1) * 100 + date.date());
+
+		var today = moment(new Date());
+		var yesterday = moment(new Date());
+		yesterday.date(today.date() - 1);
+		var beforeYesterday = moment(new Date());
+		beforeYesterday.date(yesterday.date() - 1);
+		var tomorrow = moment(new Date());
+		tomorrow.date(today.date() + 1);
+
+		var dateDesc = daysStr[date.day()] + ' ';
+		if (date8 == getDateDot(today)) {
+			dateDesc += '(오늘)';
+		} else if (date8 == getDateDot(yesterday)) {
+			dateDesc += '(어제)';
+		} else if (date8 == getDateDot(beforeYesterday)) {
+			dateDesc += '(그저께)';
+		} else if (date8 == getDateDot(tomorrow)) {
+			dateDesc += '(내일)'; // 일기장에 내일이 웬말이냐
+		}
+
+		$('span#date-desc').text(dateDesc);
+	}
+
+	$(document).ready(function () {
+		setDate(moment(new Date()));
+	});
+
+</script>
+}
