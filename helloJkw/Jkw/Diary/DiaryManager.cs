@@ -201,5 +201,126 @@ namespace helloJkw
 			return diary;
 		}
 		#endregion
+
+		#region Search
+		public static List<string> GetTokens(this string str)
+		{
+			return str.Replace("(", " ( ").Replace(")", " ) ").Replace("+", " + ").Split(' ')
+				.Where(x => !string.IsNullOrWhiteSpace(x))
+				.ToList();
+		}
+
+		public static IEnumerable<Diary> SearchDiary(string diaryName, DateTime beginDate, DateTime endDate, int weekdayNum, string searchText, bool withSecure)
+		{
+			var diaryList = GetDiary(diaryName, beginDate, endDate, withSecure);
+
+			var weekday = (DayOfWeek)weekdayNum;
+
+			return diaryList.Where(x => x.Date >= beginDate && x.Date <= endDate)
+				.Where(x => weekdayNum == -1 ? true : x.Date.DayOfWeek == weekday)
+				.Where(x => withSecure ? true : !x.IsSecure)
+				.Where(x => new SearchMachine(x.Text, searchText).Eval());
+		}
+		#endregion
 	}
+
+	#region Search Machine
+	public class SearchMachine
+	{
+		string _diaryText;
+		List<string> _tokens;
+		int _index;
+
+		public SearchMachine(string diaryText, string searchExpr)
+		{
+			_diaryText = diaryText;
+			_tokens = searchExpr.GetTokens();
+		}
+
+		public bool Eval()
+		{
+			_index = 0;
+			return Expr();
+		}
+
+
+		bool Expr()
+		{
+			if (_index >= _tokens.Count())
+				throw new Exception();
+
+			bool left = Term();
+
+			if (_index >= _tokens.Count())
+				return left;
+
+			var token = _tokens[_index];
+			if (token == ")")
+			{
+				return left;
+			}
+			else if (token == "or" || token == "+")
+			{
+				_index++;
+				return left || Expr();
+			}
+			else
+			{
+				throw new Exception();
+			}
+		}
+
+		bool Term()
+		{
+			if (_index >= _tokens.Count())
+				throw new Exception();
+
+			bool left = Factor();
+
+			if (_index >= _tokens.Count())
+				return left;
+
+			var token = _tokens[_index];
+			if (token == ")")
+			{
+				return left;
+			}
+			else if (token == "and")
+			{
+				_index++;
+				return left && Term();
+			}
+			else if (token == "or" || token == "+")
+			{
+				return left;
+			}
+			else
+			{
+				//_index++;
+				return left && Term();
+				//throw new Exception();
+			}
+		}
+
+		bool Factor()
+		{
+			if (_index >= _tokens.Count())
+				throw new Exception();
+
+			var keyword = _tokens[_index];
+			if (keyword == "(")
+			{
+				_index++;
+				bool result = Expr();
+				_index++;
+				return result;
+			}
+			else
+			{
+				_index++;
+				return _diaryText.Contains(keyword);
+			}
+		}
+	}
+	#endregion
 }
