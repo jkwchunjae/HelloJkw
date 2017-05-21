@@ -273,8 +273,8 @@ namespace helloJkw
 				var endDateNum = ((string)Request.Form["endDate"]).ToInt();
 				var weekday = ((string)Request.Form["weekday"]).ToInt();
 				var searchText = (string)Request.Form["searchText"];
-				var beginDate = beginDateNum.ToDate();
-				var endDate = endDateNum.ToDate();
+				var beginDate = beginDateNum >= 2000 && beginDateNum <= 2030 ? new DateTime(beginDateNum, 1, 1) : beginDateNum.ToDate();
+				var endDate = endDateNum >= 2000 && endDateNum <= 2030 ? new DateTime(endDateNum, 12, 31) : endDateNum.ToDate();
 
 				if (beginDateNum == 0 || endDateNum == 0)
 				{

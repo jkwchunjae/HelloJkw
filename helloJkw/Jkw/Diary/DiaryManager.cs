@@ -262,7 +262,8 @@ namespace helloJkw
 			else if (token == "or" || token == "+")
 			{
 				_index++;
-				return left || Expr();
+				var right = Expr();
+				return left || right;
 			}
 			else
 			{
@@ -288,7 +289,8 @@ namespace helloJkw
 			else if (token == "and")
 			{
 				_index++;
-				return left && Term();
+				var right = Term();
+				return left && right;
 			}
 			else if (token == "or" || token == "+")
 			{
@@ -297,7 +299,8 @@ namespace helloJkw
 			else
 			{
 				//_index++;
-				return left && Term();
+				var right = Term();
+				return left && right;
 				//throw new Exception();
 			}
 		}
