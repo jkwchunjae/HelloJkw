@@ -321,7 +321,14 @@ namespace helloJkw
 			else
 			{
 				_index++;
-				return _diaryText.Contains(keyword);
+				if (keyword.Left(1) == "!" && keyword.Length >= 2)
+				{
+					return !_diaryText.Contains(keyword.Substring(1, keyword.Length - 1));
+				}
+				else
+				{
+					return _diaryText.Contains(keyword);
+				}
 			}
 		}
 	}
