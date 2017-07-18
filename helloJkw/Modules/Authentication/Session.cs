@@ -58,7 +58,7 @@ namespace helloJkw
 
 		public void RefreshExpire()
 		{
-			_expire = DateTime.Now.AddMinutes(60);
+			_expire = DateTime.Now.AddMinutes(24 * 60);
 			//_expire = DateTime.Now.AddSeconds(10);
 		}
 	}
