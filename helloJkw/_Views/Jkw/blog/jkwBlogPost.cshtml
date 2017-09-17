@@ -18,11 +18,11 @@
 			@*<span class="post-tag label label-success"><a href="/blog/tag/@tag.Url">@tag.Name</a></span>*@
 		}
 		<time class="post-datetime" datetime="@string.Format("{0:yyyy-MM-dd}", @post.Date)">@string.Format("{0:yyyy.MM.dd}", @post.Date)</time>
-		@if (@Model.isDebug)
+		@if (@Model.isEditor)
 		{
 			<div class="raw">
 				<button class="btn" id="raw">Raw</button>
-				<button class="btn btn-warning" id="edit" data-post-name="@string.Format("{0:yyyyMMdd}", @post.Date)-@post.Name">수정</button>
+				<a class="btn btn-warning" id="edit" href="/blog/post/edit/@post.Name" style="color: white;">수정</a>
 				<div class="post-raw"><pre class="post-raw">@post.Raw</pre></div>
 			</div>
 		}
@@ -76,7 +76,7 @@
 {
 	<script type="text/javascript" src="/Static/js/jkwBlogPostQnA.js"></script>
 	<script type="text/javascript" src="/Static/js/jkwBlogPostImageList.js"></script>
-	@if (@Model.isDebug)
+	@if (@Model.isEditor)
 	{
 	<script type="text/javascript">
 		$(document).ready(function () {
@@ -87,10 +87,6 @@
 				} else {
 					$('.post-raw').css('display', 'none');
 				}
-			});
-
-			$('div.raw button#edit').click(function () {
-				$.post('/blog/edit/' + $(this).attr('data-post-name'));
 			});
 		});
 	</script>

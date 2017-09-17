@@ -7,8 +7,8 @@
 	<div class="col-md-7" id="posts">
 		@RenderBody()
 	</div>
-	<div class="col-md-3">
-		@if (@Model.isDebug)
+	<div class="col-md-3" id="blog-menus">
+		@if (@Model.isEditor)
 		{
 			<a class="btn btn-danger" id="post-manage" href="/blog/manage" style="margin-bottom:5px;">관리하기</a>
 		}

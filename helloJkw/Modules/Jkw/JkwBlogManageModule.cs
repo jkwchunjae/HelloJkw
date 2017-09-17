@@ -9,30 +9,34 @@ using Extensions;
 using helloJkw.Utils;
 using System.Diagnostics;
 using System.IO;
+using Newtonsoft.Json;
 
 namespace helloJkw
 {
 	public class JkwBlogManageModule : JkwBlogModule
 	{
+		string _postPath => Environment.CurrentDirectory + @"/jkw/blog/posts";
+
 		public JkwBlogManageModule()
 			:base()
 		{
 			Get["/blog/manage"] = _ =>
 			{
-#if DEBUG
+				if (!Model.isEditor)
+					return "wrong";
+
 				BlogManager.UpdatePost(0);
 				var post = BlogManager.PostList
 					.OrderByDescending(e => e.FilePath);
 				Model.post = post;
 				return View["blog/jkwBlogManage", Model];
-#else
-				return "wrong";
-#endif
 			};
 
 			Post["/blog/new/{date}/{name}"] = _ =>
 			{
-#if DEBUG
+				if (!Model.isEditor)
+					return "wrong";
+
 				"blog/new/".Dump();
 				BlogManager.UpdatePost(0);
 
@@ -45,9 +49,8 @@ namespace helloJkw
 					if (date == 0 || postName == null || postName == "")
 						return "wrong";
 
-					var postPath = Environment.CurrentDirectory + @"/jkw/blog/posts";
 					var filename = "{0}-{1}".With(date, postName);
-					var filePath = "{postPath}/{filename}.txt".WithVar(new { postPath, filename });
+					var filePath = "{_postPath}/{filename}.txt".WithVar(new { _postPath, filename });
 					filePath.Dump();
 
 					string template = @"@title : 제목입력
@@ -66,20 +69,32 @@ namespace helloJkw
 
 					if (!File.Exists(filePath))
 						File.WriteAllText(filePath, template, Encoding.UTF8);
-
-					var winword = Process.Start("winword.exe", filePath);
 				}
 				catch (Exception ex)
 				{
 					Logger.Log(ex);
 				}
 				return "success";
-#else
-				return "wrong";
-#endif
 			};
 
 			Post["/blog/edit/{postname}"] = _ =>
+			{
+				string filename = _.postname;
+				string text = Request.Form["text"];
+				var post = new Post(filename, text);
+				return JsonConvert.SerializeObject(post);
+			};
+
+			Post["/blog/save/{postname}"] = _ =>
+			{
+				string filename = _.postname;
+				string text = Request.Form["text"];
+				var filePath = "{_postPath}/{filename}.txt".WithVar(new {_postPath, filename});
+				File.WriteAllText(filePath, text, Encoding.UTF8);
+				return "";
+			};
+
+			Post["/blog/edit-winword/{postname}"] = _ =>
 			{
 #if DEBUG
 				BlogManager.UpdatePost(0);
@@ -90,8 +105,7 @@ namespace helloJkw
 				if (post == null)
 					return "wrong";
 
-				var postPath = Environment.CurrentDirectory + @"/jkw/blog/posts";
-				var filePath = "{postPath}/{filename}.txt".WithVar(new {postPath, filename});
+				var filePath = "{_postPath}/{filename}.txt".WithVar(new {_postPath, filename});
 
 				try
 				{
@@ -142,7 +156,8 @@ namespace helloJkw
 
 			Post["/blog/delete/{postname}"] = _ =>
 			{
-#if DEBUG
+				if (!Model.isEditor)
+					return "wrong";
 				BlogManager.UpdatePost(0);
 				string filename = _.postname; // yyyyMMdd-name
 				var post = BlogManager.PostList
@@ -153,9 +168,8 @@ namespace helloJkw
 
 				try
 				{
-					var postPath = Environment.CurrentDirectory + @"/jkw/blog/posts";
-					var filePath = "{postPath}/{filename}.txt".WithVar(new { postPath, filename });
-					filePath.Dump();
+					var filePath = "{_postPath}/{filename}.txt".WithVar(new { _postPath, filename });
+					filePath.Dump("DeletePost");
 
 					File.Delete(filePath);
 					return "파일을 삭제하였습니다.";
@@ -165,9 +179,6 @@ namespace helloJkw
 					Logger.Log(ex);
 					return ex.Message;
 				}
-#else
-				return "wrong";
-#endif
 			};
 		}
 	}

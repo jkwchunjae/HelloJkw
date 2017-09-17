@@ -183,6 +183,7 @@
     <None Include="_Views\Games\Buzzer\buzzerMain.cshtml" />
     <None Include="_Views\Games\colorConquerMain.cshtml" />
     <None Include="_Views\Games\Telestrations\telestrationsMain.cshtml" />
+    <None Include="_Views\Jkw\blog\jkwBlogEdit.cshtml" />
     <None Include="_Views\Jkw\diary\jkwDiarySearch.cshtml" />
     <None Include="_Views\Jkw\diary\jkwDiaryShowDates.cshtml" />
     <None Include="_Views\Jkw\diary\jkwDiaryModify.cshtml" />

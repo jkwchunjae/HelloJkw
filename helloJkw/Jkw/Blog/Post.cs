@@ -48,6 +48,12 @@ namespace helloJkw
 			Parse(FileName, text);
 		}
 
+		public Post(string filename, string text)
+		{
+			FileName = filename;
+			Parse(filename, text);
+		}
+
 		void Parse(string filename, string text)
 		{
 			var indexContent = text.IndexOf("@content");

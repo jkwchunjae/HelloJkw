@@ -1,0 +1,136 @@
+﻿@inherits Nancy.ViewEngines.Razor.NancyRazorViewBase<dynamic>
+@{
+	Layout = "blog/LayoutBlog.cshtml";
+	var post = @Model.post;
+}
+
+<div class="row">
+	<div id="post-editor" data-post-name="@string.Format("{0:yyyyMMdd}", @post.Date)-@post.Name">
+		<button class="btn btn-success" id="post-save">저장</button>
+		<textarea id="post-editarea">@post.Raw</textarea>
+	</div>
+	<div class="post-edited">
+		<article class="post">
+			<h1 class="post-title">@post.Title</h1>
+			<span class="post-category label label-info"><a href="/blog/category/@post.CategoryUrl">@post.Category</a></span>
+			<time class="post-datetime" datetime="@string.Format("{0:yyyy-MM-dd}", @post.Date)">@string.Format("{0:yyyy.MM.dd}", @post.Date)</time>
+			<div class="post-tags">
+				@foreach (var tag in @post.Tags)
+				{
+					<span class="post-tag label label-success"><a href="/blog/tag/@tag.Url">@tag.Name</a></span>
+				}
+			</div>
+			<div class="post-content">@Html.Raw(@post.Html)</div>
+		</article>
+	</div>
+</div>
+<hr />
+
+@section Javascript
+{
+	<script type="text/javascript" src="/Static/js/jkwBlogPostQnA.js"></script>
+	<script type="text/javascript" src="/Static/js/jkwBlogPostImageList.js"></script>
+	@if (@Model.isEditor)
+	{
+	<script type="text/javascript">
+		$(document).ready(function () {
+			/*
+				edit 에 맞춰서 튜닝.
+				불필요한거 지우고, 여백 같은거 조정하고..
+				이렇게 하는게 맞는지 모르겠다.
+			*/
+			$('#blog-menus').remove();
+			$('hr').remove();
+			$('.container').css('width', '1500px');
+			$('#posts').removeClass('col-md-7');
+
+			$('#post-save').click(() => {
+				var postName = $('#post-editor').attr('data-post-name');
+				var currText = $('#post-editarea').val();
+				$.post(`/blog/save/${postName}`, {
+					text: currText
+				});
+			})
+
+			var postText = $('#post-editarea').val();
+			setInterval(() => {
+				var currText = $('#post-editarea').val();
+				if (currText != postText) {
+					var postName = $('#post-editor').attr('data-post-name');
+					refreshContents(postName, currText);
+					postText = currText;
+				}
+			}, 1000);
+
+			function refreshContents(postName, text) {
+				$.post(`/blog/edit/${postName}`, {
+					text: text
+				},
+				data => {
+					var post = JSON.parse(data);
+					$('.post-content').html(post.Html);
+					$('.post-title').html(post.Title);
+					$('.post-category a').attr('href', `/blog/category/${post.CategoryUrl}`);
+					$('.post-category a').text(post.Category);
+					$('.post-tags span').remove();
+					for (var i = 0; i < post.Tags.length; i++) {
+						var span = `<span class="post-tag label label-success"><a href="/blog/tag/${post.Tags[i].Url}">${post.Tags[i].Name}</a></span>`;
+						$('.post-tags').append(span);
+					}
+				});
+			}
+		});
+	</script>
+	}
+}
+
+@section JavascriptRelease
+{
+}
+
+@section Css
+{
+	<style type="text/css">
+		#post-editor {
+			width: 750px;
+			position: fixed;
+		}
+		#post-editor textarea {
+			width: 95%;
+			height: 85vh;
+		}
+		#post-save {
+			width: 95%;
+		}
+		.post-edited {
+			margin-left: 750px;
+			width: 665px; /* 기본 보기에서의 너비값. */
+		}
+		.post-tags {
+			display: block;
+		}
+		.post-tag {
+			margin-right: 5px;
+		}
+
+		.exam, .problem {
+			border-bottom: 1px solid #ccc;
+			padding: 10px 10px;
+		}
+
+		.exam:hover, .problem:hover {
+			background-color: #efeb98;
+		}
+
+		.exam pre, .problem pre {
+			margin: 0 32px;
+			width: initial;
+		}
+
+		.image-list img {
+			max-width: 700px;
+			max-height: 700px;
+			display: none;
+		}
+	</style>
+}
