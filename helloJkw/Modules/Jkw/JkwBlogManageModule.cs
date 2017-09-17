@@ -9,6 +9,7 @@ using Extensions;
 using helloJkw.Utils;
 using System.Diagnostics;
 using System.IO;
+using Newtonsoft.Json;
 
 namespace helloJkw
 {
@@ -80,6 +81,14 @@ namespace helloJkw
 			};
 
 			Post["/blog/edit/{postname}"] = _ =>
+			{
+				string filename = _.postname;
+				string text = Request.Form["text"];
+				var post = new Post(filename, text);
+				return JsonConvert.SerializeObject(post);
+			};
+
+			Post["/blog/edit-word/{postname}"] = _ =>
 			{
 #if DEBUG
 				BlogManager.UpdatePost(0);

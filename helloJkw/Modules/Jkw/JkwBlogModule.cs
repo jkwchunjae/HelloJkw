@@ -19,6 +19,7 @@ namespace helloJkw
 			Model.categoryList = BlogManager.CategoryList
 				.OrderByDescending(e => e.Count);
 			Model.tagList = BlogManager.TagList;
+			Model.isEditor = Model.isDebug || session?.User?.Grade == UserGrade.Admin;
 			Model.Title = "jkw's Blog";
 		}
 	}
@@ -74,6 +75,31 @@ namespace helloJkw
 				Model.NextPost = postIndex == categoryList.Count() - 1 ? null : categoryList[postIndex + 1].Post;
 
 				return View["blog/jkwBlogPost", Model];
+			};
+
+			Get["/blog/post/edit/{postname}"] = _ =>
+			{
+#if DEBUG
+				BlogManager.UpdatePost(0);
+#else
+				BlogManager.UpdatePost();
+
+				if (session.User?.Grade != UserGrade.Admin)
+				{
+					return Response.AsRedirect("/blog/post/{PostName}".WithVar(new { PostName = _.postname }));
+				}
+#endif
+				string postname = _.postname; // name (without date)
+				var post = BlogManager.PostList
+		.Where(e => e.Name == postname)
+		.FirstOrDefault();
+				if (post == null)
+					return "wrong";
+
+				Model.post = post;
+				Model.Title = "[Edit] jkw's " + post.Title;
+
+				return View["blog/jkwBlogEdit", Model];
 			};
 
 			Get["/blog/category/{category}"] = _ =>

@@ -18,7 +18,7 @@
 			@*<span class="post-tag label label-success"><a href="/blog/tag/@tag.Url">@tag.Name</a></span>*@
 		}
 		<time class="post-datetime" datetime="@string.Format("{0:yyyy-MM-dd}", @post.Date)">@string.Format("{0:yyyy.MM.dd}", @post.Date)</time>
-		@if (@Model.isDebug)
+		@if (@Model.isEditor)
 		{
 			<div class="raw">
 				<button class="btn" id="raw">Raw</button>
@@ -76,7 +76,7 @@
 {
 	<script type="text/javascript" src="/Static/js/jkwBlogPostQnA.js"></script>
 	<script type="text/javascript" src="/Static/js/jkwBlogPostImageList.js"></script>
-	@if (@Model.isDebug)
+	@if (@Model.isEditor)
 	{
 	<script type="text/javascript">
 		$(document).ready(function () {
