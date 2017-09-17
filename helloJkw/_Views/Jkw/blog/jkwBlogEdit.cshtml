@@ -5,18 +5,21 @@
 }
 
 <div class="row">
-	<div class="post-editor">
-		<textarea id="post-editarea" data-post-name="@string.Format("{0:yyyyMMdd}", @post.Date)-@post.Name">@post.Raw</textarea>
+	<div id="post-editor" data-post-name="@string.Format("{0:yyyyMMdd}", @post.Date)-@post.Name">
+		<button class="btn btn-success" id="post-save">저장</button>
+		<textarea id="post-editarea">@post.Raw</textarea>
 	</div>
 	<div class="post-edited">
 		<article class="post">
 			<h1 class="post-title">@post.Title</h1>
 			<span class="post-category label label-info"><a href="/blog/category/@post.CategoryUrl">@post.Category</a></span>
 			<time class="post-datetime" datetime="@string.Format("{0:yyyy-MM-dd}", @post.Date)">@string.Format("{0:yyyy.MM.dd}", @post.Date)</time>
-			@foreach (var tag in @post.Tags)
-			{
-				<span class="post-tag label label-success"><a href="/blog/tag/@tag.Url">@tag.Name</a></span>
-			}
+			<div class="post-tags">
+				@foreach (var tag in @post.Tags)
+				{
+					<span class="post-tag label label-success"><a href="/blog/tag/@tag.Url">@tag.Name</a></span>
+				}
+			</div>
 			<div class="post-content">@Html.Raw(@post.Html)</div>
 		</article>
 	</div>
@@ -37,15 +40,23 @@
 				이렇게 하는게 맞는지 모르겠다.
 			*/
 			$('#blog-menus').remove();
+			$('hr').remove();
 			$('.container').css('width', '1500px');
 			$('#posts').removeClass('col-md-7');
+
+			$('#post-save').click(() => {
+				var postName = $('#post-editor').attr('data-post-name');
+				var currText = $('#post-editarea').val();
+				$.post(`/blog/save/${postName}`, {
+					text: currText
+				});
+			})
 
 			var postText = $('#post-editarea').val();
 			setInterval(() => {
 				var currText = $('#post-editarea').val();
-				console.log(currText);
 				if (currText != postText) {
-					var postName = $('#post-editarea').attr('data-post-name');
+					var postName = $('#post-editor').attr('data-post-name');
 					refreshContents(postName, currText);
 					postText = currText;
 				}
@@ -61,6 +72,11 @@
 					$('.post-title').html(post.Title);
 					$('.post-category a').attr('href', `/blog/category/${post.CategoryUrl}`);
 					$('.post-category a').text(post.Category);
+					$('.post-tags span').remove();
+					for (var i = 0; i < post.Tags.length; i++) {
+						var span = `<span class="post-tag label label-success"><a href="/blog/tag/${post.Tags[i].Url}">${post.Tags[i].Name}</a></span>`;
+						$('.post-tags').append(span);
+					}
 				});
 			}
 		});
@@ -75,17 +91,26 @@
 @section Css
 {
 	<style type="text/css">
-		.post-editor {
+		#post-editor {
 			width: 750px;
 			position: fixed;
 		}
-		.post-editor textarea {
+		#post-editor textarea {
 			width: 95%;
-			height: 90vh;
+			height: 85vh;
+		}
+		#post-save {
+			width: 95%;
 		}
 		.post-edited {
 			margin-left: 750px;
 			width: 665px; /* 기본 보기에서의 너비값. */
+		}
+		.post-tags {
+			display: block;
+		}
+		.post-tag {
+			margin-right: 5px;
 		}
 
 		.exam, .problem {
