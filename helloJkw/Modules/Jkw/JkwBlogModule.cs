@@ -19,8 +19,12 @@ namespace helloJkw
 			Model.categoryList = BlogManager.CategoryList
 				.OrderByDescending(e => e.Count);
 			Model.tagList = BlogManager.TagList;
-			Model.isEditor = Model.isDebug || session?.User?.Grade == UserGrade.Admin;
 			Model.Title = "jkw's Blog";
+		}
+
+		public bool IsEditor()
+		{
+			return Model.isDebug || session?.User?.Grade == UserGrade.Admin;
 		}
 	}
 
@@ -31,6 +35,7 @@ namespace helloJkw
 		{
 			Get["/blog/{getCount?20}"] = _ =>
 			{
+				Model.isEditor = IsEditor();
 				HitCounter.Hit("blog/main");
 
 #if DEBUG
@@ -46,6 +51,7 @@ namespace helloJkw
 
 			Get["/blog/post/{postname}"] = _ =>
 			{
+				Model.isEditor = IsEditor();
 #if DEBUG
 				BlogManager.UpdatePost(0);
 #else
@@ -79,6 +85,7 @@ namespace helloJkw
 
 			Get["/blog/post/edit/{postname}"] = _ =>
 			{
+				Model.isEditor = IsEditor();
 #if DEBUG
 				BlogManager.UpdatePost(0);
 #else
@@ -104,6 +111,7 @@ namespace helloJkw
 
 			Get["/blog/category/{category}"] = _ =>
 			{
+				Model.isEditor = IsEditor();
 				BlogManager.UpdatePost();
 				string category = _.category;
 				HitCounter.Hit("blog/category/" + category);
@@ -118,6 +126,7 @@ namespace helloJkw
 
 			Get["/blog/tag/{tag}"] = _ =>
 			{
+				Model.isEditor = IsEditor();
 				BlogManager.UpdatePost();
 				string tag = _.tag;
 				HitCounter.Hit("blog/tag/" + tag);

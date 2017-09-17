@@ -22,6 +22,7 @@ namespace helloJkw
 		{
 			Get["/blog/manage"] = _ =>
 			{
+				Model.isEditor = IsEditor();
 				if (!Model.isEditor)
 					return "wrong";
 
@@ -34,6 +35,7 @@ namespace helloJkw
 
 			Post["/blog/new/{date}/{name}"] = _ =>
 			{
+				Model.isEditor = IsEditor();
 				if (!Model.isEditor)
 					return "wrong";
 
@@ -79,6 +81,7 @@ namespace helloJkw
 
 			Post["/blog/edit/{postname}"] = _ =>
 			{
+				Model.isEditor = IsEditor();
 				string filename = _.postname;
 				string text = Request.Form["text"];
 				var post = new Post(filename, text);
@@ -96,6 +99,7 @@ namespace helloJkw
 
 			Post["/blog/edit-winword/{postname}"] = _ =>
 			{
+				Model.isEditor = IsEditor();
 #if DEBUG
 				BlogManager.UpdatePost(0);
 				string filename = _.postname; // yyyyMMdd-name
@@ -124,6 +128,7 @@ namespace helloJkw
 
 			Post["/blog/rename/{oldname}/{newname}"] = _ =>
 			{
+				Model.isEditor = IsEditor();
 #if DEBUG
 				BlogManager.UpdatePost(0);
 				string oldFilename = _.oldname; // yyyyMMdd-name
@@ -156,6 +161,7 @@ namespace helloJkw
 
 			Post["/blog/delete/{postname}"] = _ =>
 			{
+				Model.isEditor = IsEditor();
 				if (!Model.isEditor)
 					return "wrong";
 				BlogManager.UpdatePost(0);
