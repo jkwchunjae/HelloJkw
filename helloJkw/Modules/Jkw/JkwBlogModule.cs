@@ -62,6 +62,7 @@ namespace helloJkw
 
 				var post = BlogManager.PostList
 					.Where(e => e.Name == postname)
+					.Where(x => x.IsPublish || IsEditor())
 					.FirstOrDefault();
 				if (post == null)
 					return "wrong";
@@ -86,6 +87,8 @@ namespace helloJkw
 			Get["/blog/post/edit/{postname}"] = _ =>
 			{
 				Model.isEditor = IsEditor();
+				if (!IsEditor())
+					return "wrong";
 #if DEBUG
 				BlogManager.UpdatePost(0);
 #else
@@ -98,8 +101,9 @@ namespace helloJkw
 #endif
 				string postname = _.postname; // name (without date)
 				var post = BlogManager.PostList
-		.Where(e => e.Name == postname)
-		.FirstOrDefault();
+					.Where(e => e.Name == postname)
+					.Where(x => IsEditor())
+					.FirstOrDefault();
 				if (post == null)
 					return "wrong";
 
@@ -118,6 +122,7 @@ namespace helloJkw
 
 				Model.postList = BlogManager.PostList
 					.Where(e => e.CategoryUrl == category)
+					.Where(x => x.IsPublish || IsEditor())
 					.OrderByDescending(e => e.PublishDate)
 					.ThenByDescending(e => e.Name);
 
@@ -133,6 +138,7 @@ namespace helloJkw
 
 				Model.postList = BlogManager
 					.ContainsTagPostList(tag)
+					.Where(x => x.IsPublish || IsEditor())
 					.OrderByDescending(e => e.PublishDate)
 					.ThenByDescending(e => e.Name);
 
