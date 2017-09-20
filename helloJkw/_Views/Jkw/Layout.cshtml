@@ -115,7 +115,7 @@
 	@RenderSection("Javascript", false)
 	<script type="text/javascript">
 		var alertNumber;
-		var showAlert = function (message, showTime) {
+		function showAlert(message, showTime) {
 			$('div.fixed-alert').text(message).slideDown();
 			alertNumber = Math.random();
 			if (showTime === undefined)
@@ -123,7 +123,7 @@
 			window.setTimeout(closeAlert, showTime, alertNumber);
 		}
 
-		var closeAlert = function (validNumber) {
+		function closeAlert(validNumber) {
 			if (alertNumber != validNumber) return;
 			$('div.fixed-alert').slideUp();
 		}
