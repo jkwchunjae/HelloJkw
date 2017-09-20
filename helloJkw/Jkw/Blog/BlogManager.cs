@@ -40,10 +40,6 @@ namespace helloJkw
 					.Select(filepath => filepath.Replace(@"\", "/"))
 					.Where(filepath => Regex.IsMatch(filepath, pattern))
 					.Select(filepath => new Post(filepath))
-#if (DEBUG)
-#else
-					.Where(e => e.IsPublish)
-#endif
 					.OrderByDescending(e => e.PublishDate)
 					.ThenByDescending(e => e.Title)
 					.ToList();
@@ -61,9 +57,9 @@ namespace helloJkw
 			}
 		}
 
-		public static IEnumerable<Post> GetLastPosts(int postCount)
+		public static IEnumerable<Post> GetLastPosts(int postCount, bool isEditor = false)
 		{
-			return PostList.OrderByDescending(e => e.PublishDate).Take(postCount);
+			return PostList.OrderByDescending(e => e.PublishDate).Where(e => e.IsPublish || isEditor).Take(postCount);
 		}
 
 		public static IEnumerable<Post> ContainsTagPostList(string tagUrl)

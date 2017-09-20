@@ -1,12 +1,13 @@
 ﻿@inherits Nancy.ViewEngines.Razor.NancyRazorViewBase<dynamic>
 @{
 	Layout = "blog/LayoutBlog.cshtml";
+
 	var post = @Model.post;
 }
 
 <div class="row">
-	<div id="post-editor" data-post-name="@string.Format("{0:yyyyMMdd}", @post.Date)-@post.Name">
-		<button class="btn btn-success" id="post-save">저장</button>
+	<div id="post-editor" data-post-name="@post.FileName">
+		<button class="btn btn-success" id="post-save">저장: <b>@post.FileName</b></button>
 		<textarea id="post-editarea">@post.Raw</textarea>
 	</div>
 	<div class="post-edited">
@@ -47,12 +48,25 @@
 			$('#post-save').click(() => {
 				var postName = $('#post-editor').attr('data-post-name');
 				var currText = $('#post-editarea').val();
+
+				if (savedText == currText) {
+					showAlert('변경내역이 없습니다.');
+					return;
+				}
 				$.post(`/blog/save/${postName}`, {
 					text: currText
+				}, result => {
+					if (result == 'fail') {
+						showAlert('파일을 찾을 수 없어 저장에 실패했습니다.');
+					}
+					else if (result == 'success') {
+						showAlert('저장되었습니다.');
+					}
 				});
 			})
 
 			var postText = $('#post-editarea').val();
+			var savedText = $('#post-editarea').val();
 			setInterval(() => {
 				var currText = $('#post-editarea').val();
 				if (currText != postText) {

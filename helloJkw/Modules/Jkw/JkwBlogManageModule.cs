@@ -70,7 +70,10 @@ namespace helloJkw
 ";
 
 					if (!File.Exists(filePath))
+					{
 						File.WriteAllText(filePath, template, Encoding.UTF8);
+						BlogManager.UpdatePost(0);
+					}
 				}
 				catch (Exception ex)
 				{
@@ -93,8 +96,18 @@ namespace helloJkw
 				string filename = _.postname;
 				string text = Request.Form["text"];
 				var filePath = "{_postPath}/{filename}.txt".WithVar(new {_postPath, filename});
+
+				BlogManager.UpdatePost(0);
+
+				var newPost = new Post(filename, text);
+				var index = BlogManager.PostList.FindIndex(x => x.FileName == filename);
+				if (index == -1)
+					return "fail";
+
+				BlogManager.PostList[index] = newPost;
+
 				File.WriteAllText(filePath, text, Encoding.UTF8);
-				return "";
+				return "success";
 			};
 
 			Post["/blog/edit-winword/{postname}"] = _ =>

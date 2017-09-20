@@ -44,7 +44,7 @@ namespace helloJkw
 				BlogManager.UpdatePost();
 #endif
 				string getCount = _.getCount;
-				Model.postList = BlogManager.GetLastPosts(getCount.ToInt());
+				Model.postList = BlogManager.GetLastPosts(getCount.ToInt(), IsEditor());
 
 				return View["blog/jkwBlogHome", Model];
 			};
