@@ -57,14 +57,8 @@ namespace helloJkw
 			}
 		}
 
-		public static IEnumerable<Post> GetLastPosts(int postCount, bool isEditor = false)
-		{
-			return PostList.OrderByDescending(e => e.PublishDate).Where(e => e.IsPublish || isEditor).Take(postCount);
-		}
-
 		public static IEnumerable<Post> ContainsTagPostList(string tagUrl)
 		{
-			//return PostList.Where(e => e.Tags.Where(t => t.Url == tagUrl).Any());
 			foreach (var post in PostList)
 				if (post.Tags.Select(e => e.Url).Contains(tagUrl))
 					yield return post;

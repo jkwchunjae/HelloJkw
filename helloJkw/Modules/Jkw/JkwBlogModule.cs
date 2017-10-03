@@ -44,7 +44,11 @@ namespace helloJkw
 				BlogManager.UpdatePost();
 #endif
 				string getCount = _.getCount;
-				Model.postList = BlogManager.GetLastPosts(getCount.ToInt(), IsEditor());
+				//Model.postList = BlogManager.GetLastPosts(getCount.ToInt(), IsEditor());
+				Model.postList = BlogManager.PostList
+					.OrderByDescending(x => x.PublishDate)
+					.Where(x => x.IsPublish || IsEditor() || x.Readers.Contains(session?.User?.Email))
+					.Take(getCount.ToInt());
 
 				return View["blog/jkwBlogHome", Model];
 			};
@@ -62,13 +66,14 @@ namespace helloJkw
 
 				var post = BlogManager.PostList
 					.Where(e => e.Name == postname)
-					.Where(x => x.IsPublish || IsEditor())
+					.Where(x => x.IsPublish || IsEditor() || x.Readers.Contains(session?.User?.Email))
 					.FirstOrDefault();
 				if (post == null)
 					return "wrong";
 
 				var categoryList = BlogManager.PostList
 					.Where(e => e.CategoryUrl == post.CategoryUrl)
+					.Where(x => x.IsPublish || IsEditor() || x.Readers.Contains(session?.User?.Email))
 					.OrderBy(e => e.PublishDate)
 					.ThenBy(e => e.Name)
 					.Select((e, i) => new { Index = i, Post = e })
@@ -122,7 +127,7 @@ namespace helloJkw
 
 				Model.postList = BlogManager.PostList
 					.Where(e => e.CategoryUrl == category)
-					.Where(x => x.IsPublish || IsEditor())
+					.Where(x => x.IsPublish || IsEditor() || x.Readers.Contains(session?.User?.Email))
 					.OrderByDescending(e => e.PublishDate)
 					.ThenByDescending(e => e.Name);
 
@@ -138,7 +143,7 @@ namespace helloJkw
 
 				Model.postList = BlogManager
 					.ContainsTagPostList(tag)
-					.Where(x => x.IsPublish || IsEditor())
+					.Where(x => x.IsPublish || IsEditor() || x.Readers.Contains(session?.User?.Email))
 					.OrderByDescending(e => e.PublishDate)
 					.ThenByDescending(e => e.Name);
 

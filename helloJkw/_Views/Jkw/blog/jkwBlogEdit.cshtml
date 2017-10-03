@@ -21,6 +21,12 @@
 					<span class="post-tag label label-success"><a href="/blog/tag/@tag.Url">@tag.Name</a></span>
 				}
 			</div>
+			<div class="post-readers">
+				@foreach (var reader in @post.Readers)
+				{
+					<span class="post-tag label label-success">@reader</span>
+				}
+			</div>
 			<div class="post-content">@Html.Raw(@post.Html)</div>
 		</article>
 	</div>
@@ -91,6 +97,11 @@
 						var span = `<span class="post-tag label label-success"><a href="/blog/tag/${post.Tags[i].Url}">${post.Tags[i].Name}</a></span>`;
 						$('.post-tags').append(span);
 					}
+					$('.post-readers span').remove();
+					for (var i = 0; i < post.Readers.length; i++) {
+						var span = `<span class="post-tag label label-success">${post.Readers[i]}</span>`;
+						$('.post-readers').append(span);
+					}
 				});
 			}
 		});
@@ -117,6 +128,7 @@
 			width: 95%;
 		}
 		.post-edited {
+			margin-bottom: 90vh;
 			margin-left: 750px;
 			width: 665px; /* 기본 보기에서의 너비값. */
 		}

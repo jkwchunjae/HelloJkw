@@ -25,6 +25,7 @@ namespace helloJkw
 		public string Html { get; private set; }
 		public string HtmlCut { get; private set; }
 		public bool IsPublish { get; private set; }
+		public List<string> Readers { get; private set; }
 
 		public string Raw { get; private set; }
 
@@ -77,6 +78,7 @@ namespace helloJkw
 			HtmlCut = Html.CutParagraph();
 			Title = textList.GetValue("@title");
 			IsPublish = textList.GetValue("@isPublish").ToBoolean();
+			Readers = textList.GetValue("@readers").Split(',').Select(x => x.Trim()).Where(x => string.IsNullOrEmpty(x)).ToList();
 			Tags = textList.GetValue("@tags").Split(',')
 				.Select(e => e.Trim().SplitUrl())
 				.Select(e => new TagItem { Name = e.Item1.ToLower(), Url = e.Item2.ToLower() })
