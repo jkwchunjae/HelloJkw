@@ -14,26 +14,32 @@ namespace helloJkw
 {
 	public static class OAuthServer
 	{
-		static string clientId = "CLIENT_ID";
-		static string clientSecret = "CLIENT_SECRET";
-		static string apiKey = "API_KEY";
+		class OAuthInfo
+		{
+			public class OAuthInfoData
+			{
+				public string ClientId { get; set; } = "";
+				public string ApiKey { get; set; } = "";
+				public string RedirectUri { get; set; } = "";
+				public string ClientSecret { get; set; } = "";
+			}
+
+			public OAuthInfoData Google { get; set; } = new OAuthInfoData();
+			public OAuthInfoData Kakao { get; set; } = new OAuthInfoData();
+		}
+
+		static OAuthInfo _oauthInfo = null;
 
 		static OAuthServer()
 		{
-			var filepath = @"jkw/db/googleHelloJkwOAuthInfo.txt";
+			var filepath = @"jkw/db/helloJkwOAuthInfo.txt";
 			var json = File.ReadAllText(filepath, Encoding.UTF8);
 
-			dynamic OAuthInfo = JsonConvert.DeserializeObject(json);
-			clientId = OAuthInfo.clientId;
-			clientSecret = OAuthInfo.clientSecret;
-			apiKey = OAuthInfo.apiKey;
-
-			//clientId.Dump();
-			//clientSecret.Dump();
-			//apiKey.Dump();
+			_oauthInfo = JsonConvert.DeserializeObject<OAuthInfo>(json);
 		}
 
-		public static async Task<string> GetAccessTokenAsync(string code, string redirect, string siteBase)
+		#region Google
+		public static async Task<string> GetGoogleAccessTokenAsync(string code, string siteBase)
 		{
 			string json = string.Empty;
 			try
@@ -41,14 +47,9 @@ namespace helloJkw
 				var url = "https://www.googleapis.com/oauth2/v3/token";
 				var data = new Dictionary<string, string>();
 				data["code"] = code;
-				data["client_id"] = clientId;
-				data["client_secret"] = clientSecret;
-#if DEBUG
-				//data["redirect_uri"] = "http://localhost/oauth/" + redirect;
-#else
-				//data["redirect_uri"] = "http://hellojkw.com/oauth/" + redirect;
-#endif
-				data["redirect_uri"] = "{0}/oauth/{1}".With(siteBase, redirect);
+				data["client_id"] = _oauthInfo.Google.ClientId;
+				data["client_secret"] = _oauthInfo.Google.ClientSecret;
+				data["redirect_uri"] = siteBase + _oauthInfo.Google.RedirectUri;
 				data["grant_type"] = "authorization_code";
 				var param = data.Select(e => "{0}={1}".With(e.Key, e.Value)).StringJoin("&");
 				var paramBytes = Encoding.ASCII.GetBytes(param);
@@ -57,7 +58,6 @@ namespace helloJkw
 
 				request.Method = "POST";
 				request.ContentType = "application/x-www-form-urlencoded";
-				//request.Host = "www.googleapis.com";
 				request.ContentLength = paramBytes.Length;
 
 				using (var stream = await request.GetRequestStreamAsync())
@@ -77,7 +77,7 @@ namespace helloJkw
 			return json;
 		}
 
-		public static async Task<string> GetAccountInfoAsync(string access_token)
+		public static async Task<string> GetGoogleAccountInfoAsync(string access_token)
 		{
 			string json = string.Empty;
 			try
@@ -87,10 +87,9 @@ namespace helloJkw
 				var request = WebRequest.Create(url);
 				request.Method = "GET";
 				request.ContentType = "application/x-www-form-urlencoded";
-				//request.Host = "www.googleapis.com";
 				request.ContentLength = 0;
 				request.Headers.Add("Authorization", "Bearer " + access_token);
-				request.Headers.Add("key", apiKey);
+				request.Headers.Add("key", _oauthInfo.Google.ApiKey);
 
 				var response = (HttpWebResponse) await request.GetResponseAsync();
 				json = await new StreamReader(response.GetResponseStream()).ReadToEndAsync();
@@ -103,5 +102,49 @@ namespace helloJkw
 			}
 			return json;
 		}
+		#endregion
+
+		#region Kakao
+		public static async Task<string> GetKakaoAccessTokenAsync(string code, string siteBase)
+		{
+			string json = string.Empty;
+			try
+			{
+				var url = "https://kauth.kakao.com/oauth/token";
+				var data = new Dictionary<string, string>();
+				data["code"] = code;
+				data["client_id"] = _oauthInfo.Kakao.ClientId;
+				data["client_secret"] = _oauthInfo.Kakao.ClientSecret;
+				data["redirect_uri"] = siteBase + _oauthInfo.Kakao.RedirectUri;
+				data["grant_type"] = "authorization_code";
+				var param = data.Select(e => "{0}={1}".With(e.Key, e.Value)).StringJoin("&");
+				var paramBytes = Encoding.ASCII.GetBytes(param);
+
+				var request = WebRequest.Create(url);
+
+				request.Method = "POST";
+				request.ContentType = "application/x-www-form-urlencoded";
+				request.ContentLength = paramBytes.Length;
+
+				using (var stream = await request.GetRequestStreamAsync())
+				{
+					stream.Write(paramBytes, 0, paramBytes.Length);
+				}
+
+				var response = (HttpWebResponse)await request.GetResponseAsync();
+
+				var responseString = await new StreamReader(response.GetResponseStream()).ReadToEndAsync();
+				json = responseString;
+			}
+			catch (Exception ex)
+			{
+				Logger.Log(ex);
+			}
+			return json;
+		}
+
+
+
+		#endregion
 	}
 }

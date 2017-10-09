@@ -59,12 +59,74 @@ namespace helloJkw
 					#endregion
 
 					#region get account info Async
-					var jsonStr = await OAuthServer.GetAccessTokenAsync(code, "login", Request.Url.SiteBase);
+					var jsonStr = await OAuthServer.GetGoogleAccessTokenAsync(code, Request.Url.SiteBase);
 					//jsonStr.Dump();
 					dynamic json = JsonConvert.DeserializeObject(jsonStr);
 					var accessToken = (string)json.access_token;
 					//accessToken.Dump();
-					var accountInfoJson = await OAuthServer.GetAccountInfoAsync(accessToken);
+					var accountInfoJson = await OAuthServer.GetGoogleAccountInfoAsync(accessToken);
+					//accountInfoJson.Dump();
+					dynamic accountInfo = JsonConvert.DeserializeObject(accountInfoJson);
+					#endregion
+
+					#region user login
+					// 로그인한다는 뜻은 무조건 가입한다는 뜻으로 처리하자.
+					// 분리는 불필요하다고 판단함.
+					User user = UserManager.Register(accountInfo);
+					//Logger.Log("login: {0}".With(user.Name));
+					//Logger.Log("login / {0}".With(session.SessionId));
+					session.Login(user);
+					sessionId = session.SessionId;
+					#endregion
+				}
+				#region Exceptions
+				catch (InValidAccountIdException ex)
+				{
+					Logger.Log(ex);
+				}
+				catch (Exception ex)
+				{
+					//session.Logout();
+					Logger.Log(ex);
+				}
+				#endregion
+
+				return View["redirectLogin", Model];
+			};
+
+			Get["/oauth/login-kakao", runAsync: true] = async (_, ct) =>
+			{
+				try
+				{
+					#region Session setting
+					if (session.IsLogin)
+					{
+						UserManager.Logout(session.User);
+						session.Logout();
+					}
+					#endregion
+
+					#region process access_denied
+					string code = Request.Query["code"];
+					string error = Request.Query["error"];
+					if (error == "access_denied")
+					{
+						throw new Exception();
+					}
+					#endregion
+
+					code.Dump();
+
+					#region get account info Async
+					var jsonStr = await OAuthServer.GetKakaoAccessTokenAsync(code, Request.Url.SiteBase);
+					//jsonStr.Dump();
+					dynamic json = JsonConvert.DeserializeObject(jsonStr);
+					var accessToken = (string)json.access_token;
+					accessToken.Dump();
+
+					return View["redirectLogin", Model];
+
+					var accountInfoJson = await OAuthServer.GetGoogleAccountInfoAsync(accessToken);
 					//accountInfoJson.Dump();
 					dynamic accountInfo = JsonConvert.DeserializeObject(accountInfoJson);
 					#endregion
