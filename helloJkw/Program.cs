@@ -9,6 +9,7 @@ using Nancy.Conventions;
 using Extensions;
 using Nancy.TinyIoc;
 using Nancy.Bootstrapper;
+using helloJkw.Game.Worldcup;
 
 namespace helloJkw
 {
@@ -64,6 +65,7 @@ namespace helloJkw
 			Logger.Log("Load KboCenter");
 			KboCenter.Load();
 #endif
+            WorldcupBettingManager.Load();
 			#endregion
 
 			using (var host = new NancyHost(new Uri("http://localhost:" + port)))

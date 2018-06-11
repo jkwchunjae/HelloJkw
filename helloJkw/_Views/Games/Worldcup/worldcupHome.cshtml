@@ -1,0 +1,186 @@
+﻿@inherits Nancy.ViewEngines.Razor.NancyRazorViewBase<dynamic>
+@using helloJkw.Game.Worldcup;
+@{
+    Layout = "worldcup/worldcupLayout.cshtml";
+    //fnb/fnbLayout.cshtml
+    //string playerImage = Model.isLogin ? Model.user.ImageUrl : "";
+}
+
+<p>
+    <ol>
+        <li>본선 32팀 중 16강에 진출할 16팀을 고른다.</li>
+        <li>1만원을 건다. (경원에게 카카오페이로 보낸다.)</li>
+        <li>매일 경기 결과를 확인하며 결과를 기다린다.</li>
+        <li>분배: 모인금액 * 자신이 맞춘 개수 / 전체 모든 사람의 맞춘 개수</li>
+    </ol>
+</p>
+
+
+@if (Model.isLogin)
+{
+    <button class="btn btn-logout">Logout</button>
+}
+else if (Model.SimpleLogin)
+{
+    <a class="btn btn-default" href="/worldcup/logout">로그아웃</a>
+}
+else
+{
+    <h3>간단 로그인</h3>
+    <span>구글 로그인 하지 않으시려면 전경원에게 간단로그인 아이디를 만들어달라고 요청하십시오.</span>
+    <a href="sms:010-4573-4289" class="btn btn-default">문자보내기</a>
+    <form class="form-inline" action="/worldcup/simplelogin" method="post">
+        <div class="form-group">
+           <label for="login-username">아이디</label>
+           <input type="text" class="form-control" id="login-username" name="username" maxlength="15" placeholder="한글가능">
+        </div>
+        <div class="form-group">
+           <label for="login-password">비밀번호</label>
+           <input type="password" class="form-control" id="login-password" name="password" placeholder="비밀번호">
+        </div>
+        <button type="submit" class="btn btn-default">간단 로그인</button>
+    </form>
+    <a class="btn-login" href="#">구글 로그인</a><span>은 빠르고 편리합니다.</span>
+}
+<h3>나의 선택</h3>
+
+<div class="group-list">
+    @foreach (GroupData groupData in Model.GroupList)
+    {
+        <div class="group-data">
+           <span class="group-name">@groupData.GroupName</span>
+           <ul>
+               @foreach (var teamData in groupData.TeamDataList)
+               {
+                  <li class="group-team" id="team-@groupData.GroupCode-@teamData.TeamCode" onclick="selectTeam('@groupData.GroupCode', '@teamData.TeamCode')">
+                      <img src="@teamData.TeamPicture" class="country-picture" />
+                      <span class="team-name">@teamData.TeamName</span>
+                  </li>
+               }
+           </ul>
+           <button class="team16-apply btn" disabled="disabled" onclick="applyTeam16()">적용</button>
+        </div>
+    }
+</div>
+
+
+@if (Model.isLogin || Model.SimpleLogin)
+{
+    @foreach (var pictures in Model.SampleList)
+    {
+        <div class="sample-data">
+            <h3>누군가 고른 데이터</h3>
+            @foreach (var picture in pictures)
+            {
+                <img src="@picture" class="country-picture" />
+            }
+        </div>
+    }
+}
+
+
+@section Css
+{
+<style type="text/css">
+    a {
+        color: black;
+    }
+    a.btn-login {
+        color: black;
+        font-weight: bolder;
+        text-decoration: underline;
+    }
+    .group-list {
+    }
+    .group-list > div {
+        display: inline-block;
+    }
+    .group-list ul {
+        list-style: none;
+        padding-left: 0;
+    }
+    .group-name {
+        font-size: 1.5em;
+    }
+    .team-name {
+        font-size: 1.5em;
+    }
+    .group-team {
+        margin-bottom: 10px;
+        opacity: 0.2;
+        cursor: pointer;
+    }
+    .group-team:hover {
+        opacity: 0.8;
+    }
+    .group-team.selected {
+        opacity: 1;
+    }
+    img.country-picture {
+        border: 1px solid gray;
+    }
+
+    .sample-data {
+        margin-top: 50px;
+    }
+
+    .sample-data img.country-picture {
+        margin: 4px;
+    }
+
+</style>
+}
+
+@section Javascript
+{
+    <script type="text/javascript">
+    var selectedTeam = [];
+    var savedData = '[]';
+
+    @if (Model.isLogin || Model.SimpleLogin)
+    {
+        @:$.get('/worldcup/select16', data => {
+           @:selectedTeam = JSON.parse(data);
+           @:savedData = data;
+           @:updateHtml();
+        @:});
+    }
+
+    function selectTeam(groupCode, teamCode) {
+        if (selectedTeam.filter(x => x.groupCode == groupCode && x.teamCode == teamCode).length > 0) {
+           return removeTeam(groupCode, teamCode);
+        }
+
+        if (selectedTeam.filter(x => x.groupCode == groupCode).length >= 2) {
+           return alert('각 조당 2개씩 선택할 수 있습니다.');
+        }
+
+        selectedTeam.push({ groupCode, teamCode });
+
+        updateHtml();
+    }
+
+    function removeTeam(groupCode, teamCode) {
+        selectedTeam = selectedTeam.filter(x => !(x.groupCode == groupCode && x.teamCode == teamCode));
+        updateHtml();
+    }
+
+    function updateHtml() {
+        $('.group-team').removeClass('selected');
+        selectedTeam.forEach(x => {
+           $(`#team-${x.groupCode}-${x.teamCode}`).addClass('selected');
+        })
+
+        $('button.team16-apply').attr('disabled', 'disabled').removeClass('btn-success');
+        if (selectedTeam.length <= 16 && savedData !== JSON.stringify(selectedTeam)) {
+           $('button.team16-apply').removeAttr('disabled').addClass('btn-success');
+        }
+    }
+
+    function applyTeam16() {
+        $.post('/worldcup/select16', {
+           selectedTeam: JSON.stringify(selectedTeam)
+        }, result => alert(result));
+    }
+    </script>
+}

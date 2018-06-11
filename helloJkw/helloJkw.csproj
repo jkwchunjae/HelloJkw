@@ -103,6 +103,8 @@
     <Compile Include="Modules\Games\ColorConquer\ColorConquerMain.cs" />
     <Compile Include="Modules\Games\GameCenter.cs" />
     <Compile Include="Modules\Games\Telestrations\TelestrationsModule.cs" />
+    <Compile Include="Modules\Games\Worldcup\WorldcupBettingManager.cs" />
+    <Compile Include="Modules\Games\Worldcup\WorldcupModule.cs" />
     <Compile Include="Modules\Jkw\JkwBlogManageModule.cs" />
     <Compile Include="Modules\Jkw\JkwDiaryModule.cs" />
     <Compile Include="Modules\Jkw\JkwBlogModule.cs" />
@@ -125,6 +127,7 @@
     <Content Include="_Static\projects\word-blank\word-blank-common.css" />
     <Content Include="_Static\projects\word-blank\word-blank-study.css" />
     <Content Include="_Static\projects\word-blank\word-blank-study.js" />
+    <None Include="_Views\Games\Worldcup\worldcupLayout.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config">
@@ -191,6 +194,7 @@
     <None Include="_Views\Games\Buzzer\buzzerMain.cshtml" />
     <None Include="_Views\Games\colorConquerMain.cshtml" />
     <None Include="_Views\Games\Telestrations\telestrationsMain.cshtml" />
+    <None Include="_Views\Games\Worldcup\worldcupHome.cshtml" />
     <None Include="_Views\Jkw\blog\jkwBlogEdit.cshtml" />
     <None Include="_Views\Jkw\diary\jkwDiarySearch.cshtml" />
     <None Include="_Views\Jkw\diary\jkwDiaryShowDates.cshtml" />

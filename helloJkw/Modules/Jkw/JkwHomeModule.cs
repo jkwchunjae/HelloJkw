@@ -71,6 +71,8 @@ namespace helloJkw
 				return View["jkwHome", Model];
 			};
 
+            Get["/games/worldcup"] = _ => Response.AsRedirect("/worldcup");
+
 #if (DEBUG)
 			Get["/playground"] = _ =>
 			{
