@@ -12,7 +12,8 @@ namespace helloJkw.Game.Worldcup
 {
     static class WorldcupBettingManager
     {
-        static string _rootPath = @"jkw/games/Worldcup/BettingData";
+        static string _rootPath = "jkw/games/Worldcup/BettingData";
+        static string _LogPath = "jkw/games/Worldcup/logs.txt";
         static List<BettingData> _bettingDataList = new List<BettingData>();
 
         public static List<GroupData> GroupDataList = new List<GroupData>();
@@ -31,10 +32,21 @@ namespace helloJkw.Game.Worldcup
             Update16TargetData();
         }
 
-        static void Save(this BettingData bettingData)
+        public static void Save(this BettingData bettingData)
         {
             var path = Path.Combine(_rootPath, $"{bettingData.BettingName.Replace(" ", "")}.json");
             File.WriteAllText(path, JsonConvert.SerializeObject(bettingData, Formatting.Indented), Encoding.UTF8);
+        }
+
+        public static void Log(string username, string title, string text)
+        {
+            try
+            {
+                var time = DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss");
+                var logText = $"[{time}][{username}][{title}] {text}";
+                File.AppendAllLines(_LogPath, new[] { logText }, Encoding.UTF8);
+            }
+            catch { }
         }
 
         public static BettingData GetBettingData(string bettingName)
@@ -42,7 +54,7 @@ namespace helloJkw.Game.Worldcup
             return _bettingDataList.FirstOrDefault(x => x.BettingName == bettingName);
         }
 
-        public static BettingData UpdateData(this BettingData bettingData)
+        public static BettingData UpdateData(BettingData bettingData)
         {
             if (_bettingDataList.Any(x => x.BettingName == bettingData.BettingName))
             {
@@ -71,7 +83,9 @@ namespace helloJkw.Game.Worldcup
                     userData.IsMatched = bettingData.TargetList.Any(x => x.Value == userData.Value);
                 }
             }
-            bettingData.Save();
+            bettingData
+                .UpdateAllotmentAmount()
+                .Save();
             return bettingData;
         }
 
@@ -93,30 +107,27 @@ namespace helloJkw.Game.Worldcup
             return true;
         }
 
-        public static double CalcMyBettingRatio(this BettingData bettingData, string username)
+        public static BettingData UpdateAllotmentAmount(this BettingData bettingData)
         {
-            if (!bettingData.UserBettingList.ContainsKey(username))
-                return 0;
+            var weightDic = bettingData.TargetList.ToDictionary(x => x.Id, x => x.Weight);
 
-            var myBettingData = bettingData.UserBettingList[username];
+            var ratioBaseDic = bettingData.UserBettingList.Select(x => x.Value)
+                .GroupBy(x => new { x.BettingGroup })
+                .Select(x => new { x.Key.BettingGroup, RatioBase = x.Sum(e => e.BettingAmount * e.BettingList.Where(r => r.IsMatched).Sum(r => weightDic[r.Id])) })
+                .ToDictionary(x => x.BettingGroup, x => x.RatioBase);
 
-            var myPoint = myBettingData
-                .BettingList
-                .Where(x => x.IsMatched)
-                .Select(x => bettingData.TargetList.First(e => e.Id == x.Id).Weight)
-                .Sum();
+            var userBettingList = bettingData.UserBettingList
+                .Select(x => new { Data = x.Value, Weight = x.Value.BettingAmount * x.Value.BettingList.Where(e => e.IsMatched).Sum(e => weightDic[e.Id]) / ratioBaseDic[x.Value.BettingGroup] })
+                .Select(x => new { x.Data, Allotment = x.Weight * bettingData.UserBettingList.Where(e => e.Value.BettingGroup == x.Data.BettingGroup).Sum(e => e.Value.BettingAmount) })
+                .Select(x =>
+                {
+                    x.Data.AllotmentAmount = (int)(x.Allotment / 10) * 10;
+                    return x.Data;
+                })
+                .ToDictionary(x => x.Username, x => x);
 
-            var allPoint = bettingData.UserBettingList
-                .Where(x => x.Value.BettingGroup == myBettingData.BettingGroup)
-                .SelectMany(x => x.Value.BettingList)
-                .Where(x => x.IsMatched)
-                .Select(x => bettingData.TargetList.First(e => e.Id == x.Id).Weight)
-                .Sum();
-
-            if (allPoint == 0)
-                return 0;
-
-            return myPoint / allPoint;
+            bettingData.UserBettingList = userBettingList;
+            return bettingData;
         }
 
         public static void Update16TargetData()
@@ -126,6 +137,7 @@ namespace helloJkw.Game.Worldcup
                 while (true)
                 {
                     GroupDataList = await GetGroupResultAsync();
+                    Log("SYSTEM", "Update16TargetData", JsonConvert.SerializeObject(GroupDataList));
                     var bettingName = "16강 맞추기";
                     var bettingData = _bettingDataList.First(x => x.BettingName == bettingName);
 
@@ -182,7 +194,7 @@ namespace helloJkw.Game.Worldcup
         }
     }
 
-    class BettingData
+    public class BettingData
     {
         public string BettingName { get; set; }
         public DateTime OpenTime { get; set; }
@@ -211,18 +223,19 @@ namespace helloJkw.Game.Worldcup
         }
     }
 
-    class Target
+    public class Target
     {
         public string Id { get; set; }
         public string Value { get; set; }
         public double Weight { get; set; }
     }
 
-    class UserBettingData
+    public class UserBettingData
     {
         public string Username { get; set; }
-        public int BettingAmount { get; set; } = 0;
-        public string BettingGroup { get; set; } = "";
+        public int BettingAmount { get; set; }
+        public int AllotmentAmount { get; set; }
+        public string BettingGroup { get; set; }
         public List<UserBetting> BettingList { get; set; }
 
         public UserBettingData() { }
@@ -234,7 +247,7 @@ namespace helloJkw.Game.Worldcup
         }
     }
 
-    class UserBetting
+    public class UserBetting
     {
         public string Id { get; set; }
         public string Value { get; set; }

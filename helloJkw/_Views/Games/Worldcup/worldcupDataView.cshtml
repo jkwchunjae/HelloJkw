@@ -1,0 +1,106 @@
+﻿@inherits Nancy.ViewEngines.Razor.NancyRazorViewBase<dynamic>
+@using System.Linq;
+@using Newtonsoft.Json;
+@using helloJkw.Game.Worldcup;
+@{
+    Layout = "worldcup/worldcupLayout.cshtml";
+    //fnb/fnbLayout.cshtml
+    //string playerImage = Model.isLogin ? Model.user.ImageUrl : "";
+    BettingData bettingData = Model.BettingData;
+}
+
+<h1>@bettingData.BettingName</h1>
+
+@foreach (UserBettingData userData in bettingData.UserBettingList.Select(x => x.Value))
+{
+    var matchedCount = userData.BettingList.Count(x => x.IsMatched);
+    <div class="row">
+        <div class="col-md-2">
+            <span>@userData.Username</span>
+            <button class="btn" onclick="save()">Save</button>
+            <button class="btn" onclick="removeUser('@userData.Username')">Remove</button>
+        </div>
+        <div class="col-md-1">@matchedCount</div>
+        <div class="col-md-1">@userData.AllotmentAmount</div>
+        <div class="col-md-2"><input class="form-control number amount" data-username="@userData.Username" value="@userData.BettingAmount" /></div>
+        <div class="col-md-2"><input class="form-control group" data-username="@userData.Username" value="@userData.BettingGroup" /></div>
+        <div class="col-md-4">
+            @foreach (var data in userData.BettingList.OrderByDescending(x => x.IsMatched))
+            {
+                var imgUrl = "https://img.fifa.com/images/flags/4/" + data.Value + ".png";
+                var matchedClass = data.IsMatched ? "matched" : "";
+                <img src="@imgUrl" class="team @matchedClass" />
+            }
+        </div>
+    </div>
+}
+
+@section Css
+{
+    <style type="text/css">
+        a {
+            color: black;
+        }
+
+        input.number {
+            text-align: right;
+        }
+
+        img.team {
+            opacity: 0.2;
+        }
+
+        img.matched {
+            opacity: 1;
+        }
+    </style>
+}
+
+@section Javascript
+{
+<script type="text/javascript">
+    var bettingData = {};
+
+    function loadData(bettingName) {
+        $.post('/worldcup/getdata', {
+            bettingName
+        }, data => {
+            bettingData = JSON.parse(data);
+        });
+    }
+
+    loadData('@bettingData.BettingName');
+
+    function save() {
+        $('.amount').each((i, x) => {
+            var username = $(x).attr('data-username');
+            bettingData.UserBettingList[username].BettingAmount = parseInt($(x).val());
+        })
+
+        $('.group').each((i, x) => {
+            var username = $(x).attr('data-username');
+            bettingData.UserBettingList[username].BettingGroup = $(x).val();
+        })
+
+        console.log(bettingData);
+        applyData();
+    }
+
+    function removeUser(username) {
+        delete bettingData.UserBettingList[username];
+
+        console.log(bettingData);
+        applyData();
+    }
+
+    function applyData() {
+        $.post('/worldcup/applydata', {
+            bettingData: JSON.stringify(bettingData)
+        }, result => {
+            if (result) {
+                location.reload();
+            }
+        });
+    }
+</script>
+}

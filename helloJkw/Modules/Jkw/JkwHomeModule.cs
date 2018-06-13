@@ -16,11 +16,13 @@ namespace helloJkw
 		public dynamic Model = new ExpandoObject();
 		public string sessionId = null;
 		public Session session = null;
+        protected bool IsDebug { get; set; } = false;
 
 		public JkwModule()
 		{
 #if (DEBUG)
 			Model.isDebug = true;
+            IsDebug = true;
 #else
 			Model.isDebug = false;
 #endif

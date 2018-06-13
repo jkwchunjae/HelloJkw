@@ -14,7 +14,6 @@ namespace helloJkw.Game.Worldcup
     public class WorldcupModule : JkwModule
     {
         static string _simpleLoginPath = "jkw/games/Worldcup/SimpleLoginData.json";
-        static string _LogPath = "jkw/games/Worldcup/logs.txt";
         static Dictionary<string, SimpleLoginData> _simpleLoginDic = new Dictionary<string, SimpleLoginData>();
 
         class SimpleLoginData
@@ -59,19 +58,21 @@ namespace helloJkw.Game.Worldcup
                 return View["Games/Worldcup/worldcupHome.cshtml", Model];
             };
 
-            Get["/worldcup/view/{bettingName}"] = _ =>
+            Get["/worldcup/dataview/{bettingName}"] = _ =>
             {
-                if (session.IsLogin && session.User.Email == "jkwchunjae@gmail.com")
+                if (IsDebug || session.IsLogin && session.User.Email == "jkwchunjae@gmail.com")
                 {
                     string bettingName = _.bettingName;
                     var bettingData = WorldcupBettingManager.GetBettingData(bettingName);
+                    Model.BettingData = bettingData;
+                    return View["Games/Worldcup/worldcupDataView.cshtml", Model];
                 }
                 return Response.AsRedirect("/worldcup");
             };
 
             Get["/worldcup/manageuser"] = _ =>
             {
-                if (session.IsLogin && session.User.Email == "jkwchunjae@gmail.com")
+                if (IsDebug || session.IsLogin && session.User.Email == "jkwchunjae@gmail.com")
                 {
                     var loginData = LoadLoginData();
                     var jsonText = JsonConvert.SerializeObject(loginData, Formatting.Indented);
@@ -82,7 +83,7 @@ namespace helloJkw.Game.Worldcup
 
             Get["/worldcup/manageuser/{username}/{password}"] = _ =>
             {
-                if (session.IsLogin && session.User.Email == "jkwchunjae@gmail.com")
+                if (IsDebug || session.IsLogin && session.User.Email == "jkwchunjae@gmail.com")
                 {
                     string username = _.username;
                     string password = _.password;
@@ -144,6 +145,17 @@ namespace helloJkw.Game.Worldcup
                 return JsonConvert.SerializeObject(userBettings);
             };
 
+            Post["/worldcup/getdata"] = _ =>
+            {
+                if (IsDebug || session.IsLogin && session.User.Email == "jkwchunjae@gmail.com")
+                {
+                    string bettingName = Request.Form["bettingName"];
+                    var bettingData = WorldcupBettingManager.GetBettingData(bettingName);
+                    return JsonConvert.SerializeObject(bettingData);
+                }
+                return "{}";
+            };
+
             Post["/worldcup/select16"] = _ =>
             {
                 if (!(session.IsLogin || _simpleLoginDic.ContainsKey(sessionId)))
@@ -154,13 +166,7 @@ namespace helloJkw.Game.Worldcup
 
                 string selectedTeamText = Request.Form["selectedTeam"];
 
-                try
-                {
-                    var time = DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss");
-                    var text = $"{time} {username} {selectedTeamText}";
-                    File.AppendAllLines(_LogPath, new[] { text }, Encoding.UTF8);
-                }
-                catch { }
+                WorldcupBettingManager.Log(username, "select16", selectedTeamText);
 
                 var userBettings = JsonConvert.DeserializeObject<List<dynamic>>(selectedTeamText)
                     .Select(x => new { GroupCode = (string)x["groupCode"], TeamCode = (string)x["teamCode"] })
@@ -178,6 +184,22 @@ namespace helloJkw.Game.Worldcup
 
                 var result = bettingData.UpdateUserBettingData(username, userBettings);
                 return result ? "저장되었습니다." : "이제 변경할 수 없습니다.";
+            };
+
+            Post["/worldcup/applydata"] = _ =>
+            {
+                if (IsDebug || session.IsLogin && session.User.Email == "jkwchunjae@gmail.com")
+                {
+                    string bettingDataText = Request.Form["bettingData"];
+
+                    WorldcupBettingManager.Log("admin", "applyBettingData", bettingDataText);
+
+                    var bettingData = JsonConvert.DeserializeObject<BettingData>(bettingDataText);
+                    WorldcupBettingManager.UpdateData(bettingData);
+                    bettingData.UpdateAllotmentAmount().Save();
+                    return true;
+                }
+                return false;
             };
         }
     }
