@@ -59,7 +59,7 @@ namespace helloJkw.Game.Worldcup
 
         public static BettingData RecalcMatchData(this BettingData bettingData, bool checkId)
         {
-            foreach (var userData in bettingData.UserBettingList.SelectMany(x => x.Value))
+            foreach (var userData in bettingData.UserBettingList.SelectMany(x => x.Value.BettingList))
             {
                 if (checkId)
                 {
@@ -80,7 +80,15 @@ namespace helloJkw.Game.Worldcup
             if (bettingData.FreezeTime < DateTime.Now)
                 return false;
 
-            bettingData.UserBettingList[username] = userBettings;
+            if (bettingData.UserBettingList.ContainsKey(username))
+            {
+                bettingData.UserBettingList[username].BettingList = userBettings;
+            }
+            else
+            {
+                bettingData.UserBettingList[username] = new UserBettingData(username, userBettings);
+            }
+
             bettingData.RecalcMatchData(false);
             return true;
         }
@@ -90,12 +98,17 @@ namespace helloJkw.Game.Worldcup
             if (!bettingData.UserBettingList.ContainsKey(username))
                 return 0;
 
-            var myPoint = bettingData.UserBettingList[username]
+            var myBettingData = bettingData.UserBettingList[username];
+
+            var myPoint = myBettingData
+                .BettingList
                 .Where(x => x.IsMatched)
                 .Select(x => bettingData.TargetList.First(e => e.Id == x.Id).Weight)
                 .Sum();
 
-            var allPoint = bettingData.UserBettingList.SelectMany(x => x.Value)
+            var allPoint = bettingData.UserBettingList
+                .Where(x => x.Value.BettingGroup == myBettingData.BettingGroup)
+                .SelectMany(x => x.Value.BettingList)
                 .Where(x => x.IsMatched)
                 .Select(x => bettingData.TargetList.First(e => e.Id == x.Id).Weight)
                 .Sum();
@@ -175,7 +188,7 @@ namespace helloJkw.Game.Worldcup
         public DateTime OpenTime { get; set; }
         public DateTime FreezeTime { get; set; }
         public List<Target> TargetList { get; set; }
-        public Dictionary<string /* username */, List<UserBetting>> UserBettingList { get; set; }
+        public Dictionary<string /* username */, UserBettingData> UserBettingList { get; set; }
 
         [JsonIgnore]
         public bool IsOpen => OpenTime >= DateTime.Now;
@@ -203,6 +216,22 @@ namespace helloJkw.Game.Worldcup
         public string Id { get; set; }
         public string Value { get; set; }
         public double Weight { get; set; }
+    }
+
+    class UserBettingData
+    {
+        public string Username { get; set; }
+        public int BettingAmount { get; set; } = 0;
+        public string BettingGroup { get; set; } = "";
+        public List<UserBetting> BettingList { get; set; }
+
+        public UserBettingData() { }
+
+        public UserBettingData(string username, List<UserBetting> bettingList)
+        {
+            Username = username;
+            BettingList = BettingList;
+        }
     }
 
     class UserBetting

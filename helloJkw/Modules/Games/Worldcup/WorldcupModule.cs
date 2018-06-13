@@ -14,6 +14,7 @@ namespace helloJkw.Game.Worldcup
     public class WorldcupModule : JkwModule
     {
         static string _simpleLoginPath = "jkw/games/Worldcup/SimpleLoginData.json";
+        static string _LogPath = "jkw/games/Worldcup/logs.txt";
         static Dictionary<string, SimpleLoginData> _simpleLoginDic = new Dictionary<string, SimpleLoginData>();
 
         class SimpleLoginData
@@ -50,12 +51,22 @@ namespace helloJkw.Game.Worldcup
                 var sampleList = bettingData.UserBettingList.Select(x => new { Rnd = random.Next(1, 10000), Value = x })
                     .OrderBy(x => x.Rnd)
                     .Take(3)
-                    .Select(x => x.Value.Value)
+                    .Select(x => x.Value.Value.BettingList)
                     .Select(x => x.Select(e => $"https://img.fifa.com/images/flags/4/{e.Value.ToLower()}.png").ToList())
                     .ToList();
                 Model.SampleList = sampleList;
                 Model.GroupList = WorldcupBettingManager.GroupDataList;
                 return View["Games/Worldcup/worldcupHome.cshtml", Model];
+            };
+
+            Get["/worldcup/view/{bettingName}"] = _ =>
+            {
+                if (session.IsLogin && session.User.Email == "jkwchunjae@gmail.com")
+                {
+                    string bettingName = _.bettingName;
+                    var bettingData = WorldcupBettingManager.GetBettingData(bettingName);
+                }
+                return Response.AsRedirect("/worldcup");
             };
 
             Get["/worldcup/manageuser"] = _ =>
@@ -127,6 +138,7 @@ namespace helloJkw.Game.Worldcup
                 if (!bettingData.UserBettingList.ContainsKey(username))
                     return "[]";
                 var userBettings = bettingData.UserBettingList[username]
+                    .BettingList
                     .Select(x => new { groupCode = x.Id.Substring(0, 1), teamCode = x.Value })
                     .ToList();
                 return JsonConvert.SerializeObject(userBettings);
@@ -141,6 +153,15 @@ namespace helloJkw.Game.Worldcup
                 var username = session.IsLogin ? session.User.Email : _simpleLoginDic[sessionId].Username;
 
                 string selectedTeamText = Request.Form["selectedTeam"];
+
+                try
+                {
+                    var time = DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss");
+                    var text = $"{time} {username} {selectedTeamText}";
+                    File.AppendAllLines(_LogPath, new[] { text }, Encoding.UTF8);
+                }
+                catch { }
+
                 var userBettings = JsonConvert.DeserializeObject<List<dynamic>>(selectedTeamText)
                     .Select(x => new { GroupCode = (string)x["groupCode"], TeamCode = (string)x["teamCode"] })
                     .OrderBy(x => x.GroupCode)
@@ -150,7 +171,12 @@ namespace helloJkw.Game.Worldcup
                     .Select(x => new UserBetting { Id = $"{x.GroupCode}{x.Index}", Value = x.TeamCode })
                     .ToList();
 
-                var result = WorldcupBettingManager.GetBettingData(bettingName).UpdateUserBettingData(username, userBettings);
+                var bettingData = WorldcupBettingManager.GetBettingData(bettingName);
+
+                if (bettingData.FreezeTime < DateTime.Now)
+                    return "이제 변경할 수 없습니다.";
+
+                var result = bettingData.UpdateUserBettingData(username, userBettings);
                 return result ? "저장되었습니다." : "이제 변경할 수 없습니다.";
             };
         }
