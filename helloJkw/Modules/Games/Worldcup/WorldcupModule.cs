@@ -45,7 +45,8 @@ namespace helloJkw.Game.Worldcup
                     Model.SimpleLogin = true;
                     Model.Username = loginData.Username;
                 }
-                var bettingData = WorldcupBettingManager.GetBettingData("16강 맞추기");
+                var bettingName = "16강 맞추기";
+                var bettingData = WorldcupBettingManager.GetBettingData(bettingName);
                 var random = new Random((int)DateTime.Now.Ticks);
                 var sampleList = bettingData.UserBettingList.Select(x => new { Rnd = random.Next(1, 10000), Value = x })
                     .OrderBy(x => x.Rnd)
@@ -53,8 +54,20 @@ namespace helloJkw.Game.Worldcup
                     .Select(x => x.Value.Value.BettingList)
                     .Select(x => x.Select(e => $"https://img.fifa.com/images/flags/4/{e.Value.ToLower()}.png").ToList())
                     .ToList();
+                var dashboard = WorldcupBettingManager.DashboardList
+                    .Where(x => x.BettingName == bettingName)
+                    .OrderBy(x => x.CalcTime)
+                    .LastOrDefault()?.List
+                    ?.Select(x =>
+                    {
+                        x.Username = x.Username.Left(3) + "***";
+                        return x;
+                    })?.ToList() ?? new List<DashboardItem>();
+
                 Model.SampleList = sampleList;
                 Model.GroupList = WorldcupBettingManager.GroupDataList;
+                Model.Dashboard = dashboard;
+                Model.FreezeTime = bettingData.FreezeTime;
                 return View["Games/Worldcup/worldcupHome.cshtml", Model];
             };
 

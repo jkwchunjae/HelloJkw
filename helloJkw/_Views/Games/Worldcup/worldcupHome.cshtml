@@ -1,5 +1,6 @@
 ﻿@inherits Nancy.ViewEngines.Razor.NancyRazorViewBase<dynamic>
 @using helloJkw.Game.Worldcup;
+@using Extensions;
 @{
     Layout = "worldcup/worldcupLayout.cshtml";
     //fnb/fnbLayout.cshtml
@@ -9,12 +10,45 @@
 <p>
     <ol>
         <li>본선 32팀 중 16강에 진출할 16팀을 고른다.</li>
-        <li>1만원을 건다. (경원에게 카카오페이로 보낸다.)</li>
+        <li>1만원을 건다. (경원에게 카카오페이로 보낸다. 사실 더 보내도 덜 보내도 된다.)</li>
         <li>매일 경기 결과를 확인하며 결과를 기다린다.</li>
         <li>분배: 모인금액 * 자신이 맞춘 개수 / 전체 모든 사람의 맞춘 개수</li>
     </ol>
 </p>
 
+<h2>수정 남은 시간 <span id="remain-time">0:00:00</span></h2>
+
+@if (Model.isLogin || Model.SimpleLogin)
+{
+    <div class="row">
+    <div class="col-md-6">
+    <table class="table table-striped dashboard">
+        <thead>
+            <tr>
+                <th>아이디</th>
+                <th>그룹</th>
+                <th class="number">득점</th>
+                <th class="number">배팅금액</th>
+                <th class="number">현재기대값</th>
+            </tr>
+        </thead>
+        <tbody>
+        @foreach (DashboardItem data in Model.Dashboard)
+        {
+            var username = data.Username.Left(3) + "***";
+            <tr>
+                <td>@username</td>
+                <td>@data.BettingGroup</td>
+                <td class="number">@data.MatchedCount.ToString("#,#")</td>
+                <td class="number">@data.BettingAmount.ToString("#,#")</td>
+                <td class="number">@data.AllotmentAmount.ToString("#,#")</td>
+            </tr>
+        }
+        </tbody>
+    </table>
+    </div>
+    </div>
+}
 
 @if (Model.isLogin)
 {
@@ -52,8 +86,9 @@ else
            <ul>
                @foreach (var teamData in groupData.TeamDataList)
                {
+                   var imgUrl = "https://img.fifa.com/images/flags/4/" + teamData.TeamCode + ".png";
                   <li class="group-team" id="team-@groupData.GroupCode-@teamData.TeamCode" onclick="selectTeam('@groupData.GroupCode', '@teamData.TeamCode')">
-                      <img src="@teamData.TeamPicture" class="country-picture" />
+                      <img src="@imgUrl" class="country-picture" />
                       <span class="team-name">@teamData.TeamName</span>
                   </li>
                }
@@ -128,6 +163,13 @@ else
         margin: 4px;
     }
 
+    table.dashboard th, table.dashboard td {
+        text-align: center;
+    }
+    table.dashboard th.number, table.dashboard td.number {
+        text-align: right;
+    }
+
 </style>
 }
 
@@ -136,6 +178,7 @@ else
     <script type="text/javascript">
     var selectedTeam = [];
     var savedData = '[]';
+    var freezeTime = Date.parse('@Model.FreezeTime.ToString("yyyy-MM-dd HH:mm:ss")');
 
     @if (Model.isLogin || Model.SimpleLogin)
     {
@@ -182,5 +225,19 @@ else
            selectedTeam: JSON.stringify(selectedTeam)
         }, result => alert(result));
     }
+
+        setInterval(() => {
+            var remainSeconds = (freezeTime - Date.now()) / 1000;
+            if (remainSeconds < 0)
+                return;
+
+            var hours = Math.floor(remainSeconds / 3600);
+            var minutes = Math.floor((remainSeconds - hours * 3600) / 60);
+            minutes = minutes < 10 ? `0${minutes}` : minutes;
+            var seconds = Math.floor(remainSeconds % 60);
+            seconds = seconds < 10 ? `0${seconds}` : seconds;
+
+            $('#remain-time').text(`${hours}:${minutes}:${seconds}`);
+        }, 1000)
     </script>
 }

@@ -14,9 +14,11 @@ namespace helloJkw.Game.Worldcup
     {
         static string _rootPath = "jkw/games/Worldcup/BettingData";
         static string _LogPath = "jkw/games/Worldcup/logs.txt";
+        static string _DashboardPath = "jkw/games/Worldcup/dashboard.json";
         static List<BettingData> _bettingDataList = new List<BettingData>();
 
         public static List<GroupData> GroupDataList = new List<GroupData>();
+        public static List<DashboardData> DashboardList = new List<DashboardData>();
 
         static WorldcupBettingManager()
         {
@@ -85,6 +87,7 @@ namespace helloJkw.Game.Worldcup
             }
             bettingData
                 .UpdateAllotmentAmount()
+                .UpdateDashboard()
                 .Save();
             return bettingData;
         }
@@ -112,13 +115,13 @@ namespace helloJkw.Game.Worldcup
             var weightDic = bettingData.TargetList.ToDictionary(x => x.Id, x => x.Weight);
 
             var ratioBaseDic = bettingData.UserBettingList.Select(x => x.Value)
-                .GroupBy(x => new { x.BettingGroup })
+                .GroupBy(x => new { BettingGroup = x.BettingGroup ?? "" })
                 .Select(x => new { x.Key.BettingGroup, RatioBase = x.Sum(e => e.BettingAmount * e.BettingList.Where(r => r.IsMatched).Sum(r => weightDic[r.Id])) })
                 .ToDictionary(x => x.BettingGroup, x => x.RatioBase);
 
             var userBettingList = bettingData.UserBettingList
-                .Select(x => new { Data = x.Value, Weight = x.Value.BettingAmount * x.Value.BettingList.Where(e => e.IsMatched).Sum(e => weightDic[e.Id]) / ratioBaseDic[x.Value.BettingGroup] })
-                .Select(x => new { x.Data, Allotment = x.Weight * bettingData.UserBettingList.Where(e => e.Value.BettingGroup == x.Data.BettingGroup).Sum(e => e.Value.BettingAmount) })
+                .Select(x => new { Data = x.Value, Weight = x.Value.BettingAmount * x.Value.BettingList.Where(e => e.IsMatched).Sum(e => weightDic[e.Id]) / ratioBaseDic[x.Value.BettingGroup ?? ""] })
+                .Select(x => new { x.Data, Allotment = x.Weight * bettingData.UserBettingList.Where(e => (e.Value.BettingGroup ?? "") == (x.Data.BettingGroup ?? "")).Sum(e => e.Value.BettingAmount) })
                 .Select(x =>
                 {
                     x.Data.AllotmentAmount = (int)(x.Allotment / 10) * 10;
@@ -127,6 +130,43 @@ namespace helloJkw.Game.Worldcup
                 .ToDictionary(x => x.Username, x => x);
 
             bettingData.UserBettingList = userBettingList;
+            return bettingData;
+        }
+
+        public static BettingData UpdateDashboard(this BettingData bettingData)
+        {
+            var lastDashboard = DashboardList
+                .Where(x => x.BettingName == bettingData.BettingName)
+                .OrderBy(x => x.CalcTime)
+                .LastOrDefault();
+
+            var currDashboard = bettingData.UserBettingList.Select(x => x.Value)
+                .Select(x => new DashboardItem
+                {
+                    Username = x.Username,
+                    BettingGroup = x.BettingGroup,
+                    MatchedCount = x.BettingList.Count(e => e.IsMatched),
+                    BettingAmount = x.BettingAmount,
+                    AllotmentAmount = x.AllotmentAmount,
+                })
+                .OrderByDescending(x => x.MatchedCount)
+                .ToList();
+
+            var lastJsonText = JsonConvert.SerializeObject(lastDashboard?.List);
+            var currJsonText = JsonConvert.SerializeObject(currDashboard);
+
+            if (lastJsonText != currJsonText)
+            {
+                DashboardList.Add(new DashboardData
+                {
+                    CalcTime = DateTime.Now,
+                    BettingName = bettingData.BettingName,
+                    List = currDashboard,
+                });
+                Log("SYSTEM", "Dashboard", currJsonText);
+                File.WriteAllText(_DashboardPath, JsonConvert.SerializeObject(DashboardList, Formatting.Indented), Encoding.UTF8);
+            }
+
             return bettingData;
         }
 
@@ -178,7 +218,7 @@ namespace helloJkw.Game.Worldcup
                             {
                                 TeamName = name.Trim(),
                                 TeamCode = code.Trim(),
-                                TeamPicture = $"https://img.fifa.com/images/flags/4/{code.ToLower()}.png",
+                                //TeamPicture = $"https://img.fifa.com/images/flags/4/{code.ToLower()}.png",
                                 Rank = i + 1,
                                 Point = int.Parse(point),
                             };
@@ -243,7 +283,7 @@ namespace helloJkw.Game.Worldcup
         public UserBettingData(string username, List<UserBetting> bettingList)
         {
             Username = username;
-            BettingList = BettingList;
+            BettingList = bettingList;
         }
     }
 
@@ -267,8 +307,24 @@ namespace helloJkw.Game.Worldcup
     {
         public string TeamName { get; set; }
         public string TeamCode { get; set; }
-        public string TeamPicture { get; set; }
+        //public string TeamPicture { get; set; }
         public int Rank { get; set; }
         public int Point { get; set; }
+    }
+
+    public class DashboardData
+    {
+        public DateTime CalcTime { get; set; }
+        public string BettingName { get; set; }
+        public List<DashboardItem> List { get; set; }
+    }
+
+    public class DashboardItem
+    {
+        public string Username { get; set; }
+        public string BettingGroup { get; set; }
+        public int MatchedCount { get; set; }
+        public int BettingAmount { get; set; }
+        public int AllotmentAmount { get; set; }
     }
 }
