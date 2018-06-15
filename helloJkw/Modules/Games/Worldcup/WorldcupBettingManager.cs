@@ -31,17 +31,25 @@ namespace helloJkw.Game.Worldcup
                 .Select(x => JsonConvert.DeserializeObject<BettingData>(x))
                 .ToList();
 
+            DashboardList = JsonConvert.DeserializeObject<List<DashboardData>>(File.ReadAllText(_DashboardPath));
+
             Update16TargetData();
         }
 
         public static void Save(this BettingData bettingData)
         {
+#if DEBUG
+            return;
+#endif
             var path = Path.Combine(_rootPath, $"{bettingData.BettingName.Replace(" ", "")}.json");
             File.WriteAllText(path, JsonConvert.SerializeObject(bettingData, Formatting.Indented), Encoding.UTF8);
         }
 
         public static void Log(string username, string title, string text)
         {
+#if DEBUG
+            return;
+#endif
             try
             {
                 var time = DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss");
@@ -176,19 +184,29 @@ namespace helloJkw.Game.Worldcup
             {
                 while (true)
                 {
-                    GroupDataList = await GetGroupResultAsync();
-                    Log("SYSTEM", "Update16TargetData", JsonConvert.SerializeObject(GroupDataList));
-                    var bettingName = "16강 맞추기";
-                    var bettingData = _bettingDataList.First(x => x.BettingName == bettingName);
-
-                    foreach (var teamData in GroupDataList.SelectMany(x => x.TeamDataList.Where(e => e.Rank <= 2).Select(e => new { x.GroupName, TeamData = e })))
+                    try
                     {
-                        var id = $"{teamData.GroupName.Replace("Group ", "")}{teamData.TeamData.Rank}";
-                        bettingData.TargetList.First(x => x.Id == id).Value = teamData.TeamData.TeamCode;
-                    }
+                        GroupDataList = await GetGroupResultAsync();
+                        Log("SYSTEM", "Update16TargetData", JsonConvert.SerializeObject(GroupDataList));
+                        var bettingName = "16강 맞추기";
+                        var bettingData = _bettingDataList.First(x => x.BettingName == bettingName);
 
-                    bettingData.RecalcMatchData(false);
-                    await Task.Delay(600 * 1000);
+                        foreach (var teamData in GroupDataList.SelectMany(x => x.TeamDataList.Where(e => e.Rank <= 2).Select(e => new { x.GroupName, TeamData = e })))
+                        {
+                            var id = $"{teamData.GroupName.Replace("Group ", "")}{teamData.TeamData.Rank}";
+                            bettingData.TargetList.First(x => x.Id == id).Value = teamData.TeamData.TeamCode;
+                        }
+
+                        bettingData.RecalcMatchData(false);
+                    }
+                    catch (Exception ex)
+                    {
+                        Log("SYSTEM", "Error:Update16TargetData", ex.Message);
+                    }
+                    finally
+                    {
+                        await Task.Delay(600 * 1000);
+                    }
                 }
             });
         }
