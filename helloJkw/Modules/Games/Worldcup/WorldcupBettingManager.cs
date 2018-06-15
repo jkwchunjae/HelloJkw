@@ -143,6 +143,9 @@ namespace helloJkw.Game.Worldcup
 
         public static BettingData UpdateDashboard(this BettingData bettingData)
         {
+#if DEBUG
+            return bettingData;
+#endif
             var lastDashboard = DashboardList
                 .Where(x => x.BettingName == bettingData.BettingName)
                 .OrderBy(x => x.CalcTime)
