@@ -58,11 +58,15 @@ namespace helloJkw.Game.Worldcup
                     .Where(x => x.BettingName == bettingName)
                     .OrderBy(x => x.CalcTime)
                     .LastOrDefault()?.List
-                    ?.Select(x =>
+                    ?.Select(x => new DashboardItem
                     {
-                        x.Username = x.Username.Left(3) + "***";
-                        return x;
-                    })?.ToList() ?? new List<DashboardItem>();
+                        Username = x.Username,
+                        BettingGroup = x.BettingGroup,
+                        MatchedCount = x.MatchedCount,
+                        BettingAmount = x.BettingAmount,
+                        AllotmentAmount = x.AllotmentAmount,
+                    })
+                    ?.ToList() ?? new List<DashboardItem>();
 
                 Model.SampleList = sampleList;
                 Model.GroupList = WorldcupBettingManager.GroupDataList;

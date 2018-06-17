@@ -18,37 +18,34 @@
 
 <h2>수정 남은 시간 <span id="remain-time">0:00:00</span></h2>
 
-@if (Model.isLogin || Model.SimpleLogin)
-{
-    <div class="row">
-    <div class="col-md-6">
-    <table class="table table-striped dashboard">
-        <thead>
-            <tr>
-                <th>아이디</th>
-                <th>그룹</th>
-                <th class="number">득점</th>
-                <th class="number">배팅금액</th>
-                <th class="number">현재기대값</th>
-            </tr>
-        </thead>
-        <tbody>
-        @foreach (DashboardItem data in Model.Dashboard)
-        {
-            var username = data.Username.Left(3) + "***";
-            <tr>
-                <td>@username</td>
-                <td>@data.BettingGroup</td>
-                <td class="number">@data.MatchedCount.ToString("#,#")</td>
-                <td class="number">@data.BettingAmount.ToString("#,#")</td>
-                <td class="number">@data.AllotmentAmount.ToString("#,#")</td>
-            </tr>
-        }
-        </tbody>
-    </table>
-    </div>
-    </div>
-}
+<div class="row">
+<div class="col-md-6">
+<table class="table table-striped dashboard">
+    <thead>
+        <tr>
+            <th>아이디</th>
+            <th>그룹</th>
+            <th class="number">득점</th>
+            <th class="number">배팅금액</th>
+            <th class="number">현재기대값</th>
+        </tr>
+    </thead>
+    <tbody>
+    @foreach (DashboardItem data in Model.Dashboard)
+    {
+        var username = data.Username.Left(3) + "***";
+        <tr>
+            <td>@username</td>
+            <td>@data.BettingGroup</td>
+            <td class="number">@data.MatchedCount.ToString("#,#")</td>
+            <td class="number">@data.BettingAmount.ToString("#,#")</td>
+            <td class="number">@data.AllotmentAmount.ToString("#,#")</td>
+        </tr>
+    }
+    </tbody>
+</table>
+</div>
+</div>
 
 @if (Model.isLogin)
 {
