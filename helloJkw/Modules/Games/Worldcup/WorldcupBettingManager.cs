@@ -226,7 +226,7 @@ namespace helloJkw.Game.Worldcup
             return htmlDoc.DocumentNode.SelectNodes("//table[@class='fi-table fi-standings']")
                 .Select(x =>
                 {
-                    var groupName = x.SelectSingleNode(".//p[@class='fi-table__caption__title']").InnerText;
+                    var groupName = x.SelectSingleNode(".//p[@class='fi-table__caption__title fi-ltr--force']").InnerText;
                     var teamDataList = x.SelectNodes(".//tbody/tr")
                         .Where(e => e.Attributes.Any(a => a.Name == "data-team-id"))
                         .Select((e, i) =>
