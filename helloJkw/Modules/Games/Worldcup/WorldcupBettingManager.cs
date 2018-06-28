@@ -34,6 +34,7 @@ namespace helloJkw.Game.Worldcup
             DashboardList = JsonConvert.DeserializeObject<List<DashboardData>>(File.ReadAllText(_DashboardPath));
 
             Update16TargetData();
+            UpdateKnockoutData();
         }
 
         public static void Save(this BettingData bettingData)
@@ -214,6 +215,36 @@ namespace helloJkw.Game.Worldcup
             });
         }
 
+        public static void UpdateKnockoutData()
+        {
+            Task.Run(async () =>
+            {
+                while (true)
+                {
+                    try
+                    {
+                        var knockoutData = await GetKnockoutPhaseAsync();
+                        Log("SYSTEM", "UpdateKnockoutData", JsonConvert.SerializeObject(knockoutData));
+
+                        var bettingName = "round16";
+                        var bettingData = _bettingDataList.FirstOrDefault(x => x.BettingName == bettingName);
+                        if (bettingData != null)
+                        {
+                            // TODO: TargetList 만들고 데이터 엮어야함.
+                        }
+                    }
+                    catch (Exception ex)
+                    {
+                        Log("SYSTEM", "Error:UpdateKnockoutData", ex.Message);
+                    }
+                    finally
+                    {
+                        await Task.Delay(600 * 1000);
+                    }
+                }
+            });
+        }
+
         static async Task<List<GroupData>> GetGroupResultAsync()
         {
             var url = "https://www.fifa.com/worldcup/groups";
@@ -252,6 +283,23 @@ namespace helloJkw.Game.Worldcup
                     };
                 })
                 .ToList();
+        }
+
+        static async Task<KnockoutPhase> GetKnockoutPhaseAsync()
+        {
+            var url = "https://www.fifa.com/worldcup/matches";
+            var request = WebRequest.CreateHttp(url);
+
+            var response = await request.GetResponseAsync();
+            var html = new StreamReader(response.GetResponseStream()).ReadToEnd();
+            var htmlDoc = new HtmlDocument();
+
+            htmlDoc.LoadHtml(html);
+
+            var knockoutSection = htmlDoc.DocumentNode.SelectNodes(".//div[contains(@class, 'fi-matchlist')]")[1];
+
+            var knockoutPhase = new KnockoutPhase(knockoutSection);
+            return knockoutPhase;
         }
     }
 
@@ -347,5 +395,77 @@ namespace helloJkw.Game.Worldcup
         public int MatchedCount { get; set; }
         public int BettingAmount { get; set; }
         public int AllotmentAmount { get; set; }
+    }
+
+    class KnockoutPhase
+    {
+        public List<KnockoutMatch> Round16 { get; set; }
+        public List<KnockoutMatch> Round8 { get; set; }
+        public List<KnockoutMatch> Round4 { get; set; }
+        public List<KnockoutMatch> Third { get; set; }
+        public List<KnockoutMatch> Final { get; set; }
+
+        public KnockoutPhase() { }
+        public KnockoutPhase(HtmlNode knockoutSection)
+        {
+            var list = knockoutSection.SelectNodes("./div[contains(@class, 'fi-mu-list')]").ToList();
+
+            Round16 = list[0].SelectNodes(".//div[contains(@class, 'fi-mu__m')]").Select(x => new KnockoutMatch(x)).ToList();
+            Round8 = list[1].SelectNodes(".//div[contains(@class, 'fi-mu__m')]").Select(x => new KnockoutMatch(x)).ToList();
+            Round4 = list[2].SelectNodes(".//div[contains(@class, 'fi-mu__m')]").Select(x => new KnockoutMatch(x)).ToList();
+            Third = list[3].SelectNodes(".//div[contains(@class, 'fi-mu__m')]").Select(x => new KnockoutMatch(x)).ToList();
+            Final = list[4].SelectNodes(".//div[contains(@class, 'fi-mu__m')]").Select(x => new KnockoutMatch(x)).ToList();
+        }
+    }
+
+    class KnockoutMatch
+    {
+        public KnockoutTeam TeamHome { get; set; }
+        public KnockoutTeam TeamAway { get; set; }
+        public KnockoutTeam Winner
+            => TeamHome.Score > TeamAway.Score ? TeamHome :
+            TeamHome.Score < TeamAway.Score ? TeamAway :
+            TeamHome.SubScore > TeamAway.SubScore ? TeamHome :
+            TeamHome.SubScore < TeamAway.SubScore ? TeamAway : null;
+
+        public KnockoutMatch() { }
+        public KnockoutMatch(HtmlNode matchSection)
+        {
+            var list = matchSection.SelectNodes("./div[contains(@class, 'fi-t')]").ToList();
+            var scoreText = matchSection.SelectSingleNode(".//span[contains(@class, 'fi-s__scoreText')]").InnerText.Trim();
+            var homeScore = scoreText.Contains("-") ? scoreText.Split('-')[0] : "";
+            var awayScore = scoreText.Contains("-") ? scoreText.Split('-')[1] : "";
+            TeamHome = new KnockoutTeam(list[0], homeScore);
+            TeamAway = new KnockoutTeam(list[1], awayScore);
+        }
+    }
+
+    class KnockoutTeam
+    {
+        public string TeamName { get; set; }
+        public string TeamCode { get; set; }
+        public int Score { get; set; }
+        public int SubScore { get; set; }
+
+        public KnockoutTeam() { }
+        public KnockoutTeam(HtmlNode teamSection, string scoreText)
+        {
+            TeamName = teamSection.SelectSingleNode(".//span[contains(@class, 'fi-t__nText')]").InnerText.Trim();
+            TeamCode = teamSection.SelectSingleNode(".//span[contains(@class, 'fi-t__nTri')]").InnerText.Trim();
+            if (!string.IsNullOrWhiteSpace(scoreText))
+            {
+                if (scoreText.Contains("("))
+                {
+                    // 승부차기 ?! 일단 추측 코딩 해봄
+                    var arr = scoreText.Split('(');
+                    Score = int.Parse(arr[0].Trim());
+                    SubScore = int.Parse(arr[1].Replace(")", "").Trim());
+                }
+                else
+                {
+                    Score = int.Parse(scoreText);
+                }
+            }
+        }
     }
 }
