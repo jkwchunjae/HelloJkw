@@ -27,12 +27,56 @@ namespace helloJkw.Game.Worldcup
 
         public WorldcupModule()
         {
-            Get["/worldcup"] = _ =>
+            Get["/worldcup"] = _ => Response.AsRedirect("/worldcup/2018");
+
+            Get["/worldcup/2018"] = _ => Response.AsRedirect("/worldcup/2018/round16");
+
+            Get["/worldcup/2018/round16"] = _ =>
             {
-                return Response.AsRedirect("/worldcup/2018");
+                Model.SimpleLogin = false;
+                Model.Username = "";
+                if (session.IsLogin)
+                {
+                }
+                if (_simpleLoginDic.ContainsKey(sessionId))
+                {
+                    var loginData = _simpleLoginDic[sessionId];
+                    Model.SimpleLogin = true;
+                    Model.Username = loginData.Username;
+                }
+                var bettingName = "round16";
+                var bettingData = WorldcupBettingManager.GetBettingData(bettingName);
+                var random = new Random((int)DateTime.Now.Ticks);
+                var sampleList = bettingData.UserBettingList.Select(x => new { Rnd = random.Next(1, 10000), Value = x })
+                    .OrderBy(x => x.Rnd)
+                    .Take(3)
+                    .Select(x => x.Value.Value.BettingList)
+                    .Select(x => x.Select(e => $"https://img.fifa.com/images/flags/4/{e.Value.ToLower()}.png").ToList())
+                    .ToList();
+                var dashboard = WorldcupBettingManager.DashboardList
+                    .Where(x => x.BettingName == bettingName)
+                    .OrderBy(x => x.CalcTime)
+                    .LastOrDefault()?.List
+                    ?.Select(x => new DashboardItem
+                    {
+                        Username = x.Username,
+                        BettingGroup = x.BettingGroup,
+                        MatchedCount = x.MatchedCount,
+                        BettingAmount = x.BettingAmount,
+                        AllotmentAmount = x.AllotmentAmount,
+                    })
+                    ?.ToList() ?? new List<DashboardItem>();
+
+                Model.SampleList = sampleList;
+                Model.KnockoutData = WorldcupBettingManager.KnockoutData;
+                Model.Dashboard = dashboard;
+                Model.FreezeTime = WorldcupBettingManager.KnockoutData.Round16
+                    .Where(x => !x.IsFreeze)
+                    .Min(x => x.GameStartTime);
+                return View["Games/Worldcup/worldcupRound16.cshtml", Model];
             };
 
-            Get["/worldcup/2018"] = _ =>
+            Get["/worldcup/2018/group"] = _ =>
             {
                 Model.SimpleLogin = false;
                 Model.Username = "";
@@ -72,7 +116,7 @@ namespace helloJkw.Game.Worldcup
                 Model.GroupList = WorldcupBettingManager.GroupDataList;
                 Model.Dashboard = dashboard;
                 Model.FreezeTime = bettingData.FreezeTime;
-                return View["Games/Worldcup/worldcupHome.cshtml", Model];
+                return View["Games/Worldcup/worldcupGroup.cshtml", Model];
             };
 
             Get["/worldcup/dataview/{bettingName}"] = _ =>
@@ -199,7 +243,68 @@ namespace helloJkw.Game.Worldcup
                 if (bettingData.FreezeTime < DateTime.Now)
                     return "이제 변경할 수 없습니다.";
 
-                var result = bettingData.UpdateUserBettingData(username, userBettings);
+                var result = bettingData.UpdateUserBettingData(username, userBettings, false);
+                return result ? "저장되었습니다." : "이제 변경할 수 없습니다.";
+            };
+
+            Get["/worldcup/round16"] = _ =>
+            {
+                if (!(session.IsLogin || _simpleLoginDic.ContainsKey(sessionId)))
+                    return "[]";
+
+                var bettingName = "round16";
+                var username = session.IsLogin ? session.User.Email : _simpleLoginDic[sessionId].Username;
+
+                var bettingData = WorldcupBettingManager.GetBettingData(bettingName);
+                if (bettingData == null)
+                    return "[]";
+                if (!bettingData.UserBettingList.ContainsKey(username))
+                    return "[]";
+                var userBettings = bettingData.UserBettingList[username]
+                    .BettingList
+                    .Select(x => new { matchId = x.Id, teamCode = x.Value })
+                    .ToList();
+                return JsonConvert.SerializeObject(userBettings);
+            };
+
+            Post["/worldcup/round16"] = _ =>
+            {
+                if (!(session.IsLogin || _simpleLoginDic.ContainsKey(sessionId)))
+                    return "로그인을 하십시오. 구글로그인은 빠르고 편리합니다.";
+
+                var bettingName = "round16";
+                var username = session.IsLogin ? session.User.Email : _simpleLoginDic[sessionId].Username;
+
+                string selectedTeamText = Request.Form["selectedTeam"];
+
+                WorldcupBettingManager.Log(username, "round16", selectedTeamText);
+
+                var knockoutData = WorldcupBettingManager.KnockoutData;
+                var bettingData = WorldcupBettingManager.GetBettingData(bettingName);
+
+                var freezeMatchList = knockoutData.Round16.Where(x => x.IsFreeze).Select(x => x.MatchId).ToList();
+
+                var userBettings = JsonConvert.DeserializeObject<List<dynamic>>(selectedTeamText)
+                    .Select(x => new UserBetting { Id = (string)x["matchId"], Value = (string)x["teamCode"] })
+                    .Where(x => !freezeMatchList.Contains(x.Id))
+                    .OrderBy(x => x.Id)
+                    .ToList();
+
+                var freezeTime = knockoutData.Round16.Where(x => !x.IsFreeze).Min(x => x.GameStartTime);
+                if (freezeTime < DateTime.Now)
+                    return "이제 변경할 수 없습니다.";
+
+                if (bettingData.UserBettingList.ContainsKey(username))
+                {
+                    // 변경 할 수 없는 데이터와 합친다.
+                    var currentBettings = bettingData.UserBettingList[username].BettingList;
+                    userBettings = currentBettings.Where(x => freezeMatchList.Contains(x.Id))
+                        .Concat(userBettings)
+                        .OrderBy(x => x.Id)
+                        .ToList();
+                }
+
+                var result = bettingData.UpdateUserBettingData(username, userBettings, true);
                 return result ? "저장되었습니다." : "이제 변경할 수 없습니다.";
             };
 

@@ -1,0 +1,246 @@
+﻿@inherits Nancy.ViewEngines.Razor.NancyRazorViewBase<dynamic>
+@using helloJkw.Game.Worldcup;
+@using Extensions;
+@{
+    Layout = "worldcup/worldcupLayout.cshtml";
+    //fnb/fnbLayout.cshtml
+    //string playerImage = Model.isLogin ? Model.user.ImageUrl : "";
+
+    KnockoutPhase knockoutData = Model.KnockoutData;
+    var matchIndex = 0;
+}
+
+<a href="/worldcup/2018/group">조별리그 결과 보기</a>
+
+<h2>수정 남은 시간 <span id="remain-time">0:00:00</span></h2>
+
+<div class="row">
+<div class="col-md-6">
+<table class="table table-striped dashboard">
+    <thead>
+        <tr>
+            <th>아이디</th>
+            <th>그룹</th>
+            <th class="number">득점</th>
+            <th class="number">배팅금액</th>
+            <th class="number">현재기대값</th>
+        </tr>
+    </thead>
+    <tbody>
+    @foreach (DashboardItem data in Model.Dashboard)
+    {
+        var username = data.Username.Left(3) + "***";
+        <tr>
+            <td>@username</td>
+            <td>@data.BettingGroup</td>
+            <td class="number">@data.MatchedCount.ToString("#,0")</td>
+            <td class="number">@data.BettingAmount.ToString("#,0")</td>
+            <td class="number">@data.AllotmentAmount.ToString("#,0")</td>
+        </tr>
+    }
+    </tbody>
+</table>
+</div>
+</div>
+
+@if (Model.isLogin)
+{
+    <button class="btn btn-logout">Logout</button>
+}
+else if (Model.SimpleLogin)
+{
+    <a class="btn btn-default" href="/worldcup/logout">로그아웃</a>
+}
+else
+{
+    <form class="form-inline" action="/worldcup/simplelogin" method="post">
+        <div class="form-group">
+           <label for="login-username">아이디</label>
+           <input type="text" class="form-control" id="login-username" name="username" maxlength="15" placeholder="한글가능">
+        </div>
+        <div class="form-group">
+           <label for="login-password">비밀번호</label>
+           <input type="password" class="form-control" id="login-password" name="password" placeholder="비밀번호">
+        </div>
+        <button type="submit" class="btn btn-default">간단 로그인</button>
+    </form>
+    <a class="btn-login" href="#">구글 로그인</a><span>은 빠르고 편리합니다.</span>
+}
+<h3>나의 선택</h3>
+
+<span>시작하지 않은 경기는 변경할 수 있습니다.</span>
+<div class="group-list ">
+    <ul>
+    @foreach (var matchData in knockoutData.Round16)
+    {
+        matchIndex++;
+        var matchId = "R16W" + matchIndex.ToString();
+        var imgHome = "https://img.fifa.com/images/flags/4/" + matchData.TeamHome.TeamCode + ".png";
+        var imgAway = "https://img.fifa.com/images/flags/4/" + matchData.TeamAway.TeamCode + ".png";
+        var teams = new[] { matchData.TeamHome, matchData.TeamAway };
+        var started = matchData.IsStarted ? "started" : "";
+
+        <li class="row">
+            @foreach (var teamData in teams)
+            {
+                var image= "https://img.fifa.com/images/flags/4/" + teamData.TeamCode + ".png";
+                var isHome = teamData == matchData.TeamHome ? "home" : "away";
+
+                <div class="col-xs-6 team-data @isHome @started">
+                    <span class="score inside-score">@teamData.Score</span>
+                    <img src="@image" class="country-picture group-team" id="team-@matchId-@teamData.TeamCode" onclick="selectTeam('@matchId', '@teamData.TeamCode')" />
+                    <span class="team-name">@teamData.TeamName</span>
+                    <span class="score bottom-score">@teamData.Score</span>
+                </div>
+            }
+        </li>
+    }
+    </ul>
+</div>
+
+<button class="btn" onclick="applyTeam16()">저장</button>
+
+
+@if (Model.isLogin || Model.SimpleLogin)
+{
+    @foreach (var pictures in Model.SampleList)
+    {
+        <div class="sample-data">
+            <h3>누군가 고른 데이터</h3>
+            @foreach (var picture in pictures)
+            {
+                <img src="@picture" class="country-picture" />
+            }
+        </div>
+    }
+}
+
+
+@section Css
+{
+<link href="/Static/css/worldcup.css" rel="stylesheet" />
+<style type="text/css">
+    a {
+        color: black;
+    }
+    a.btn-login {
+        color: black;
+        font-weight: bolder;
+        text-decoration: underline;
+    }
+    .group-list {
+    }
+    .group-list > div {
+        display: inline-block;
+    }
+    .group-list ul {
+        list-style: none;
+        padding-left: 0;
+    }
+    .group-name {
+        font-size: 1.5em;
+    }
+    .team-name {
+        font-size: 1.5em;
+    }
+    .group-team {
+        margin-bottom: 10px;
+        opacity: 0.2;
+        cursor: pointer;
+    }
+    .group-team:hover {
+        opacity: 0.8;
+    }
+    .group-team.selected {
+        opacity: 1;
+    }
+    img.country-picture {
+        border: 1px solid gray;
+    }
+
+    .sample-data {
+        margin-top: 50px;
+    }
+
+    .sample-data img.country-picture {
+        margin: 4px;
+    }
+
+    table.dashboard th, table.dashboard td {
+        text-align: center;
+    }
+    table.dashboard th.number, table.dashboard td.number {
+        text-align: right;
+    }
+
+</style>
+}
+
+@section Javascript
+{
+    <script type="text/javascript">
+    var selectedTeam = [];
+    var savedData = '[]';
+    var freezeTime = Date.parse('@Model.FreezeTime.ToString("yyyy-MM-dd HH:mm:ss")');
+
+    @if (Model.isLogin || Model.SimpleLogin)
+    {
+        @:$.get('/worldcup/round16', data => {
+           @:selectedTeam = JSON.parse(data);
+           @:savedData = data;
+           @:updateHtml();
+        @:});
+    }
+
+    function selectTeam(matchId, teamCode) {
+        if (selectedTeam.filter(x => x.matchId == matchId && x.teamCode == teamCode).length > 0) {
+           return removeTeam(matchId, teamCode);
+        }
+
+        if (selectedTeam.filter(x => x.matchId == matchId).length >= 1) {
+           return alert('한 팀만 선택할 수 있습니다.');
+        }
+
+        selectedTeam.push({ matchId, teamCode });
+
+        updateHtml();
+    }
+
+    function removeTeam(matchId, teamCode) {
+        selectedTeam = selectedTeam.filter(x => !(x.matchId == matchId && x.teamCode == teamCode));
+        updateHtml();
+    }
+
+    function updateHtml() {
+        $('.group-team').removeClass('selected');
+        selectedTeam.forEach(x => {
+           $(`#team-${x.matchId}-${x.teamCode}`).addClass('selected');
+        })
+
+        $('button.team16-apply').attr('disabled', 'disabled').removeClass('btn-success');
+        if (selectedTeam.length <= 16 && savedData !== JSON.stringify(selectedTeam)) {
+           $('button.team16-apply').removeAttr('disabled').addClass('btn-success');
+        }
+    }
+
+    function applyTeam16() {
+        $.post('/worldcup/round16', {
+           selectedTeam: JSON.stringify(selectedTeam)
+        }, result => alert(result));
+    }
+
+        setInterval(() => {
+            var remainSeconds = (freezeTime - Date.now()) / 1000;
+            if (remainSeconds < 0)
+                return;
+
+            var hours = Math.floor(remainSeconds / 3600);
+            var minutes = Math.floor((remainSeconds - hours * 3600) / 60);
+            minutes = minutes < 10 ? `0${minutes}` : minutes;
+            var seconds = Math.floor(remainSeconds % 60);
+            seconds = seconds < 10 ? `0${seconds}` : seconds;
+
+            $('#remain-time').text(`${hours}:${minutes}:${seconds}`);
+        }, 1000)
+    </script>
+}

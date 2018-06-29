@@ -1,0 +1,50 @@
+﻿.home * {
+    float: right;
+}
+.away * {
+    float: left;
+}
+.team-data {
+    margin: 5px 0;
+}
+.team-data * {
+    margin: 0 10px;
+}
+
+.score {
+    font-size: 2em;
+    display: none;
+}
+
+.started .score {
+    display: block;
+}
+
+.started .bottom-score, .bottom-score {
+    display: none;
+}
+
+@media screen and (max-width: 700px){
+    .team-data {
+        display: inline-block;
+    }
+    .team-data * {
+        display: block;
+    }
+    .home * {
+        float: none;
+    }
+    .away * {
+        float: none;
+    }
+    .started .inside-score, .inside-score {
+        display: none;
+    }
+    .score {
+        display: none;
+    }
+    .started .bottom-score {
+        display: block;
+    }
+}
+

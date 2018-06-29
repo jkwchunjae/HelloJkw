@@ -18,6 +18,7 @@ namespace helloJkw.Game.Worldcup
         static List<BettingData> _bettingDataList = new List<BettingData>();
 
         public static List<GroupData> GroupDataList = new List<GroupData>();
+        public static KnockoutPhase KnockoutData = new KnockoutPhase();
         public static List<DashboardData> DashboardList = new List<DashboardData>();
 
         static WorldcupBettingManager()
@@ -33,13 +34,13 @@ namespace helloJkw.Game.Worldcup
 
             DashboardList = JsonConvert.DeserializeObject<List<DashboardData>>(File.ReadAllText(_DashboardPath));
 
-            Update16TargetData();
+            //Update16TargetData(); // 끝났음.
             UpdateKnockoutData();
         }
 
         public static void Save(this BettingData bettingData)
         {
-#if DEBUG
+#if DEBUG1
             return;
 #endif
             var path = Path.Combine(_rootPath, $"{bettingData.BettingName.Replace(" ", "")}.json");
@@ -48,7 +49,7 @@ namespace helloJkw.Game.Worldcup
 
         public static void Log(string username, string title, string text)
         {
-#if DEBUG
+#if DEBUG1
             return;
 #endif
             try
@@ -101,11 +102,8 @@ namespace helloJkw.Game.Worldcup
             return bettingData;
         }
 
-        public static bool UpdateUserBettingData(this BettingData bettingData, string username, List<UserBetting> userBettings)
+        public static bool UpdateUserBettingData(this BettingData bettingData, string username, List<UserBetting> userBettings, bool checkId)
         {
-            if (bettingData.FreezeTime < DateTime.Now)
-                return false;
-
             if (bettingData.UserBettingList.ContainsKey(username))
             {
                 bettingData.UserBettingList[username].BettingList = userBettings;
@@ -115,7 +113,7 @@ namespace helloJkw.Game.Worldcup
                 bettingData.UserBettingList[username] = new UserBettingData(username, userBettings);
             }
 
-            bettingData.RecalcMatchData(false);
+            bettingData.RecalcMatchData(checkId);
             return true;
         }
 
@@ -144,7 +142,7 @@ namespace helloJkw.Game.Worldcup
 
         public static BettingData UpdateDashboard(this BettingData bettingData)
         {
-#if DEBUG
+#if DEBUG1
             return bettingData;
 #endif
             var lastDashboard = DashboardList
@@ -223,8 +221,8 @@ namespace helloJkw.Game.Worldcup
                 {
                     try
                     {
-                        var knockoutData = await GetKnockoutPhaseAsync();
-                        Log("SYSTEM", "UpdateKnockoutData", JsonConvert.SerializeObject(knockoutData));
+                        KnockoutData = await GetKnockoutPhaseAsync();
+                        Log("SYSTEM", "UpdateKnockoutData", JsonConvert.SerializeObject(KnockoutData));
 
                         var bettingName = "round16";
                         var bettingData = _bettingDataList.FirstOrDefault(x => x.BettingName == bettingName);
@@ -397,7 +395,7 @@ namespace helloJkw.Game.Worldcup
         public int AllotmentAmount { get; set; }
     }
 
-    class KnockoutPhase
+    public class KnockoutPhase
     {
         public List<KnockoutMatch> Round16 { get; set; }
         public List<KnockoutMatch> Round8 { get; set; }
@@ -410,37 +408,47 @@ namespace helloJkw.Game.Worldcup
         {
             var list = knockoutSection.SelectNodes("./div[contains(@class, 'fi-mu-list')]").ToList();
 
-            Round16 = list[0].SelectNodes(".//div[contains(@class, 'fi-mu__m')]").Select(x => new KnockoutMatch(x)).ToList();
-            Round8 = list[1].SelectNodes(".//div[contains(@class, 'fi-mu__m')]").Select(x => new KnockoutMatch(x)).ToList();
-            Round4 = list[2].SelectNodes(".//div[contains(@class, 'fi-mu__m')]").Select(x => new KnockoutMatch(x)).ToList();
-            Third = list[3].SelectNodes(".//div[contains(@class, 'fi-mu__m')]").Select(x => new KnockoutMatch(x)).ToList();
-            Final = list[4].SelectNodes(".//div[contains(@class, 'fi-mu__m')]").Select(x => new KnockoutMatch(x)).ToList();
+            Round16 = list[0].SelectNodes(".//div[contains(@class, 'fi-mu fixture')]").Select((x, i) => new KnockoutMatch($"R16W{i + 1}", x)).ToList();
+            Round8 = list[1].SelectNodes(".//div[contains(@class, 'fi-mu fixture')]").Select((x, i) => new KnockoutMatch($"R8W{i + 1}", x)).ToList();
+            Round4 = list[2].SelectNodes(".//div[contains(@class, 'fi-mu fixture')]").Select((x, i) => new KnockoutMatch($"R4W{i + 1}", x)).ToList();
+            Third = list[3].SelectNodes(".//div[contains(@class, 'fi-mu fixture')]").Select((x, i) => new KnockoutMatch($"THIRD", x)).ToList();
+            Final = list[4].SelectNodes(".//div[contains(@class, 'fi-mu fixture')]").Select((x, i) => new KnockoutMatch($"FINAL", x)).ToList();
         }
     }
 
-    class KnockoutMatch
+    public class KnockoutMatch
     {
+        public string MatchId { get; set; }
         public KnockoutTeam TeamHome { get; set; }
         public KnockoutTeam TeamAway { get; set; }
+        public DateTime GameStartTime { get; set; }
+        public bool IsStarted { get; set; }
+
         public KnockoutTeam Winner
             => TeamHome.Score > TeamAway.Score ? TeamHome :
             TeamHome.Score < TeamAway.Score ? TeamAway :
             TeamHome.SubScore > TeamAway.SubScore ? TeamHome :
             TeamHome.SubScore < TeamAway.SubScore ? TeamAway : null;
+        public bool IsFreeze => IsStarted || GameStartTime < DateTime.Now || Winner != null;
 
         public KnockoutMatch() { }
-        public KnockoutMatch(HtmlNode matchSection)
+        public KnockoutMatch(string matchId, HtmlNode matchSection)
         {
-            var list = matchSection.SelectNodes("./div[contains(@class, 'fi-t')]").ToList();
+            MatchId = matchId;
+
+            var list = matchSection.SelectNodes("./div/div[contains(@class, 'fi-t')]").ToList();
             var scoreText = matchSection.SelectSingleNode(".//span[contains(@class, 'fi-s__scoreText')]").InnerText.Trim();
             var homeScore = scoreText.Contains("-") ? scoreText.Split('-')[0] : "";
             var awayScore = scoreText.Contains("-") ? scoreText.Split('-')[1] : "";
+            IsStarted = homeScore != "";
             TeamHome = new KnockoutTeam(list[0], homeScore);
             TeamAway = new KnockoutTeam(list[1], awayScore);
+            var matchTimeUtc = matchSection.SelectSingleNode(".//div[contains(@class, 'fi-mu__info__datetime')]").GetAttributeValue("data-utcdate", "");
+            GameStartTime = DateTime.Parse(matchTimeUtc).AddHours(12);
         }
     }
 
-    class KnockoutTeam
+    public class KnockoutTeam
     {
         public string TeamName { get; set; }
         public string TeamCode { get; set; }

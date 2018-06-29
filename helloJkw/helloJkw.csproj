@@ -126,12 +126,14 @@
     <Compile Include="Utils\HitCounter.cs" />
     <Compile Include="Utils\Utils.cs" />
     <Content Include="_Static\css\baduk.css" />
+    <Content Include="_Static\css\worldcup.css" />
     <Content Include="_Static\projects\word-blank\word-blank-exam.css" />
     <Content Include="_Static\projects\word-blank\word-blank-exam.js" />
     <Content Include="_Static\projects\word-blank\word-blank-common.css" />
     <Content Include="_Static\projects\word-blank\word-blank-study.css" />
     <Content Include="_Static\projects\word-blank\word-blank-study.js" />
     <None Include="_Views\Games\Worldcup\worldcupDataView.cshtml" />
+    <None Include="_Views\Games\Worldcup\worldcupRound16.cshtml" />
     <None Include="_Views\Games\Worldcup\worldcupLayout.cshtml" />
   </ItemGroup>
   <ItemGroup>
@@ -199,7 +201,7 @@
     <None Include="_Views\Games\Buzzer\buzzerMain.cshtml" />
     <None Include="_Views\Games\colorConquerMain.cshtml" />
     <None Include="_Views\Games\Telestrations\telestrationsMain.cshtml" />
-    <None Include="_Views\Games\Worldcup\worldcupHome.cshtml" />
+    <None Include="_Views\Games\Worldcup\worldcupGroup.cshtml" />
     <None Include="_Views\Jkw\blog\jkwBlogEdit.cshtml" />
     <None Include="_Views\Jkw\diary\jkwDiarySearch.cshtml" />
     <None Include="_Views\Jkw\diary\jkwDiaryShowDates.cshtml" />
