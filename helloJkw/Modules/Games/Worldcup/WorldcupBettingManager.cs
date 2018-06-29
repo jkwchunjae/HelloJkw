@@ -40,18 +40,15 @@ namespace helloJkw.Game.Worldcup
 
         public static void Save(this BettingData bettingData)
         {
-#if DEBUG1
-            return;
-#endif
+#if !DEBUG
             var path = Path.Combine(_rootPath, $"{bettingData.BettingName.Replace(" ", "")}.json");
             File.WriteAllText(path, JsonConvert.SerializeObject(bettingData, Formatting.Indented), Encoding.UTF8);
+#endif
         }
 
         public static void Log(string username, string title, string text)
         {
-#if DEBUG1
-            return;
-#endif
+#if !DEBUG
             try
             {
                 var time = DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss");
@@ -59,6 +56,7 @@ namespace helloJkw.Game.Worldcup
                 File.AppendAllLines(_LogPath, new[] { logText }, Encoding.UTF8);
             }
             catch { }
+#endif
         }
 
         public static BettingData GetBettingData(string bettingName)
@@ -121,13 +119,19 @@ namespace helloJkw.Game.Worldcup
         {
             var weightDic = bettingData.TargetList.ToDictionary(x => x.Id, x => x.Weight);
 
+            var offsetScoreDic = bettingData.UserBettingList.Select(x => x.Value)
+                .GroupBy(x => new { BettingGroup = x.BettingGroup ?? "" })
+                .Select(x => new { x.Key.BettingGroup, MinScore = x.Min(e => e.BettingList.Where(r => r.IsMatched).Sum(r => weightDic[r.Id])) })
+                .Select(x => new { x.BettingGroup, Offset = x.MinScore > bettingData.ScoreMinimum ? x.MinScore - bettingData.ScoreMinimum : 0 })
+                .ToDictionary(x => x.BettingGroup, x => bettingData.ScoreMinimum < 0 ? 0 : x.Offset);
+
             var ratioBaseDic = bettingData.UserBettingList.Select(x => x.Value)
                 .GroupBy(x => new { BettingGroup = x.BettingGroup ?? "" })
-                .Select(x => new { x.Key.BettingGroup, RatioBase = x.Sum(e => e.BettingAmount * e.BettingList.Where(r => r.IsMatched).Sum(r => weightDic[r.Id])) })
+                .Select(x => new { x.Key.BettingGroup, RatioBase = x.Sum(e => e.BettingList.Where(r => r.IsMatched).Sum(r => weightDic[r.Id]) - offsetScoreDic[x.Key.BettingGroup ?? ""]) })
                 .ToDictionary(x => x.BettingGroup, x => x.RatioBase);
 
             var userBettingList = bettingData.UserBettingList
-                .Select(x => new { Data = x.Value, Weight = x.Value.BettingAmount * x.Value.BettingList.Where(e => e.IsMatched).Sum(e => weightDic[e.Id]) / ratioBaseDic[x.Value.BettingGroup ?? ""] })
+                .Select(x => new { Data = x.Value, Weight = (x.Value.BettingList.Where(e => e.IsMatched).Sum(e => weightDic[e.Id]) - offsetScoreDic[x.Value.BettingGroup ?? ""]) / ratioBaseDic[x.Value.BettingGroup ?? ""] })
                 .Select(x => new { x.Data, Allotment = x.Weight * bettingData.UserBettingList.Where(e => (e.Value.BettingGroup ?? "") == (x.Data.BettingGroup ?? "")).Sum(e => e.Value.BettingAmount) })
                 .Select(x =>
                 {
@@ -142,20 +146,25 @@ namespace helloJkw.Game.Worldcup
 
         public static BettingData UpdateDashboard(this BettingData bettingData)
         {
-#if DEBUG1
-            return bettingData;
-#endif
+            var weightDic = bettingData.TargetList.ToDictionary(x => x.Id, x => x.Weight);
             var lastDashboard = DashboardList
                 .Where(x => x.BettingName == bettingData.BettingName)
                 .OrderBy(x => x.CalcTime)
                 .LastOrDefault();
+
+            var offsetScoreDic = bettingData.UserBettingList.Select(x => x.Value)
+                .GroupBy(x => new { BettingGroup = x.BettingGroup ?? "" })
+                .Select(x => new { x.Key.BettingGroup, MinScore = x.Min(e => e.BettingList.Where(r => r.IsMatched).Sum(r => weightDic[r.Id])) })
+                .Select(x => new { x.BettingGroup, Offset = x.MinScore > bettingData.ScoreMinimum ? x.MinScore - bettingData.ScoreMinimum : 0 })
+                .ToDictionary(x => x.BettingGroup, x => bettingData.ScoreMinimum < 0 ? 0 : (int)x.Offset);
 
             var currDashboard = bettingData.UserBettingList.Select(x => x.Value)
                 .Select(x => new DashboardItem
                 {
                     Username = x.Username,
                     BettingGroup = x.BettingGroup,
-                    MatchedCount = x.BettingList.Count(e => e.IsMatched),
+                    MatchedCount = (int)x.BettingList.Where(e => e.IsMatched).Sum(e => weightDic[e.Id]),
+                    OffsetCount = (int)x.BettingList.Where(e => e.IsMatched).Sum(e => weightDic[e.Id]) - offsetScoreDic[x.BettingGroup],
                     BettingAmount = x.BettingAmount,
                     AllotmentAmount = x.AllotmentAmount,
                 })
@@ -174,7 +183,9 @@ namespace helloJkw.Game.Worldcup
                     List = currDashboard,
                 });
                 Log("SYSTEM", "Dashboard", currJsonText);
+#if !DEBUG
                 File.WriteAllText(_DashboardPath, JsonConvert.SerializeObject(DashboardList, Formatting.Indented), Encoding.UTF8);
+#endif
             }
 
             return bettingData;
@@ -308,6 +319,7 @@ namespace helloJkw.Game.Worldcup
         public DateTime FreezeTime { get; set; }
         public List<Target> TargetList { get; set; }
         public Dictionary<string /* username */, UserBettingData> UserBettingList { get; set; }
+        public int ScoreMinimum { get; set; } // ignore: -1
 
         [JsonIgnore]
         public bool IsOpen => OpenTime >= DateTime.Now;
@@ -391,6 +403,7 @@ namespace helloJkw.Game.Worldcup
         public string Username { get; set; }
         public string BettingGroup { get; set; }
         public int MatchedCount { get; set; }
+        public int OffsetCount { get; set; }
         public int BettingAmount { get; set; }
         public int AllotmentAmount { get; set; }
     }

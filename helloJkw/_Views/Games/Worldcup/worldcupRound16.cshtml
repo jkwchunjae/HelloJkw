@@ -33,13 +33,20 @@
         <tr>
             <td>@username</td>
             <td>@data.BettingGroup</td>
-            <td class="number">@data.MatchedCount.ToString("#,0")</td>
+            <td class="number">
+                <span>@data.MatchedCount.ToString("#,0")</span>
+                @if (data.MatchedCount != data.OffsetCount)
+                {
+                    <span> (  @data.OffsetCount.ToString("#,0")  )</span>
+                }
+            </td>
             <td class="number">@data.BettingAmount.ToString("#,0")</td>
             <td class="number">@data.AllotmentAmount.ToString("#,0")</td>
         </tr>
     }
     </tbody>
 </table>
+    <span>돈이 너무 안 따져서 최하점을 1점으로 시프트 시킵니다. 하하</span>
 </div>
 </div>
 
@@ -64,7 +71,7 @@ else
         </div>
         <button type="submit" class="btn btn-default">간단 로그인</button>
     </form>
-    <a class="btn-login" href="#">구글 로그인</a><span>은 빠르고 편리합니다.</span>
+    <a class="btn-login" href="#">구글 로그인</a><span>은 빠르고 편리합니다. (카톡에서 바로 열면 안됩니다. 크롬이나 다른 프로그램을 이용해주세요)</span>
 }
 <h3>나의 선택</h3>
 
@@ -197,9 +204,7 @@ else
            return removeTeam(matchId, teamCode);
         }
 
-        if (selectedTeam.filter(x => x.matchId == matchId).length >= 1) {
-           return alert('한 팀만 선택할 수 있습니다.');
-        }
+        selectedTeam = selectedTeam.filter(x => x.matchId !== matchId);
 
         selectedTeam.push({ matchId, teamCode });
 

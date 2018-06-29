@@ -62,6 +62,7 @@ namespace helloJkw.Game.Worldcup
                         Username = x.Username,
                         BettingGroup = x.BettingGroup,
                         MatchedCount = x.MatchedCount,
+                        OffsetCount = x.OffsetCount,
                         BettingAmount = x.BettingAmount,
                         AllotmentAmount = x.AllotmentAmount,
                     })
@@ -91,6 +92,7 @@ namespace helloJkw.Game.Worldcup
                 }
                 var bettingName = "16강 맞추기";
                 var bettingData = WorldcupBettingManager.GetBettingData(bettingName);
+                bettingData = bettingData.RecalcMatchData(false);
                 var random = new Random((int)DateTime.Now.Ticks);
                 var sampleList = bettingData.UserBettingList.Select(x => new { Rnd = random.Next(1, 10000), Value = x })
                     .OrderBy(x => x.Rnd)
@@ -107,6 +109,7 @@ namespace helloJkw.Game.Worldcup
                         Username = x.Username,
                         BettingGroup = x.BettingGroup,
                         MatchedCount = x.MatchedCount,
+                        OffsetCount = x.OffsetCount,
                         BettingAmount = x.BettingAmount,
                         AllotmentAmount = x.AllotmentAmount,
                     })
@@ -290,8 +293,8 @@ namespace helloJkw.Game.Worldcup
                     .OrderBy(x => x.Id)
                     .ToList();
 
-                var freezeTime = knockoutData.Round16.Where(x => !x.IsFreeze).Min(x => x.GameStartTime);
-                if (freezeTime < DateTime.Now)
+                var freezeTime = knockoutData.Round16.Where(x => !x.IsFreeze)?.Min(x => x.GameStartTime);
+                if (freezeTime == null || freezeTime < DateTime.Now)
                     return "이제 변경할 수 없습니다.";
 
                 if (bettingData.UserBettingList.ContainsKey(username))

@@ -37,7 +37,13 @@
         <tr>
             <td>@username</td>
             <td>@data.BettingGroup</td>
-            <td class="number">@data.MatchedCount.ToString("#,#")</td>
+            <td class="number">
+                <span>@data.MatchedCount.ToString("#,#")</span>
+                @if (data.MatchedCount != data.OffsetCount)
+                {
+                    <span> (  @data.OffsetCount.ToString("#,#")  )</span>
+                }
+            </td>
             <td class="number">@data.BettingAmount.ToString("#,#")</td>
             <td class="number">@data.AllotmentAmount.ToString("#,#")</td>
         </tr>
