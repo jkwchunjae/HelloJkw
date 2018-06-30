@@ -7,6 +7,7 @@
     //string playerImage = Model.isLogin ? Model.user.ImageUrl : "";
 
     KnockoutPhase knockoutData = Model.KnockoutData;
+    BettingData bettingData = Model.BettingData;
     var matchIndex = 0;
 }
 
@@ -46,7 +47,47 @@
     }
     </tbody>
 </table>
-    <span>돈이 너무 안 따져서 최하점을 1점으로 시프트 시킵니다. 하하</span>
+    <span>돈이 너무 안 따져서 최하점을 1점으로 시프트 시킵니다. 하하. 그렇다고 0점을 1점으로 올려주진 않습니다.</span>
+</div>
+
+<div class="col-md-6">
+<table class="table table-striped dashboard">
+    <thead>
+        <tr>
+            <th>아이디</th>
+            <th>성공</th>
+            <th>실패</th>
+        </tr>
+    </thead>
+    <tbody>
+    @foreach (DashboardItem dData in Model.Dashboard)
+    {
+        var username = dData.Username;
+        var blindName = username.Left(3) + "***";
+        List<string> startedMatch = knockoutData.Round16.Where(x => x.IsStarted && x.Winner != null).Select(x => x.MatchId).ToList();
+        var userBettingList = bettingData.UserBettingList[username].BettingList;
+        List<string> successList = userBettingList.Where(x => startedMatch.Contains(x.Id) && x.IsMatched).Select(x => x.Value).ToList();
+        List<string> failList = userBettingList.Where(x => startedMatch.Contains(x.Id) && !x.IsMatched).Select(x => x.Value).ToList();
+        <tr>
+            <td>@blindName</td>
+            <td>
+                @foreach (var teamCode in successList)
+                {
+                    var image = "https://img.fifa.com/images/flags/4/" + teamCode + ".png";
+                    <img src="@image" class="result-table" />
+                }
+            </td>
+            <td>
+                @foreach (var teamCode in failList)
+                {
+                    var image = "https://img.fifa.com/images/flags/4/" + teamCode + ".png";
+                    <img src="@image" class="result-table" />
+                }
+            </td>
+        </tr>
+    }
+    </tbody>
+</table>
 </div>
 </div>
 
@@ -82,8 +123,6 @@ else
     {
         matchIndex++;
         var matchId = "R16W" + matchIndex.ToString();
-        var imgHome = "https://img.fifa.com/images/flags/4/" + matchData.TeamHome.TeamCode + ".png";
-        var imgAway = "https://img.fifa.com/images/flags/4/" + matchData.TeamAway.TeamCode + ".png";
         var teams = new[] { matchData.TeamHome, matchData.TeamAway };
         var started = matchData.IsStarted ? "started" : "";
 
@@ -173,12 +212,6 @@ else
         margin: 4px;
     }
 
-    table.dashboard th, table.dashboard td {
-        text-align: center;
-    }
-    table.dashboard th.number, table.dashboard td.number {
-        text-align: right;
-    }
 
 </style>
 }

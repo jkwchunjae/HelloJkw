@@ -24,6 +24,17 @@
     display: none;
 }
 
+table.dashboard th, table.dashboard td {
+    text-align: center;
+}
+table.dashboard th.number, table.dashboard td.number {
+    text-align: right;
+}
+
+img.result-table {
+    height: 30%;
+}
+
 @media screen and (max-width: 700px){
     .team-data {
         display: inline-block;

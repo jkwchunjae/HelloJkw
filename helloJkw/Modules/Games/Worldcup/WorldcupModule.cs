@@ -66,11 +66,14 @@ namespace helloJkw.Game.Worldcup
                         BettingAmount = x.BettingAmount,
                         AllotmentAmount = x.AllotmentAmount,
                     })
+                    ?.OrderByDescending(x => x.MatchedCount)
+                    ?.ThenBy(x => x.Username)
                     ?.ToList() ?? new List<DashboardItem>();
 
                 Model.SampleList = sampleList;
                 Model.KnockoutData = WorldcupBettingManager.KnockoutData;
                 Model.Dashboard = dashboard;
+                Model.BettingData = bettingData;
                 Model.FreezeTime = WorldcupBettingManager.KnockoutData.Round16
                     .Where(x => !x.IsFreeze)
                     .Min(x => x.GameStartTime);
