@@ -240,6 +240,16 @@ namespace helloJkw.Game.Worldcup
                         if (bettingData != null)
                         {
                             // TODO: TargetList 만들고 데이터 엮어야함.
+                            bettingData.TargetList = bettingData.TargetList
+                                .Select(x => new Target
+                                {
+                                    Id = x.Id,
+                                    Weight = x.Weight,
+                                    Value = KnockoutData.Round16.FirstOrDefault(e => e.MatchId == x.Id)?.Winner?.TeamCode ?? "",
+                                })
+                                .ToList();
+
+                            bettingData.RecalcMatchData(true);
                         }
                     }
                     catch (Exception ex)
@@ -421,11 +431,11 @@ namespace helloJkw.Game.Worldcup
         {
             var list = knockoutSection.SelectNodes("./div[contains(@class, 'fi-mu-list')]").ToList();
 
-            Round16 = list[0].SelectNodes(".//div[contains(@class, 'fi-mu fixture')]").Select((x, i) => new KnockoutMatch($"R16W{i + 1}", x)).ToList();
-            Round8 = list[1].SelectNodes(".//div[contains(@class, 'fi-mu fixture')]").Select((x, i) => new KnockoutMatch($"R8W{i + 1}", x)).ToList();
-            Round4 = list[2].SelectNodes(".//div[contains(@class, 'fi-mu fixture')]").Select((x, i) => new KnockoutMatch($"R4W{i + 1}", x)).ToList();
-            Third = list[3].SelectNodes(".//div[contains(@class, 'fi-mu fixture')]").Select((x, i) => new KnockoutMatch($"THIRD", x)).ToList();
-            Final = list[4].SelectNodes(".//div[contains(@class, 'fi-mu fixture')]").Select((x, i) => new KnockoutMatch($"FINAL", x)).ToList();
+            Round16 = list[0].SelectNodes(".//div[contains(@class, 'fi-mu ')]").Select((x, i) => new KnockoutMatch($"R16W{i + 1}", x)).ToList();
+            Round8 = list[1].SelectNodes(".//div[contains(@class, 'fi-mu ')]").Select((x, i) => new KnockoutMatch($"R8W{i + 1}", x)).ToList();
+            Round4 = list[2].SelectNodes(".//div[contains(@class, 'fi-mu ')]").Select((x, i) => new KnockoutMatch($"R4W{i + 1}", x)).ToList();
+            Third = list[3].SelectNodes(".//div[contains(@class, 'fi-mu ')]").Select((x, i) => new KnockoutMatch($"THIRD", x)).ToList();
+            Final = list[4].SelectNodes(".//div[contains(@class, 'fi-mu ')]").Select((x, i) => new KnockoutMatch($"FINAL", x)).ToList();
         }
     }
 
