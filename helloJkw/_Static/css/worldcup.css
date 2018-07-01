@@ -1,4 +1,9 @@
-﻿.home * {
+﻿div.group-list {
+    max-width: 500px;
+    margin: auto;
+}
+
+.home * {
     float: right;
 }
 .away * {
@@ -33,6 +38,14 @@ table.dashboard th.number, table.dashboard td.number {
 
 img.result-table {
     height: 30%;
+}
+
+p span {
+    display: block;
+}
+
+li.match {
+    min-height: 68px;
 }
 
 @media screen and (max-width: 700px){

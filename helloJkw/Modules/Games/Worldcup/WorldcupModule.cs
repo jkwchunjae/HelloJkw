@@ -31,6 +31,59 @@ namespace helloJkw.Game.Worldcup
 
             Get["/worldcup/2018"] = _ => Response.AsRedirect("/worldcup/2018/round16");
 
+            Get["/worldcup/2018/final"] = _ =>
+            {
+                Model.SimpleLogin = false;
+                Model.Username = "";
+                if (session.IsLogin)
+                {
+                }
+                if (_simpleLoginDic.ContainsKey(sessionId))
+                {
+                    var loginData = _simpleLoginDic[sessionId];
+                    Model.SimpleLogin = true;
+                    Model.Username = loginData.Username;
+                }
+                var bettingName = "final";
+                var bettingData = WorldcupBettingManager.GetBettingData(bettingName);
+                var random = new Random((int)DateTime.Now.Ticks);
+                var sampleList = bettingData.UserBettingList.Select(x => new { Rnd = random.Next(1, 10000), Value = x })
+                    .OrderBy(x => x.Rnd)
+                    .Take(3)
+                    .Select(x => x.Value.Value.BettingList)
+                    .Select(x => x.Select(e => $"https://img.fifa.com/images/flags/4/{e.Value.ToLower()}.png").ToList())
+                    .ToList();
+                var dashboard = WorldcupBettingManager.DashboardList
+                    .Where(x => x.BettingName == bettingName)
+                    .OrderBy(x => x.CalcTime)
+                    .LastOrDefault()?.List
+                    ?.Select(x => new DashboardItem
+                    {
+                        Username = x.Username,
+                        BettingGroup = x.BettingGroup,
+                        MatchedCount = x.MatchedCount,
+                        OffsetCount = x.OffsetCount,
+                        BettingAmount = x.BettingAmount,
+                        AllotmentAmount = x.AllotmentAmount,
+                    })
+                    ?.OrderByDescending(x => x.MatchedCount)
+                    ?.ThenBy(x => x.Username)
+                    ?.ToList() ?? new List<DashboardItem>();
+
+                Model.SampleList = sampleList;
+                WorldcupBettingManager.KnockoutData.Round8[1].TeamHome = new KnockoutTeam { TeamCode = "RUS", TeamName = "Russia" };
+                WorldcupBettingManager.KnockoutData.Round8[1].TeamAway = new KnockoutTeam { TeamCode = "CRO", TeamName = "Croatia" };
+                WorldcupBettingManager.KnockoutData.Round8[2].TeamHome = new KnockoutTeam { TeamCode = "BRA", TeamName = "Brazil" };
+                WorldcupBettingManager.KnockoutData.Round8[2].TeamAway = new KnockoutTeam { TeamCode = "BEL", TeamName = "Belgium" };
+                WorldcupBettingManager.KnockoutData.Round8[3].TeamHome = new KnockoutTeam { TeamCode = "SUI", TeamName = "Switzerland" };
+                WorldcupBettingManager.KnockoutData.Round8[3].TeamAway = new KnockoutTeam { TeamCode = "ENG", TeamName = "England" };
+                Model.KnockoutData = WorldcupBettingManager.KnockoutData;
+                Model.Dashboard = dashboard;
+                Model.BettingData = bettingData;
+                Model.FreezeTime = bettingData.FreezeTime;
+                return View["Games/Worldcup/worldcupFinal.cshtml", Model];
+            };
+
             Get["/worldcup/2018/round16"] = _ =>
             {
                 Model.SimpleLogin = false;
@@ -312,6 +365,27 @@ namespace helloJkw.Game.Worldcup
 
                 var result = bettingData.UpdateUserBettingData(username, userBettings, true);
                 return result ? "저장되었습니다." : "이제 변경할 수 없습니다.";
+            };
+
+            Post["/worldcup/final"] = _ =>
+            {
+                if (!(session.IsLogin || _simpleLoginDic.ContainsKey(sessionId)))
+                    return "로그인을 하십시오. 구글로그인은 빠르고 편리합니다.";
+
+                var bettingName = "final";
+                var username = session.IsLogin ? session.User.Email : _simpleLoginDic[sessionId].Username;
+
+                string selectedTeamText = Request.Form["selectedTeam"];
+
+                WorldcupBettingManager.Log(username, "round16", selectedTeamText);
+
+                var knockoutData = WorldcupBettingManager.KnockoutData;
+                var bettingData = WorldcupBettingManager.GetBettingData(bettingName);
+
+                if (bettingData.FreezeTime < DateTime.Now)
+                    return "이제 변경할 수 없습니다.";
+
+                return "";
             };
 
             Post["/worldcup/applydata"] = _ =>

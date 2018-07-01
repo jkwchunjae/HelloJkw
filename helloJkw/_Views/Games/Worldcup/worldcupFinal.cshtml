@@ -1,0 +1,365 @@
+﻿@inherits Nancy.ViewEngines.Razor.NancyRazorViewBase<dynamic>
+@using helloJkw.Game.Worldcup;
+@using Extensions;
+@{
+    Layout = "worldcup/worldcupLayout.cshtml";
+    //fnb/fnbLayout.cshtml
+    //string playerImage = Model.isLogin ? Model.user.ImageUrl : "";
+
+    KnockoutPhase knockoutData = Model.KnockoutData;
+    BettingData bettingData = Model.BettingData;
+    var matchIndex = 0;
+}
+
+<p>
+    <a href="/worldcup/2018/group">조별리그 결과 보기</a>
+</p>
+<p>
+    <a href="/worldcup/2018/round16">16강 결과 보기</a>
+</p>
+
+<p>
+    <span>한 달 동안 경기 결과 확인하느라 고생 많으셨습니다.</span>
+    <span>아쉽게도 이제 마지막 라운드입니다.</span>
+    <span>이번 내기는 우승, 준우승, 3위, 4위 팀을 맞추는 것입니다.</span>
+    <span>간단히 설명을 하도록 하겠습니다.</span>
+    <ul>
+        <li>우승국을 맞추면 32점을 획득한다.</li>
+        <li>준우승 8점, 3위 2점, 4위 1점을 각각 획득한다.</li>
+        <li>정확히 맞추지 못한 경우는 0점을 획득한다.</li>
+        <li>팀을 고를 수 있는 것은 8강 1경기 시작하기 전 까지이다.</li>
+    </ul>
+</p>
+
+<h2>수정 남은 시간 <span id="remain-time">0:00:00</span></h2>
+
+<div class="row">
+<div class="col-md-6">
+<table class="table table-striped dashboard">
+    <thead>
+        <tr>
+            <th>아이디</th>
+            <th>그룹</th>
+            <th class="number">득점</th>
+            <th class="number">배팅금액</th>
+            <th class="number">현재기대값</th>
+        </tr>
+    </thead>
+    <tbody>
+    @foreach (DashboardItem data in Model.Dashboard)
+    {
+        var username = data.Username.Left(3) + "***";
+        <tr>
+            <td>@username</td>
+            <td>@data.BettingGroup</td>
+            <td class="number">
+                <span>@data.MatchedCount.ToString("#,0")</span>
+                @if (data.MatchedCount != data.OffsetCount)
+                {
+                    <span> (  @data.OffsetCount.ToString("#,0")  )</span>
+                }
+            </td>
+            <td class="number">@data.BettingAmount.ToString("#,0")</td>
+            <td class="number">@data.AllotmentAmount.ToString("#,0")</td>
+        </tr>
+    }
+    </tbody>
+</table>
+    <span>돈이 너무 안 따져서 최하점을 1점으로 시프트 시킵니다. 하하. 그렇다고 0점을 1점으로 올려주진 않습니다.</span>
+</div>
+
+<div class="col-md-6">
+<table class="table table-striped dashboard">
+    <thead>
+        <tr>
+            <th>아이디</th>
+            <th>성공</th>
+            <th>실패</th>
+        </tr>
+    </thead>
+    <tbody>
+    @foreach (DashboardItem dData in Model.Dashboard)
+    {
+        var username = dData.Username;
+        var blindName = username.Left(3) + "***";
+        List<string> startedMatch = knockoutData.Round16.Where(x => x.IsStarted && x.Winner != null).Select(x => x.MatchId).ToList();
+        var userBettingList = bettingData.UserBettingList[username].BettingList;
+        List<string> successList = userBettingList.Where(x => startedMatch.Contains(x.Id) && x.IsMatched).Select(x => x.Value).ToList();
+        List<string> failList = userBettingList.Where(x => startedMatch.Contains(x.Id) && !x.IsMatched).Select(x => x.Value).ToList();
+        <tr>
+            <td>@blindName</td>
+            <td>
+                @foreach (var teamCode in successList)
+                {
+                    var image = "https://img.fifa.com/images/flags/4/" + teamCode + ".png";
+                    <img src="@image" class="result-table" />
+                }
+            </td>
+            <td>
+                @foreach (var teamCode in failList)
+                {
+                    var image = "https://img.fifa.com/images/flags/4/" + teamCode + ".png";
+                    <img src="@image" class="result-table" />
+                }
+            </td>
+        </tr>
+    }
+    </tbody>
+</table>
+</div>
+</div>
+
+@if (Model.isLogin)
+{
+    <button class="btn btn-logout">Logout</button>
+}
+else if (Model.SimpleLogin)
+{
+    <a class="btn btn-default" href="/worldcup/logout">로그아웃</a>
+}
+else
+{
+    <form class="form-inline" action="/worldcup/simplelogin" method="post">
+        <div class="form-group">
+           <label for="login-username">아이디</label>
+           <input type="text" class="form-control" id="login-username" name="username" maxlength="15" placeholder="한글가능">
+        </div>
+        <div class="form-group">
+           <label for="login-password">비밀번호</label>
+           <input type="password" class="form-control" id="login-password" name="password" placeholder="비밀번호">
+        </div>
+        <button type="submit" class="btn btn-default">간단 로그인</button>
+    </form>
+    <a class="btn-login" href="#">구글 로그인</a><span>은 빠르고 편리합니다. (카톡에서 바로 열면 안됩니다. 크롬이나 다른 프로그램을 이용해주세요)</span>
+}
+<h3>나의 선택</h3>
+
+<span>시작하지 않은 경기는 변경할 수 있습니다.</span>
+<div class="group-list ">
+    @{
+        var list = new[]
+        {
+            new { Title = "Quarter-finals", MatchList = knockoutData.Round8 },
+            new { Title = "Semi-finals", MatchList = knockoutData.Round4 },
+            new { Title = "Play-off for third place", MatchList = knockoutData.Third },
+            new { Title = "Final", MatchList = knockoutData.Final },
+        };
+    }
+    
+    @foreach (var matchItem in list)
+    {
+        string title = matchItem.Title;
+        List<KnockoutMatch> matchList = matchItem.MatchList;
+
+        <h3 style="text-align: center;">@title</h3>
+        <ul>
+        @foreach (var matchData in matchList)
+        {
+            var matchNumber = matchData.MatchNumber;
+            var matchId = matchData.MatchId;
+            var teams = new[] { matchData.TeamHome, matchData.TeamAway };
+            var started = matchData.IsStarted ? "started" : "";
+
+            <li class="row match" id="@matchId" data-match-number="@matchNumber">
+            @foreach (var teamData in teams)
+            {
+                var image= "https://img.fifa.com/images/flags/4/" + teamData.TeamCode + ".png";
+                var isHome = teamData == matchData.TeamHome ? "home" : "away";
+                var otherTeam = teamData == matchData.TeamHome ? matchData.TeamAway : matchData.TeamHome;
+
+                <div class="col-xs-6 team-data @isHome @started" id="@teamData.TeamCode" data-team-code="@teamData.TeamCode" data-team-name="@teamData.TeamName">
+                    <span class="score inside-score">@teamData.Score</span>
+                    <img src="" class="country-picture group-team" id="team-@matchId-@isHome" onclick="selectTeam(@matchNumber, '@matchId', this)" />
+                    <span class="team-name"></span>
+                    <span class="score bottom-score">@teamData.Score</span>
+                </div>
+            }
+            </li>
+        }
+        </ul>
+    }
+</div>
+
+<button class="btn" onclick="applyTeam16()">저장</button>
+
+
+@if (Model.isLogin || Model.SimpleLogin)
+{
+    @foreach (var pictures in Model.SampleList)
+    {
+        <div class="sample-data">
+            <h3>누군가 고른 데이터</h3>
+            @foreach (var picture in pictures)
+            {
+                <img src="@picture" class="country-picture" />
+            }
+        </div>
+    }
+}
+
+
+@section Css
+{
+<link href="/Static/css/worldcup.css" rel="stylesheet" />
+<style type="text/css">
+    a {
+        color: black;
+    }
+    a.btn-login {
+        color: black;
+        font-weight: bolder;
+        text-decoration: underline;
+    }
+    .group-list {
+    }
+    .group-list > div {
+        display: inline-block;
+    }
+    .group-list ul {
+        list-style: none;
+        padding-left: 0;
+    }
+    .group-name {
+        font-size: 1.5em;
+    }
+    .team-name {
+        font-size: 1.5em;
+    }
+    .group-team {
+        margin-bottom: 10px;
+        opacity: 0.2;
+        cursor: pointer;
+    }
+    .group-team:hover {
+        opacity: 0.8;
+    }
+    .group-team.selected {
+        opacity: 1;
+    }
+    img.country-picture {
+        border: 1px solid gray;
+    }
+
+    .sample-data {
+        margin-top: 50px;
+    }
+
+    .sample-data img.country-picture {
+        margin: 4px;
+    }
+
+
+</style>
+}
+
+@section Javascript
+{
+    <script type="text/javascript">
+    var selectedTeam = [];
+    var savedData = '[]';
+    var freezeTime = Date.parse('@Model.FreezeTime.ToString("yyyy-MM-dd HH:mm:ss")');
+
+    @if (Model.isLogin || Model.SimpleLogin)
+    {
+        @:$.get('/worldcup/final', data => {
+           @:selectedTeam = JSON.parse(data);
+           @:savedData = data;
+           @:updateHtml();
+        @:});
+    }
+
+    function selectTeam(matchNumber, matchId, x) {
+        var teamCode = $(x).parent().attr('data-team-code');
+        var teamName = $(x).parent().attr('data-team-name');
+        var teamType = $(x).parent().hasClass('home') ? 'home' : 'away';
+        var otherTeamType = $(x).parent().hasClass('home') ? 'away' : 'home';
+        var otherTeam = $(`#${matchId} .${otherTeamType}`)
+        var otherTeamCode = $(otherTeam).attr('data-team-code');
+        var otherTeamName = $(otherTeam).attr('data-team-name');
+        //console.log(matchNumber, matchId, teamCode, otherTeamCode, otherTeamName);
+
+        selectedTeam = selectedTeam.filter(x => x.matchId != matchId);
+        selectedTeam.push({ matchId, teamType, matchNumber, teamCode, teamName, otherTeamCode, otherTeamName })
+        if (matchNumber <= 60) {
+            // 8강
+            selectedTeam = selectedTeam.filter(x => x.matchId.startsWith('R8'))
+        } else if (matchNumber <= 62) {
+            // 4강
+            selectedTeam = selectedTeam.filter(x => x.matchId.startsWith('R8') || x.matchId.startsWith('R4'))
+        } else {
+            // 3,4위전, 결승전
+        }
+
+        //console.log(selectedTeam)
+        updateHtml();
+    }
+
+    function removeTeam(matchId, teamCode) {
+        selectedTeam = selectedTeam.filter(x => !(x.matchId == matchId && x.teamCode == teamCode));
+        updateHtml();
+    }
+
+    function updateHtml() {
+        $('.group-team').removeClass('selected');
+        selectedTeam.forEach(x => {
+           $(`#team-${x.matchId}-${x.teamType}`).addClass('selected');
+        })
+
+        $('li.match').each((i, x) => {
+            var matchNumber = parseInt($(x).attr('data-match-number'))
+            if (matchNumber <= 60)
+                return;
+
+            $(x).find('div.team-data').each((ii, e) => {
+                $(e).attr('data-team-code', '')
+                $(e).attr('data-team-name', '')
+            })
+        })
+
+        selectedTeam.forEach(x => {
+            if (x.matchNumber <= 60) {
+                var target = $(`div#W${x.matchNumber}`)
+                $(target).attr('data-team-code', x.teamCode)
+                $(target).attr('data-team-name', x.teamName)
+            } else if (x.matchNumber <= 62) {
+                var target = $(`div#W${x.matchNumber}`)
+                $(target).attr('data-team-code', x.teamCode)
+                $(target).attr('data-team-name', x.teamName)
+
+                var targetLoser = $(`div#L${x.matchNumber}`)
+                $(targetLoser).attr('data-team-code', x.otherTeamCode)
+                $(targetLoser).attr('data-team-name', x.otherTeamName)
+            }
+        })
+
+        $('div.team-data').each((i, x) => {
+            var teamCode = $(x).attr('data-team-code')
+            var teamName = $(x).attr('data-team-name')
+            $(x).find('img').attr('src', `https://img.fifa.com/images/flags/4/${teamCode}.png`)
+            $(x).find('span.team-name').text(teamName)
+        })
+    }
+
+    function applyTeam16() {
+        $.post('/worldcup/final', {
+           selectedTeam: JSON.stringify(selectedTeam)
+        }, result => alert(result));
+    }
+
+        setInterval(() => {
+            var remainSeconds = (freezeTime - Date.now()) / 1000;
+            if (remainSeconds < 0)
+                return;
+
+            var hours = Math.floor(remainSeconds / 3600);
+            var minutes = Math.floor((remainSeconds - hours * 3600) / 60);
+            minutes = minutes < 10 ? `0${minutes}` : minutes;
+            var seconds = Math.floor(remainSeconds % 60);
+            seconds = seconds < 10 ? `0${seconds}` : seconds;
+
+            $('#remain-time').text(`${hours}:${minutes}:${seconds}`);
+        }, 1000)
+
+        updateHtml();
+    </script>
+}

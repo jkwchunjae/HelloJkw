@@ -7,6 +7,7 @@ using System.Linq;
 using System.Net;
 using System.Text;
 using System.Threading.Tasks;
+using Extensions;
 
 namespace helloJkw.Game.Worldcup
 {
@@ -442,6 +443,7 @@ namespace helloJkw.Game.Worldcup
     public class KnockoutMatch
     {
         public string MatchId { get; set; }
+        public int MatchNumber { get; set; }
         public KnockoutTeam TeamHome { get; set; }
         public KnockoutTeam TeamAway { get; set; }
         public DateTime GameStartTime { get; set; }
@@ -458,14 +460,18 @@ namespace helloJkw.Game.Worldcup
         public KnockoutMatch(string matchId, HtmlNode matchSection)
         {
             MatchId = matchId;
+            MatchNumber = matchSection.SelectNodes(".//div[contains(@class, 'fi__info__matchnumber')]/span")[1].InnerText.ToInt();
 
             var list = matchSection.SelectNodes("./div/div[contains(@class, 'fi-t')]").ToList();
             var scoreText = matchSection.SelectSingleNode(".//span[contains(@class, 'fi-s__scoreText')]").InnerText.Trim();
             var homeScore = scoreText.Contains("-") ? scoreText.Split('-')[0] : "";
             var awayScore = scoreText.Contains("-") ? scoreText.Split('-')[1] : "";
             IsStarted = homeScore != "";
-            TeamHome = new KnockoutTeam(list[0], homeScore);
-            TeamAway = new KnockoutTeam(list[1], awayScore);
+            var subScore = matchSection.SelectSingleNode(".//div[contains(@class, 'fi-mu__penaltyscore-wrap')]").InnerText.Trim().Replace("(", "").Replace(")", "");
+            var homeSubScore = string.IsNullOrWhiteSpace(subScore) ? "" : subScore.Split('-')[0];
+            var awaySubScore = string.IsNullOrWhiteSpace(subScore) ? "" : subScore.Split('-')[1];
+            TeamHome = new KnockoutTeam(list[0], homeScore, homeSubScore);
+            TeamAway = new KnockoutTeam(list[1], awayScore, awaySubScore);
             var matchTimeUtc = matchSection.SelectSingleNode(".//div[contains(@class, 'fi-mu__info__datetime')]").GetAttributeValue("data-utcdate", "");
             GameStartTime = DateTime.Parse(matchTimeUtc).AddHours(12);
         }
@@ -479,23 +485,17 @@ namespace helloJkw.Game.Worldcup
         public int SubScore { get; set; }
 
         public KnockoutTeam() { }
-        public KnockoutTeam(HtmlNode teamSection, string scoreText)
+        public KnockoutTeam(HtmlNode teamSection, string scoreText, string subScoreText)
         {
             TeamName = teamSection.SelectSingleNode(".//span[contains(@class, 'fi-t__nText')]").InnerText.Trim();
             TeamCode = teamSection.SelectSingleNode(".//span[contains(@class, 'fi-t__nTri')]").InnerText.Trim();
             if (!string.IsNullOrWhiteSpace(scoreText))
             {
-                if (scoreText.Contains("("))
-                {
-                    // 승부차기 ?! 일단 추측 코딩 해봄
-                    var arr = scoreText.Split('(');
-                    Score = int.Parse(arr[0].Trim());
-                    SubScore = int.Parse(arr[1].Replace(")", "").Trim());
-                }
-                else
-                {
-                    Score = int.Parse(scoreText);
-                }
+                Score = scoreText.ToInt();
+            }
+            if (!string.IsNullOrWhiteSpace(subScoreText))
+            {
+                SubScore = subScoreText.ToInt();
             }
         }
     }
