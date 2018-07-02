@@ -122,17 +122,17 @@ namespace helloJkw.Game.Worldcup
 
             var offsetScoreDic = bettingData.UserBettingList.Select(x => x.Value)
                 .GroupBy(x => new { BettingGroup = x.BettingGroup ?? "" })
-                .Select(x => new { x.Key.BettingGroup, MinScore = x.Min(e => e.BettingList.Where(r => r.IsMatched).Sum(r => weightDic[r.Id])) })
+                .Select(x => new { x.Key.BettingGroup, MinScore = x.Min(e => e.BettingList.Where(r => r.IsMatched).Where(r => weightDic.ContainsKey(r.Id)).Sum(r => weightDic[r.Id])) })
                 .Select(x => new { x.BettingGroup, Offset = x.MinScore > bettingData.ScoreMinimum ? x.MinScore - bettingData.ScoreMinimum : 0 })
                 .ToDictionary(x => x.BettingGroup, x => bettingData.ScoreMinimum < 0 ? 0 : x.Offset);
 
             var ratioBaseDic = bettingData.UserBettingList.Select(x => x.Value)
                 .GroupBy(x => new { BettingGroup = x.BettingGroup ?? "" })
-                .Select(x => new { x.Key.BettingGroup, RatioBase = x.Sum(e => e.BettingList.Where(r => r.IsMatched).Sum(r => weightDic[r.Id]) - offsetScoreDic[x.Key.BettingGroup ?? ""]) })
+                .Select(x => new { x.Key.BettingGroup, RatioBase = x.Sum(e => e.BettingList.Where(r => r.IsMatched).Where(r => weightDic.ContainsKey(r.Id)).Sum(r => weightDic[r.Id]) - offsetScoreDic[x.Key.BettingGroup ?? ""]) })
                 .ToDictionary(x => x.BettingGroup, x => x.RatioBase);
 
             var userBettingList = bettingData.UserBettingList
-                .Select(x => new { Data = x.Value, Weight = (x.Value.BettingList.Where(e => e.IsMatched).Sum(e => weightDic[e.Id]) - offsetScoreDic[x.Value.BettingGroup ?? ""]) / ratioBaseDic[x.Value.BettingGroup ?? ""] })
+                .Select(x => new { Data = x.Value, Weight = (x.Value.BettingList.Where(e => e.IsMatched).Where(r => weightDic.ContainsKey(r.Id)).Sum(e => weightDic[e.Id]) - offsetScoreDic[x.Value.BettingGroup ?? ""]) / ratioBaseDic[x.Value.BettingGroup ?? ""] })
                 .Select(x => new { x.Data, Allotment = x.Weight * bettingData.UserBettingList.Where(e => (e.Value.BettingGroup ?? "") == (x.Data.BettingGroup ?? "")).Sum(e => e.Value.BettingAmount) })
                 .Select(x =>
                 {
@@ -155,7 +155,7 @@ namespace helloJkw.Game.Worldcup
 
             var offsetScoreDic = bettingData.UserBettingList.Select(x => x.Value)
                 .GroupBy(x => new { BettingGroup = x.BettingGroup ?? "" })
-                .Select(x => new { x.Key.BettingGroup, MinScore = x.Min(e => e.BettingList.Where(r => r.IsMatched).Sum(r => weightDic[r.Id])) })
+                .Select(x => new { x.Key.BettingGroup, MinScore = x.Min(e => e.BettingList.Where(r => r.IsMatched).Where(r => weightDic.ContainsKey(r.Id)).Sum(r => weightDic[r.Id])) })
                 .Select(x => new { x.BettingGroup, Offset = x.MinScore > bettingData.ScoreMinimum ? x.MinScore - bettingData.ScoreMinimum : 0 })
                 .ToDictionary(x => x.BettingGroup, x => bettingData.ScoreMinimum < 0 ? 0 : (int)x.Offset);
 
@@ -163,9 +163,9 @@ namespace helloJkw.Game.Worldcup
                 .Select(x => new DashboardItem
                 {
                     Username = x.Username,
-                    BettingGroup = x.BettingGroup,
-                    MatchedCount = (int)x.BettingList.Where(e => e.IsMatched).Sum(e => weightDic[e.Id]),
-                    OffsetCount = (int)x.BettingList.Where(e => e.IsMatched).Sum(e => weightDic[e.Id]) - offsetScoreDic[x.BettingGroup],
+                    BettingGroup = x.BettingGroup ?? "",
+                    MatchedCount = (int)x.BettingList.Where(e => e.IsMatched).Where(r => weightDic.ContainsKey(r.Id)).Sum(e => weightDic[e.Id]),
+                    OffsetCount = (int)x.BettingList.Where(e => e.IsMatched).Where(r => weightDic.ContainsKey(r.Id)).Sum(e => weightDic[e.Id]) - offsetScoreDic[x.BettingGroup ?? ""],
                     BettingAmount = x.BettingAmount,
                     AllotmentAmount = x.AllotmentAmount,
                 })

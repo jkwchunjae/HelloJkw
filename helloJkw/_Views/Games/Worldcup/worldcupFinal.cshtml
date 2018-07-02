@@ -27,7 +27,7 @@
         <li>우승국을 맞추면 32점을 획득한다.</li>
         <li>준우승 8점, 3위 2점, 4위 1점을 각각 획득한다.</li>
         <li>정확히 맞추지 못한 경우는 0점을 획득한다.</li>
-        <li>팀을 고를 수 있는 것은 8강 1경기 시작하기 전 까지이다.</li>
+        <li>팀을 고를 수 있는 시간은 8강 1경기 시작하기 전 까지이다.</li>
     </ul>
 </p>
 
@@ -169,8 +169,8 @@ else
 
                 <div class="col-xs-6 team-data @isHome @started" id="@teamData.TeamCode" data-team-code="@teamData.TeamCode" data-team-name="@teamData.TeamName">
                     <span class="score inside-score">@teamData.Score</span>
-                    <img src="" class="country-picture group-team" id="team-@matchId-@isHome" onclick="selectTeam(@matchNumber, '@matchId', this)" />
-                    <span class="team-name"></span>
+                    <img src="@image" class="country-picture group-team" id="team-@matchId-@isHome" onclick="selectTeam(@matchNumber, '@matchId', this)" />
+                    <span class="team-name">@teamData.TeamName</span>
                     <span class="score bottom-score">@teamData.Score</span>
                 </div>
             }
@@ -264,14 +264,30 @@ else
         @:$.get('/worldcup/final', data => {
            @:selectedTeam = JSON.parse(data);
            @:savedData = data;
-           @:updateHtml();
+           @:updateHtml2();
         @:});
     }
 
+    function updateHtml2() {
+        var ignoreList = ['Champion', 'Second', 'Third', 'Fourth']
+        var copied = selectedTeam.map(x => ({ matchId: x.matchId, teamCode: x.teamCode }))
+        selectedTeam = []
+        copied.filter(x => !ignoreList.some(e => e == x.matchId)).forEach(x => {
+            var matchId = x.matchId;
+            var teamCode = x.teamCode;
+            var matchNumber = parseInt($(`li#${matchId}`).attr('data-match-number'))
+            var teamImg = $(`li#${matchId} div[data-team-code='${teamCode}'] img`)
+            if (teamImg.length > 0) {
+                selectTeam(matchNumber, matchId, teamImg[0])
+            }
+        })
+    }
+
     function selectTeam(matchNumber, matchId, x) {
-        var teamCode = $(x).parent().attr('data-team-code');
-        var teamName = $(x).parent().attr('data-team-name');
         var teamType = $(x).parent().hasClass('home') ? 'home' : 'away';
+        var team = $(`#${matchId} .${teamType}`)
+        var teamCode = $(team).attr('data-team-code');
+        var teamName = $(team).attr('data-team-name');
         var otherTeamType = $(x).parent().hasClass('home') ? 'away' : 'home';
         var otherTeam = $(`#${matchId} .${otherTeamType}`)
         var otherTeamCode = $(otherTeam).attr('data-team-code');
