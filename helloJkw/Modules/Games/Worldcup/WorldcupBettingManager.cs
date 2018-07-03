@@ -86,8 +86,8 @@ namespace helloJkw.Game.Worldcup
             {
                 if (checkId)
                 {
-                    var target = bettingData.TargetList.First(x => x.Id == userData.Id);
-                    userData.IsMatched = userData.Value == target.Value;
+                    var target = bettingData.TargetList.FirstOrDefault(x => x.Id == userData.Id);
+                    userData.IsMatched = userData.Value == target?.Value;
                 }
                 else
                 {

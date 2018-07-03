@@ -73,8 +73,7 @@
     <thead>
         <tr>
             <th>아이디</th>
-            <th>성공</th>
-            <th>실패</th>
+            <th>선택</th>
         </tr>
     </thead>
     <tbody>
@@ -82,26 +81,30 @@
     {
         var username = dData.Username;
         var blindName = username.Left(3) + "***";
-        List<string> startedMatch = knockoutData.Round16.Where(x => x.IsStarted && x.Winner != null).Select(x => x.MatchId).ToList();
         var userBettingList = bettingData.UserBettingList[username].BettingList;
-        List<string> successList = userBettingList.Where(x => startedMatch.Contains(x.Id) && x.IsMatched).Select(x => x.Value).ToList();
-        List<string> failList = userBettingList.Where(x => startedMatch.Contains(x.Id) && !x.IsMatched).Select(x => x.Value).ToList();
+        var idList = new[] { "Champion", "Second", "Third", "Fourth" };
         <tr>
             <td>@blindName</td>
+            @if (bettingData.IsFreeze)
+            {
             <td>
-                @foreach (var teamCode in successList)
+                투표가 종료되면 나타납니다.
+            </td>
+            }
+            else
+            {
+            <td>
+                @foreach (var id in idList)
                 {
+                    var teamCode = userBettingList.Any(x => x.Id == id) ? userBettingList.First(x => x.Id == id).Value : "";
                     var image = "https://img.fifa.com/images/flags/4/" + teamCode + ".png";
-                    <img src="@image" class="result-table" />
+                    if (teamCode != "")
+                    {
+                        <img src="@image" class="result-table" />
+                    }
                 }
             </td>
-            <td>
-                @foreach (var teamCode in failList)
-                {
-                    var image = "https://img.fifa.com/images/flags/4/" + teamCode + ".png";
-                    <img src="@image" class="result-table" />
-                }
-            </td>
+            }
         </tr>
     }
     </tbody>
@@ -326,10 +329,10 @@ else
             if (matchNumber <= 60)
                 return;
 
-            $(x).find('div.team-data').each((ii, e) => {
-                $(e).attr('data-team-code', '')
-                $(e).attr('data-team-name', '')
-            })
+            //$(x).find('div.team-data').each((ii, e) => {
+            //    $(e).attr('data-team-code', '')
+            //    $(e).attr('data-team-name', '')
+            //})
         })
 
         selectedTeam.forEach(x => {
@@ -357,9 +360,14 @@ else
     }
 
     function applyTeam16() {
-        $.post('/worldcup/final', {
-           selectedTeam: JSON.stringify(selectedTeam)
-        }, result => alert(result));
+        var matchIds = ['R8W1', 'R8W2', 'R8W3', 'R8W4', 'R4W1', 'R4W2', 'THIRD', 'FINAL']
+        if (matchIds.every(x => selectedTeam.some(e => e.matchId == x))) {
+            $.post('/worldcup/final', {
+                selectedTeam: JSON.stringify(selectedTeam)
+            }, result => alert(result));
+        } else {
+            alert('모두선택하세요')
+        }
     }
 
         setInterval(() => {

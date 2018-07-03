@@ -29,7 +29,12 @@ namespace helloJkw.Game.Worldcup
         {
             Get["/worldcup"] = _ => Response.AsRedirect("/worldcup/2018");
 
-            Get["/worldcup/2018"] = _ => Response.AsRedirect("/worldcup/2018/final");
+            Get["/worldcup/2018"] = _ =>
+            {
+                if (DateTime.Now < new DateTime(2018, 7, 4, 6, 0, 0))
+                    return Response.AsRedirect("/worldcup/2018/round16");
+                return Response.AsRedirect("/worldcup/2018/final");
+            };
 
             Get["/worldcup/2018/final"] = _ =>
             {
@@ -53,6 +58,11 @@ namespace helloJkw.Game.Worldcup
                     .Select(x => x.Value.Value.BettingList)
                     .Select(x => x.Select(e => $"https://img.fifa.com/images/flags/4/{e.Value.ToLower()}.png").ToList())
                     .ToList();
+                //WorldcupBettingManager.KnockoutData.Round4[0].TeamHome = new KnockoutTeam { TeamCode = "FRA", TeamName = "Uruguay" };
+                //WorldcupBettingManager.KnockoutData.Round4[0].TeamAway = new KnockoutTeam { TeamCode = "BEL", TeamName = "Brazil" };
+                //WorldcupBettingManager.KnockoutData.Round4[1].TeamHome = new KnockoutTeam { TeamCode = "RUS", TeamName = "Russia" };
+                //WorldcupBettingManager.KnockoutData.Round4[1].TeamAway = new KnockoutTeam { TeamCode = "SWE", TeamName = "Sweden" };
+                var knockoutData = WorldcupBettingManager.KnockoutData;
                 var dashboard = WorldcupBettingManager.DashboardList
                     .Where(x => x.BettingName == bettingName)
                     .OrderBy(x => x.CalcTime)
@@ -67,18 +77,29 @@ namespace helloJkw.Game.Worldcup
                         AllotmentAmount = x.AllotmentAmount,
                     })
                     ?.OrderByDescending(x => x.MatchedCount)
+                    ?.OrderByDescending(x =>
+                    {
+                        var score = 0;
+                        var bettingList = bettingData.UserBettingList[x.Username].BettingList;
+
+                        var finalId = new[] { "Champion", "Second" };
+                        var userFinalTeams = bettingList.Where(e => finalId.Contains(e.Id)).Select(e => e.Value).ToList();
+                        var finalTeams = new[] { knockoutData.Final[0].TeamHome.TeamName, knockoutData.Final[0].TeamAway.TeamName };
+                        score += 10 * userFinalTeams.Join(finalTeams, a => 1, b => 2, (a, b) => new { a, b })
+                            .Count(e => e.a == e.b);
+
+                        var semiId = finalId.Concat(new[] { "Third", "Fourth" }).ToList();
+                        var userSemiTeams = bettingList.Where(e => semiId.Contains(e.Id)).Select(e => e.Value).ToList();
+                        var semiTeams = Enumerable.Range(0, 2).SelectMany(e => new[] { knockoutData.Round4[e].TeamHome.TeamName, knockoutData.Round4[e].TeamAway.TeamName }).ToList();
+                        score += 1 * userFinalTeams.Join(finalTeams, a => 1, b => 2, (a, b) => new { a, b })
+                            .Count(e => e.a == e.b);
+
+                        return score;
+                    })
                     ?.ThenBy(x => x.Username)
                     ?.ToList() ?? new List<DashboardItem>();
 
                 Model.SampleList = sampleList;
-                //WorldcupBettingManager.KnockoutData.Round8[1].TeamHome = new KnockoutTeam { TeamCode = "RUS", TeamName = "Russia" };
-                //WorldcupBettingManager.KnockoutData.Round8[1].TeamAway = new KnockoutTeam { TeamCode = "CRO", TeamName = "Croatia" };
-                //WorldcupBettingManager.KnockoutData.Round8[2].TeamHome = new KnockoutTeam { TeamCode = "BRA", TeamName = "Brazil" };
-                //WorldcupBettingManager.KnockoutData.Round8[2].TeamAway = new KnockoutTeam { TeamCode = "BEL", TeamName = "Belgium" };
-                //WorldcupBettingManager.KnockoutData.Round8[3].TeamHome = new KnockoutTeam { TeamCode = "SUI", TeamName = "Switzerland" };
-                //WorldcupBettingManager.KnockoutData.Round8[3].TeamAway = new KnockoutTeam { TeamCode = "ENG", TeamName = "England" };
-                //WorldcupBettingManager.KnockoutData.Round4[0].TeamHome = new KnockoutTeam { TeamCode = "FRA", TeamName = "France" };
-                //WorldcupBettingManager.KnockoutData.Round4[0].TeamAway = new KnockoutTeam { TeamCode = "RUS", TeamName = "Russia" };
                 Model.KnockoutData = WorldcupBettingManager.KnockoutData;
                 Model.Dashboard = dashboard;
                 Model.BettingData = bettingData;
@@ -429,7 +450,7 @@ namespace helloJkw.Game.Worldcup
                     .Select(x => new UserBetting { Id = x.Id, Value = x.Value })
                     .ToList();
 
-                var result = bettingData.UpdateUserBettingData(username, userBettings, false);
+                var result = bettingData.UpdateUserBettingData(username, userBettings, true);
                 return result ? "저장되었습니다." : "저장 실패";
             };
 
