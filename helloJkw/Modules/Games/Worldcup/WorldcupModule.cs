@@ -150,9 +150,10 @@ namespace helloJkw.Game.Worldcup
                 Model.KnockoutData = WorldcupBettingManager.KnockoutData;
                 Model.Dashboard = dashboard;
                 Model.BettingData = bettingData;
-                Model.FreezeTime = WorldcupBettingManager.KnockoutData.Round16
-                    .Where(x => !x.IsFreeze)
-                    .Min(x => x.GameStartTime);
+                var notyetList = WorldcupBettingManager.KnockoutData.Round16
+                    .Where(x => !x.IsFreeze);
+                Model.FreezeTime = notyetList.Any() ? notyetList.Min(x => x.GameStartTime) :
+                    WorldcupBettingManager.KnockoutData.Round16.OrderBy(x => x.GameStartTime).Last().GameStartTime;
                 return View["Games/Worldcup/worldcupRound16.cshtml", Model];
             };
 
@@ -371,6 +372,10 @@ namespace helloJkw.Game.Worldcup
                     .Where(x => !freezeMatchList.Contains(x.Id))
                     .OrderBy(x => x.Id)
                     .ToList();
+
+                var notyetList = knockoutData.Round16.Where(x => !x.IsFreeze);
+                Model.FreezeTime = notyetList.Any() ? notyetList.Min(x => x.GameStartTime) :
+                    knockoutData.Round16.OrderBy(x => x.GameStartTime).Last().GameStartTime;
 
                 var freezeTime = knockoutData.Round16.Where(x => !x.IsFreeze)?.Min(x => x.GameStartTime);
                 if (freezeTime == null || freezeTime < DateTime.Now)
