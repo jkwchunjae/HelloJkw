@@ -258,36 +258,30 @@ namespace helloJkw.Game.Worldcup
                         if (finalBettingData != null)
                         {
                             finalBettingData.TargetList = new List<Target>();
-                            if (KnockoutData.Final[0].Winner != null)
+                            finalBettingData.TargetList.Add(new Target
                             {
-                                finalBettingData.TargetList.Add(new Target
-                                {
-                                    Id = "Champion",
-                                    Value = KnockoutData.Final[0].Winner.TeamCode,
-                                    Weight = 32,
-                                });
-                                finalBettingData.TargetList.Add(new Target
-                                {
-                                    Id = "Second",
-                                    Value = KnockoutData.Final[0].Loser.TeamCode,
-                                    Weight = 8,
-                                });
-                            }
-                            if (KnockoutData.Third[0].Winner != null)
+                                Id = "Champion",
+                                Value = KnockoutData.Final[0].Winner?.TeamCode ?? "",
+                                Weight = 32,
+                            });
+                            finalBettingData.TargetList.Add(new Target
                             {
-                                finalBettingData.TargetList.Add(new Target
-                                {
-                                    Id = "Third",
-                                    Value = KnockoutData.Final[0].Winner.TeamCode,
-                                    Weight = 4,
-                                });
-                                finalBettingData.TargetList.Add(new Target
-                                {
-                                    Id = "Fourth",
-                                    Value = KnockoutData.Final[0].Loser.TeamCode,
-                                    Weight = 2,
-                                });
-                            }
+                                Id = "Second",
+                                Value = KnockoutData.Final[0].Loser?.TeamCode ?? "",
+                                Weight = 8,
+                            });
+                            finalBettingData.TargetList.Add(new Target
+                            {
+                                Id = "Third",
+                                Value = KnockoutData.Third[0].Winner?.TeamCode ?? "",
+                                Weight = 4,
+                            });
+                            finalBettingData.TargetList.Add(new Target
+                            {
+                                Id = "Fourth",
+                                Value = KnockoutData.Third[0].Loser?.TeamCode ?? "",
+                                Weight = 2,
+                            });
                             finalBettingData.TargetList.Add(new Target
                             {
                                 Id = "R8W1",
