@@ -38,16 +38,17 @@ namespace helloJkw.Game.Worldcup
 
             Get["/worldcup/2018/final"] = _ =>
             {
+                var username = "";
                 Model.SimpleLogin = false;
-                Model.Username = "";
                 if (session.IsLogin)
                 {
+                    username = session.User.Email;
                 }
                 if (_simpleLoginDic.ContainsKey(sessionId))
                 {
                     var loginData = _simpleLoginDic[sessionId];
                     Model.SimpleLogin = true;
-                    Model.Username = loginData.Username;
+                    username = loginData.Username;
                 }
                 var bettingName = "final";
                 var bettingData = WorldcupBettingManager.GetBettingData(bettingName);
@@ -99,11 +100,13 @@ namespace helloJkw.Game.Worldcup
                     ?.ThenBy(x => x.Username)
                     ?.ToList() ?? new List<DashboardItem>();
 
+                Model.Username = username;
                 Model.SampleList = sampleList;
                 Model.KnockoutData = WorldcupBettingManager.KnockoutData;
                 Model.Dashboard = dashboard;
                 Model.BettingData = bettingData;
                 Model.FreezeTime = bettingData.FreezeTime;
+                Model.IsRandomSelected = bettingData.RandomSelectedUser.Contains(username);
                 return View["Games/Worldcup/worldcupFinal.cshtml", Model];
             };
 
@@ -424,6 +427,7 @@ namespace helloJkw.Game.Worldcup
                 var username = session.IsLogin ? session.User.Email : _simpleLoginDic[sessionId].Username;
 
                 string selectedTeamText = Request.Form["selectedTeam"];
+                bool isRandom = Request.Form["isRandom"];
 
                 WorldcupBettingManager.Log(username, "round16", selectedTeamText);
 
@@ -432,6 +436,9 @@ namespace helloJkw.Game.Worldcup
 
                 if (bettingData.FreezeTime < DateTime.Now)
                     return "이제 변경할 수 없습니다.";
+
+                if (bettingData.RandomSelectedUser.Contains(username))
+                    return "한 번 랜덤 선택하면 변경할 수 없습니다.";
 
                 var userBettingsTemp = JsonConvert.DeserializeObject<List<dynamic>>(selectedTeamText)
                     .Select(x => new { Id = (string)x["matchId"], Value = (string)x["teamCode"], OtherTeamCode = (string)x["otherTeamCode"] })
@@ -455,6 +462,10 @@ namespace helloJkw.Game.Worldcup
                     .Select(x => new UserBetting { Id = x.Id, Value = x.Value })
                     .ToList();
 
+                if (isRandom)
+                {
+                    bettingData.RandomSelectedUser.Add(username);
+                }
                 var result = bettingData.UpdateUserBettingData(username, userBettings, true);
                 return result ? "저장되었습니다." : "저장 실패";
             };

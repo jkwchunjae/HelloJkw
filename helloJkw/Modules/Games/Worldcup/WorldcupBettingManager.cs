@@ -252,6 +252,79 @@ namespace helloJkw.Game.Worldcup
 
                             bettingData.RecalcMatchData(true);
                         }
+
+                        var finalBettingName = "final";
+                        var finalBettingData = _bettingDataList.FirstOrDefault(x => x.BettingName == finalBettingName);
+                        if (finalBettingData != null)
+                        {
+                            finalBettingData.TargetList = new List<Target>();
+                            if (KnockoutData.Final[0].Winner != null)
+                            {
+                                finalBettingData.TargetList.Add(new Target
+                                {
+                                    Id = "Champion",
+                                    Value = KnockoutData.Final[0].Winner.TeamCode,
+                                    Weight = 32,
+                                });
+                                finalBettingData.TargetList.Add(new Target
+                                {
+                                    Id = "Second",
+                                    Value = KnockoutData.Final[0].Loser.TeamCode,
+                                    Weight = 8,
+                                });
+                            }
+                            if (KnockoutData.Third[0].Winner != null)
+                            {
+                                finalBettingData.TargetList.Add(new Target
+                                {
+                                    Id = "Third",
+                                    Value = KnockoutData.Final[0].Winner.TeamCode,
+                                    Weight = 4,
+                                });
+                                finalBettingData.TargetList.Add(new Target
+                                {
+                                    Id = "Fourth",
+                                    Value = KnockoutData.Final[0].Loser.TeamCode,
+                                    Weight = 2,
+                                });
+                            }
+                            finalBettingData.TargetList.Add(new Target
+                            {
+                                Id = "R8W1",
+                                Value = KnockoutData.Round4[0].TeamHome.TeamCode,
+                                Weight = 1,
+                            });
+                            finalBettingData.TargetList.Add(new Target
+                            {
+                                Id = "R8W2",
+                                Value = KnockoutData.Round4[0].TeamAway.TeamCode,
+                                Weight = 1,
+                            });
+                            finalBettingData.TargetList.Add(new Target
+                            {
+                                Id = "R8W4",
+                                Value = KnockoutData.Round4[1].TeamHome.TeamCode,
+                                Weight = 1,
+                            });
+                            finalBettingData.TargetList.Add(new Target
+                            {
+                                Id = "R8W3",
+                                Value = KnockoutData.Round4[1].TeamAway.TeamCode,
+                                Weight = 1,
+                            });
+                            finalBettingData.TargetList.Add(new Target
+                            {
+                                Id = "R4W1",
+                                Value = KnockoutData.Final[0].TeamHome.TeamCode,
+                                Weight = 5,
+                            });
+                            finalBettingData.TargetList.Add(new Target
+                            {
+                                Id = "R4W2",
+                                Value = KnockoutData.Final[0].TeamAway.TeamCode,
+                                Weight = 5,
+                            });
+                        }
                     }
                     catch (Exception ex)
                     {
@@ -331,6 +404,7 @@ namespace helloJkw.Game.Worldcup
         public List<Target> TargetList { get; set; }
         public Dictionary<string /* username */, UserBettingData> UserBettingList { get; set; }
         public int ScoreMinimum { get; set; } // ignore: -1
+        public List<string> RandomSelectedUser { get; set; } = new List<string>();
 
         [JsonIgnore]
         public bool IsOpen => OpenTime >= DateTime.Now;
@@ -454,6 +528,10 @@ namespace helloJkw.Game.Worldcup
             TeamHome.Score < TeamAway.Score ? TeamAway :
             TeamHome.SubScore > TeamAway.SubScore ? TeamHome :
             TeamHome.SubScore < TeamAway.SubScore ? TeamAway : null;
+        [JsonIgnore]
+        public KnockoutTeam Loser
+            => Winner == null ? null : Winner == TeamHome ? TeamAway : TeamHome;
+
         public bool IsFreeze => IsStarted || GameStartTime < DateTime.Now || Winner != null;
 
         public KnockoutMatch() { }
