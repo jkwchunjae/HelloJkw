@@ -485,6 +485,31 @@ namespace helloJkw.Game.Worldcup
                 }
                 return false;
             };
+
+            Get["/worldcup/{bettingName}/json"] = _ =>
+            {
+                string bettingName = _.bettingName;
+                var bettingData = WorldcupBettingManager.GetBettingData(bettingName);
+
+                if (bettingData == null)
+                    return "[]";
+
+                var idList = new[] { "Champion", "Second", "Third", "Fourth", }
+                    .Select((x, i) => new { Code = x, Index = i + 1 })
+                    .ToDictionary(x => x.Code, x => x.Index);
+
+                var result = bettingData.UserBettingList.Select(x => x.Value)
+                    .Select(x => new
+                    {
+                        Email = x.Username,
+                        List = x.BettingList.Where(e => idList.ContainsKey(e.Id))
+                            .Select(e => new { Rank = idList[e.Id], Team = e.Value })
+                            .OrderBy(e => e.Rank),
+                    })
+                    .ToList();
+
+                return JsonConvert.SerializeObject(result);
+            };
         }
     }
 }
