@@ -40,60 +40,20 @@
     <thead>
         <tr>
             <th>아이디</th>
-            <th>그룹</th>
+            <th>선택</th>
             <th class="number">득점</th>
-            <th class="number">배팅금액</th>
-            <th class="number">현재기대값</th>
+            <th class="number">기대값</th>
         </tr>
     </thead>
     <tbody>
     @foreach (DashboardItem data in Model.Dashboard)
     {
-        var username = data.Username.Left(3) + "***";
-        <tr>
-            <td>@username</td>
-            <td>@data.BettingGroup</td>
-            <td class="number">
-                <span>@data.MatchedCount.ToString("#,0")</span>
-                @if (data.MatchedCount != data.OffsetCount)
-                {
-                    <span> (  @data.OffsetCount.ToString("#,0")  )</span>
-                }
-            </td>
-            <td class="number">@data.BettingAmount.ToString("#,0")</td>
-            <td class="number">@data.AllotmentAmount.ToString("#,0")</td>
-        </tr>
-    }
-    </tbody>
-</table>
-    <span>돈이 너무 안 따져서 최하점을 1점으로 시프트 시킵니다. 하하. 그렇다고 0점을 1점으로 올려주진 않습니다.</span>
-</div>
-
-<div class="col-md-6">
-<table class="table table-striped dashboard">
-    <thead>
-        <tr>
-            <th>아이디</th>
-            <th>선택</th>
-        </tr>
-    </thead>
-    <tbody>
-    @foreach (DashboardItem dData in Model.Dashboard)
-    {
-        var username = dData.Username;
+        var username = data.Username;
         var blindName = username.Left(3) + "***";
         var userBettingList = bettingData.UserBettingList[username].BettingList;
         var idList = new[] { "Champion", "Second", "Third", "Fourth" };
         <tr>
             <td>@blindName</td>
-            @if (bettingData.IsFreeze)
-            {
-            <td>
-                투표가 종료되면 나타납니다.
-            </td>
-            }
-            else
-            {
             <td>
                 @foreach (var id in idList)
                 {
@@ -105,11 +65,19 @@
                     }
                 }
             </td>
-            }
+            <td class="number">
+                <span>@data.MatchedCount.ToString("#,0")</span>
+                @if (data.MatchedCount != data.OffsetCount)
+                {
+                    <span> (  @data.OffsetCount.ToString("#,0")  )</span>
+                }
+            </td>
+            <td class="number">@data.AllotmentAmount.ToString("#,0")</td>
         </tr>
     }
     </tbody>
 </table>
+    <span>돈이 너무 안 따져서 최하점을 1점으로 시프트 시킵니다. 하하. 그렇다고 0점을 1점으로 올려주진 않습니다.</span>
 </div>
 </div>
 
@@ -138,7 +106,6 @@ else
 }
 <h3>나의 선택</h3>
 
-<span>시작하지 않은 경기는 변경할 수 있습니다.</span>
 <div class="group-list ">
     @{
         var list = new[]
