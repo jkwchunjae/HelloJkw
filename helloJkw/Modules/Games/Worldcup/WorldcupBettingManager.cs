@@ -285,40 +285,42 @@ namespace helloJkw.Game.Worldcup
                             finalBettingData.TargetList.Add(new Target
                             {
                                 Id = "R8W1",
-                                Value = KnockoutData.Round4[0].TeamHome.TeamCode,
+                                Value = KnockoutData.Round8[0].Winner?.TeamCode ?? "",
                                 Weight = 1,
                             });
                             finalBettingData.TargetList.Add(new Target
                             {
                                 Id = "R8W2",
-                                Value = KnockoutData.Round4[0].TeamAway.TeamCode,
+                                Value = KnockoutData.Round8[1].Winner?.TeamCode ?? "",
                                 Weight = 1,
                             });
                             finalBettingData.TargetList.Add(new Target
                             {
                                 Id = "R8W4",
-                                Value = KnockoutData.Round4[1].TeamHome.TeamCode,
+                                Value = KnockoutData.Round8[3].Winner?.TeamCode ?? "",
                                 Weight = 1,
                             });
                             finalBettingData.TargetList.Add(new Target
                             {
                                 Id = "R8W3",
-                                Value = KnockoutData.Round4[1].TeamAway.TeamCode,
+                                Value = KnockoutData.Round8[2].Winner?.TeamCode ?? "",
                                 Weight = 1,
                             });
                             finalBettingData.TargetList.Add(new Target
                             {
                                 Id = "R4W1",
-                                Value = KnockoutData.Final[0].TeamHome.TeamCode,
+                                Value = KnockoutData.Round4[0].Winner?.TeamCode ?? "",
                                 Weight = 5,
                             });
                             finalBettingData.TargetList.Add(new Target
                             {
                                 Id = "R4W2",
-                                Value = KnockoutData.Final[0].TeamAway.TeamCode,
+                                Value = KnockoutData.Round4[1].Winner?.TeamCode ?? "",
                                 Weight = 5,
                             });
                         }
+
+                        finalBettingData.RecalcMatchData(true);
                     }
                     catch (Exception ex)
                     {

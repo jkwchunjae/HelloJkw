@@ -78,7 +78,7 @@ namespace helloJkw.Game.Worldcup
                         AllotmentAmount = x.AllotmentAmount,
                     })
                     ?.OrderByDescending(x => x.MatchedCount)
-                    ?.OrderByDescending(x =>
+                    ?.ThenByDescending(x =>
                     {
                         var score = 0;
                         var bettingList = bettingData.UserBettingList[x.Username].BettingList;
