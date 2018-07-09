@@ -1,4 +1,13 @@
-﻿div.group-list {
+﻿a {
+    color: black;
+}
+a.btn-login {
+    color: black;
+    font-weight: bolder;
+    text-decoration: underline;
+}
+
+div.group-list {
     max-width: 600px;
     margin: auto;
 }

@@ -133,6 +133,7 @@
     <Content Include="_Static\projects\word-blank\word-blank-study.css" />
     <Content Include="_Static\projects\word-blank\word-blank-study.js" />
     <None Include="_Views\Games\Worldcup\worldcupDataView.cshtml" />
+    <None Include="_Views\Games\Worldcup\worldcupFinalCalc.cshtml" />
     <None Include="_Views\Games\Worldcup\worldcupFinal.cshtml" />
     <None Include="_Views\Games\Worldcup\worldcupRound16.cshtml" />
     <None Include="_Views\Games\Worldcup\worldcupLayout.cshtml" />

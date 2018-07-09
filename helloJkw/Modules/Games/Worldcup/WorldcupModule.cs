@@ -504,11 +504,28 @@ namespace helloJkw.Game.Worldcup
                         Email = x.Username,
                         List = x.BettingList.Where(e => idList.ContainsKey(e.Id))
                             .Select(e => new { Rank = idList[e.Id], Team = e.Value })
-                            .OrderBy(e => e.Rank),
+                            .OrderBy(e => e.Rank)
+                            .Select(e => e.Team)
+                            .ToList(),
                     })
                     .ToList();
 
                 return JsonConvert.SerializeObject(result);
+            };
+
+            Get["/worldcup/2018/final/calc"] = _ =>
+            {
+                var bettingName = "final";
+                var bettingData = WorldcupBettingManager.GetBettingData(bettingName);
+                var userResultList = WorldcupBettingManager.UserResultList;
+                var users = userResultList.Select(x => Tuple.Create(x.Email, x.Name))
+                    .Distinct()
+                    .OrderBy(x => string.IsNullOrEmpty(x.Item2) ? x.Item1 : x.Item2)
+                    .ToList();
+
+                Model.Users = users;
+                Model.UserResultList = userResultList;
+                return View["Games/Worldcup/worldcupFinalCalc.cshtml", Model];
             };
         }
     }

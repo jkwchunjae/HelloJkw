@@ -108,6 +108,43 @@ namespace helloJkw
 			#endregion
 		}
 
+        public static List<User> GetAllUser()
+        {
+            var userList = new List<User>();
+            try
+            {
+                var query = "select * from users where email is not null;";
+                using (var cmd = query.CreateCommand())
+                {
+                    using (var reader = cmd.ExecuteReader())
+                    {
+                        while (reader.Read())
+                        {
+                            var user = new User(
+                                no: reader.GetInt32("no"),
+                                id: reader.GetString("id"),
+                                regDate: reader.GetDateTime("regDate")
+                            )
+                            {
+                                Name = reader.GetString("name"),
+                                Grade = (UserGrade)Enum.Parse(typeof(UserGrade), reader.GetString("grade")),
+                                LastLogin = reader.GetDateTime("lastdate"),
+                                ImageUrl = reader.GetString("imageurl"),
+                                Email = reader.GetString("email"),
+                            };
+
+                            userList.Add(user);
+                        }
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                Logger.Log(ex);
+            }
+            return userList;
+        }
+
 		private static int GetLastNo()
 		{
 			string query = "select max(no) as maxno from users;";

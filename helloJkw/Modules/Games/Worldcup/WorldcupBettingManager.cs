@@ -21,6 +21,7 @@ namespace helloJkw.Game.Worldcup
         public static List<GroupData> GroupDataList = new List<GroupData>();
         public static KnockoutPhase KnockoutData = new KnockoutPhase();
         public static List<DashboardData> DashboardList = new List<DashboardData>();
+        public static List<UserResult> UserResultList = new List<UserResult>();
 
         static WorldcupBettingManager()
         {
@@ -192,6 +193,7 @@ namespace helloJkw.Game.Worldcup
             return bettingData;
         }
 
+        #region Crawl from FIFA
         public static void Update16TargetData()
         {
             Task.Run(async () =>
@@ -235,6 +237,9 @@ namespace helloJkw.Game.Worldcup
                     {
                         KnockoutData = await GetKnockoutPhaseAsync();
                         Log("SYSTEM", "UpdateKnockoutData", JsonConvert.SerializeObject(KnockoutData));
+
+                        var knockoutTemp = await GetKnockoutPhaseAsync();
+                        UserResultList = CalcUserResultList(knockoutTemp);
 
                         var bettingName = "round16";
                         var bettingData = _bettingDataList.FirstOrDefault(x => x.BettingName == bettingName);
@@ -390,8 +395,191 @@ namespace helloJkw.Game.Worldcup
             var knockoutPhase = new KnockoutPhase(knockoutSection);
             return knockoutPhase;
         }
+        #endregion
+
+        #region 경우의수
+        public static List<UserResult> CalcUserResultList(KnockoutPhase knockoutData)
+        {
+            var userNameDic = UserDatabase.GetAllUser()
+                .Where(x => x.Email != null)
+                .ToDictionary(x => x.Email, x => x.Name);
+
+            var userData = GetUserData(userNameDic);
+
+            var resultList = MakePermutation(knockoutData)
+                .SelectMany(target => MakeUserResult(target, userData))
+                .OrderByDescending(x => x.Allotment)
+                .ToList();
+
+            return resultList;
+        }
+
+        public static List<UserData> GetUserData(Dictionary<string, string> userNameDic)
+        {
+            var bettingName = "final";
+            var bettingData = WorldcupBettingManager.GetBettingData(bettingName);
+
+            if (bettingData == null)
+                return new List<UserData>();
+
+            var idList = new[] { "Champion", "Second", "Third", "Fourth", }
+                .Select((x, i) => new { Code = x, Index = i + 1 })
+                .ToDictionary(x => x.Code, x => x.Index);
+
+            var result = bettingData.UserBettingList.Select(x => x.Value)
+                .Select(x => new UserData
+                {
+                    Email = x.Username,
+                    Name = userNameDic.ContainsKey(x.Username) && !string.IsNullOrEmpty(userNameDic[x.Username])? userNameDic[x.Username] : x.Username,
+                    List = x.BettingList.Where(e => idList.ContainsKey(e.Id))
+                        .Select(e => new { Rank = idList[e.Id], Team = e.Value })
+                        .OrderBy(e => e.Rank)
+                        .Select(e => e.Team)
+                        .ToList(),
+                })
+                .ToList();
+
+            return result;
+        }
+
+        public static List<UserResult> MakeUserResult(List<string> target, List<UserData> userData)
+        {
+            var result = userData
+                .Select(x => new UserResult
+                {
+                    Target = target,
+                    Email = x.Email,
+                    Name = x.Name,
+                    List = x.List,
+                    Score = CalcScore(x, target),
+                    Allotment = 0,
+                })
+                .OrderByDescending(x => x.Score)
+                .ThenBy(x => x.Email)
+                .ToList();
+
+            var offset = Math.Max(0, result.Min(x => x.Score) - 1);
+            foreach (var data in result)
+                data.OffsetScore = data.Score - offset;
+            foreach (var data in result)
+            {
+                data.Allotment = result.Count() * 10000 * data.OffsetScore / result.Sum(x => x.OffsetScore);
+                data.Allotment /= 10;
+                data.Allotment *= 10;
+            }
+            return result;
+        }
+
+        public static int CalcScore(UserData userData, List<string> target)
+        {
+            var finalT = target.Take(2).ToList();
+            var score = 0;
+            if (userData.List[0] == target[0]) score += 32;
+            if (userData.List[1] == target[1]) score += 8;
+            if (userData.List[2] == target[2]) score += 4;
+            if (userData.List[3] == target[3]) score += 2;
+            if (finalT.Contains(userData.List[0])) score += 5;
+            if (finalT.Contains(userData.List[1])) score += 5;
+            if (target.Contains(userData.List[0])) score += 1;
+            if (target.Contains(userData.List[1])) score += 1;
+            if (target.Contains(userData.List[2])) score += 1;
+            if (target.Contains(userData.List[3])) score += 1;
+            return score;
+        }
+        #endregion
+
+        #region MakePermutation
+        public static List<List<string>> MakePermutation(KnockoutPhase data)
+        {
+            var matches = new[]
+            {
+                data.Round8,
+                data.Round4,
+                data.Third,
+                data.Final,
+            }
+            .SelectMany(x => x)
+            .OrderBy(x => x.MatchNumber)
+            .ToList();
+
+            var teams = matches.Where(x => x.MatchNumber >= 61)
+                .SelectMany(x => new[] { x.TeamHome, x.TeamAway })
+                .Where(x => x.TeamNumber > 0)
+                .ToDictionary(x => x.TeamCode);
+
+            var startMatchNumber = teams.First().Value.TeamNumber;
+            var startIndex = matches.Select((x, i) => new { Index = i, x.MatchNumber })
+                .First(x => x.MatchNumber == startMatchNumber)
+                .Index;
+
+            var result = new List<List<string>>();
+            Rec(startIndex, matches, teams, result);
+
+            result = result.Select(x => new { Text = x.StringJoin(""), List = x })
+                .GroupBy(x => x.Text)
+                .Select(x => x.First().List)
+                .ToList();
+
+            return result;
+        }
+
+        public static void Rec(int index, List<KnockoutMatch> matches, Dictionary<string, KnockoutTeam> teams, List<List<string>> permutation)
+        {
+            if (index == matches.Count())
+            {
+                var final = matches[index - 1];
+                var third = matches[index - 2];
+                permutation.Add(new[] { final.Winner, final.Loser, third.Winner, third.Loser }.Select(x => x.TeamCode).ToList());
+                return;
+            }
+
+            var match = matches[index];
+
+            match.TeamHome.Score = 1;
+            match.TeamAway.Score = 0;
+            if (match.MatchNumber <= 62)
+            {
+                if (teams.ContainsKey($"W{match.MatchNumber}"))
+                {
+                    var winnerTeam = teams[$"W{match.MatchNumber}"];
+                    var nextCode = winnerTeam.TeamCode;
+                    winnerTeam.TeamCode = match.Winner.TeamCode;
+                }
+            }
+            if (match.MatchNumber == 61 || match.MatchNumber == 62)
+            {
+                if (teams.ContainsKey($"L{match.MatchNumber}"))
+                {
+                    var loserTeam = teams[$"L{match.MatchNumber}"];
+                    loserTeam.TeamCode = match.Loser.TeamCode;
+                }
+            }
+            Rec(index + 1, matches, teams, permutation);
+            match.TeamHome.Score = 0;
+            match.TeamAway.Score = 1;
+            if (match.MatchNumber <= 62)
+            {
+                if (teams.ContainsKey($"W{match.MatchNumber}"))
+                {
+                    var winnerTeam = teams[$"W{match.MatchNumber}"];
+                    var nextCode = winnerTeam.TeamCode;
+                    winnerTeam.TeamCode = match.Winner.TeamCode;
+                }
+            }
+            if (match.MatchNumber == 61 || match.MatchNumber == 62)
+            {
+                if (teams.ContainsKey($"L{match.MatchNumber}"))
+                {
+                    var loserTeam = teams[$"L{match.MatchNumber}"];
+                    loserTeam.TeamCode = match.Loser.TeamCode;
+                }
+            }
+            Rec(index + 1, matches, teams, permutation);
+        }
+        #endregion
     }
 
+    #region BettingData
     public class BettingData
     {
         public string BettingName { get; set; }
@@ -453,7 +641,9 @@ namespace helloJkw.Game.Worldcup
         public string Value { get; set; }
         public bool IsMatched { get; set; }
     }
+    #endregion
 
+    #region GroupData
     public class GroupData
     {
         public string GroupName { get; set; }
@@ -471,7 +661,9 @@ namespace helloJkw.Game.Worldcup
         public int Rank { get; set; }
         public int Point { get; set; }
     }
+    #endregion
 
+    #region DashboardData
     public class DashboardData
     {
         public DateTime CalcTime { get; set; }
@@ -488,7 +680,9 @@ namespace helloJkw.Game.Worldcup
         public int BettingAmount { get; set; }
         public int AllotmentAmount { get; set; }
     }
+    #endregion
 
+    #region KnockoutPhase
     public class KnockoutPhase
     {
         public List<KnockoutMatch> Round16 { get; set; }
@@ -553,6 +747,7 @@ namespace helloJkw.Game.Worldcup
 
     public class KnockoutTeam
     {
+        public int TeamNumber { get; set; }
         public string TeamName { get; set; }
         public string TeamCode { get; set; }
         public int Score { get; set; }
@@ -563,6 +758,10 @@ namespace helloJkw.Game.Worldcup
         {
             TeamName = teamSection.SelectSingleNode(".//span[contains(@class, 'fi-t__nText')]").InnerText.Trim();
             TeamCode = teamSection.SelectSingleNode(".//span[contains(@class, 'fi-t__nTri')]").InnerText.Trim();
+            if (int.TryParse(TeamCode.Substring(1, 2), out var teamNumber))
+            {
+                TeamNumber = teamNumber;
+            }
             if (!string.IsNullOrWhiteSpace(scoreText))
             {
                 Score = scoreText.ToInt();
@@ -573,4 +772,24 @@ namespace helloJkw.Game.Worldcup
             }
         }
     }
+    #endregion
+
+    #region UserResult
+    public class UserResult
+    {
+        public List<string> Target { get; set; }
+        public string Email { get; set; }
+        public string Name { get; set; }
+        public List<string> List { get; set; } // Team codes
+        public int Score { get; set; }
+        public int OffsetScore { get; set; }
+        public int Allotment { get; set; }
+    }
+    public class UserData
+    {
+        public string Email { get; set; }
+        public string Name { get; set; } = "";
+        public List<string> List { get; set; } // Team codes
+    }
+    #endregion
 }

@@ -1,0 +1,171 @@
+﻿@inherits Nancy.ViewEngines.Razor.NancyRazorViewBase<dynamic>
+@using helloJkw.Game.Worldcup;
+@using Extensions;
+@{
+    Layout = "worldcup/worldcupLayout.cshtml";
+
+    List<UserResult> userResultList = Model.UserResultList;
+    List<Tuple<string, string>> users = Model.Users;
+}
+
+<p>
+    <a href="/worldcup/2018/group">조별리그 결과 보기</a>
+</p>
+<p>
+    <a href="/worldcup/2018/round16">16강 결과 보기</a>
+</p>
+<p>
+    <a href="/worldcup/2018/final">FINAL ROUND 결과 보기</a>
+</p>
+
+<p>
+    <h3> 남은 경기의 모든 경우의 수를 알아보는 페이지입니다.  </h3>
+</p>
+
+<div>
+    <button class="btn btn-default btn-email" onclick="toggle('all')" data-email="all">ALL</button>
+    @foreach (var user in users)
+    {
+        string email = user.Item1;
+        string name = string.IsNullOrEmpty(user.Item2) ? email : user.Item2;
+        <button class="btn btn-default btn-email" onclick="toggle('@email')" data-email="@email">@name</button>
+    }
+</div>
+<div class="row">
+<div class="col-md-8">
+<table class="table table-striped dashboard">
+    <thead>
+        <tr>
+            <th>결과</th>
+            <th>이름</th>
+            <th>선택</th>
+            <th class="number">득점</th>
+@*            <th class="number">득점(offset)</th>*@
+            <th class="number">기대값</th>
+        </tr>
+    </thead>
+    <tbody>
+    @foreach (var userResult in userResultList)
+    {
+        var targetString = userResult.Target.StringJoin(",");
+        <tr class="user-result" data-email="@userResult.Email" data-target="@targetString">
+            <td class="select-target" onclick="selectTarget('@targetString')">
+            @foreach (var teamCode in userResult.Target)
+            {
+                var image = "https://img.fifa.com/images/flags/4/" + teamCode + ".png";
+                <img src="@image" class="result-table" />
+            }
+            </td>
+            <td>
+                <span class="select-user" onclick="selectUser('@userResult.Email')">@userResult.Name</span>
+            </td>
+            <td>
+            @foreach (var teamCode in userResult.List)
+            {
+                var image = "https://img.fifa.com/images/flags/4/" + teamCode + ".png";
+                <img src="@image" class="result-table" />
+            }
+            </td>
+            <td class="number">@userResult.Score</td>
+            @*<td class="number">@userResult.OffsetScore</td>*@
+            <td class="number">@userResult.Allotment.ToString("#,0")</td>
+        </tr>
+    }
+    </tbody>
+</table>
+</div>
+</div>
+
+@section Css
+{
+<link href="/Static/css/worldcup.css" rel="stylesheet" />
+<style type="text/css">
+    .user-result {
+        display: none;
+    }
+
+    .select-target {
+        cursor: pointer;
+    }
+
+    .select-user {
+        text-decoration: underline;
+        cursor: pointer;
+    }
+</style>
+}
+
+@section Javascript
+{
+<script type="text/javascript">
+    var selected = [];
+    var selectedTarget = ''
+
+    function toggle(email) {
+        if (email == 'all') {
+            selected = ['all']
+        } else if (selected.some(x => x == email)) {
+            selected = selected.filter(x => x !== email)
+        } else {
+            selected = selected.filter(x => x !== 'all')
+            selected.push(email)
+        }
+        selectedTarget = '';
+        updateHtml();
+    }
+
+    function selectUser(email) {
+        selected = [email];
+        selectedTarget = '';
+        updateHtml();
+    }
+
+    function selectTarget(target) {
+        selectedTarget = target;
+        selected = [];
+        updateHtml();
+    }
+
+    function updateHtml() {
+        updateButton();
+        updateTable();
+    }
+
+    function updateButton() {
+        $('.btn-email')
+            .addClass('btn-default')
+            .removeClass('btn-success')
+            .each((i, x) => {
+                var email = $(x).attr('data-email')
+                if (selected.some(e => e == email)) {
+                    $(x).addClass('btn-success')
+                }
+            })
+    }
+
+    function updateTable() {
+        if (selected.some(x => x == 'all')) {
+            $('.user-result').css('display', 'table-row')
+            return;
+        }
+        $('.user-result').css('display', 'none')
+        $('.user-result').each((i, x) => {
+            var email = $(x).attr('data-email');
+            if (selected.some(e => e == email)) {
+                $(x).css('display', 'table-row')
+            }
+        })
+
+        if (selectedTarget !== '') {
+            $('.user-result').each((i, x) => {
+                var target = $(x).attr('data-target');
+                if (selectedTarget === target) {
+                    $(x).css('display', 'table-row')
+                }
+            })
+        }
+    }
+
+    updateHtml();
+</script>
+}
