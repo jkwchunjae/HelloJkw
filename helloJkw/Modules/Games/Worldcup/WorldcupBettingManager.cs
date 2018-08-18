@@ -37,7 +37,7 @@ namespace helloJkw.Game.Worldcup
             DashboardList = JsonConvert.DeserializeObject<List<DashboardData>>(File.ReadAllText(_DashboardPath));
 
             //Update16TargetData(); // 끝났음.
-            UpdateKnockoutData();
+            //UpdateKnockoutData();
         }
 
         public static void Save(this BettingData bettingData)
