@@ -126,6 +126,7 @@
     <Compile Include="Utils\HitCounter.cs" />
     <Compile Include="Utils\Utils.cs" />
     <Content Include="_Static\css\baduk.css" />
+    <Content Include="_Static\css\wedding.css" />
     <Content Include="_Static\css\worldcup.css" />
     <Content Include="_Static\projects\word-blank\word-blank-exam.css" />
     <Content Include="_Static\projects\word-blank\word-blank-exam.js" />
@@ -231,6 +232,7 @@
     <None Include="_Views\Jkw\redirect.cshtml" />
     <None Include="_Views\Jkw\Layout.cshtml" />
     <None Include="_Views\Jkw\blog\LayoutBlog.cshtml" />
+    <None Include="_Views\Jkw\wedding\weddingHome.cshtml" />
     <None Include="_Views\Jkw\word-blank\wordBlankLogin.cshtml" />
     <None Include="_Views\Jkw\word-blank\wordBlankMain.cshtml" />
     <None Include="_Views\Lucia\luciaCategory.cshtml" />

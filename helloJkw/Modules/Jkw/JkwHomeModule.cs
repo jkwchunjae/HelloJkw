@@ -82,6 +82,8 @@ namespace helloJkw
 			};
 #endif
 
+            Get["/wedding"] = _ => View["wedding/weddingHome.cshtml"];
+
 			Get["/error"] = _ =>
 			{
 				string type = Request.Query.type;

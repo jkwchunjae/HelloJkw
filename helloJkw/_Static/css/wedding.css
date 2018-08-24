@@ -1,0 +1,30 @@
+﻿body {
+    margin: 0;
+    padding: 0;
+}
+
+div.main img {
+    width: 100%;
+}
+
+@media screen and (min-width: 500px) {
+    div.main {
+        overflow: hidden;
+        max-height: 90vh;
+        border: 1px solid groove;
+    }
+
+    div.main img {
+        margin-top: -20%;
+    }
+
+    .mobile {
+        display: none;
+    }
+}
+
+@media screen and (max-width: 500px) {
+    .pc {
+        display: none;
+    }
+}
