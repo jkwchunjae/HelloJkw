@@ -82,7 +82,7 @@ namespace helloJkw
 			};
 #endif
 
-            Get["/wedding"] = _ => View["wedding/weddingHome.cshtml"];
+            Get["/wedding-test1"] = _ => View["wedding/weddingHome.cshtml"];
 
 			Get["/error"] = _ =>
 			{
