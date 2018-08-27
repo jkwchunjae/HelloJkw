@@ -1,4 +1,7 @@
-﻿<!DOCTYPE html>
+﻿@{ 
+    string previewImage = Model.PreviewImage + ".jpg";
+}
+<!DOCTYPE html>
 <html xmlns:og="http://ogp.me/ns#" lang="ko">
 <head>
     <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
@@ -7,7 +10,7 @@
     <meta property="og:title" content="유태희, 전경원의 청첩장">
     <meta property="og:type" content="website">
     <meta property="og:url" content="http://hellojkw.com/wedding">
-    <meta property="og:image" content="http://hellojkw.com/jkw/wedding/wedding-preview2.jpg">
+    <meta property="og:image" content="http://hellojkw.com/jkw/wedding/wedding-@previewImage">
     <meta property="og:description" content="2018.10.20 11:00 대방동성당">
     <meta name="author" content="유태희, 전경원">
     <meta name="description" content="2018.10.20 11:00 대방동성당">
@@ -16,37 +19,86 @@
     <link href="https://fonts.googleapis.com/css?family=Gaegu|Gamja+Flower|Hi+Melody|Jua|Nanum+Gothic|Nanum+Pen+Script|Poor+Story|Sunflower:300" rel="stylesheet">
 </head>
 <body>
-    <img class="hidden" src="/jkw/wedding/wedding-preview2.jpg" alt="" />
+    <img class="hidden" src="/jkw/wedding/wedding-@previewImage" alt="" />
     <div class="main">
         <img class="pc" src="/jkw/wedding/wedding-main.jpg" alt=""/>
         <img class="mobile" src="/jkw/wedding/wedding-main-mobile.jpg" alt=""/>
     </div>
-    <div class="content">
-        <p class="thankyou pc">
-            <span>아름다운 꽃에는</span>
-            <span>가꾸어 온 사람의 노고가 깃들어 있듯이</span>
-            <span>인생의 기쁜 순간에는</span>
-            <span>그동안 도와주신 분들에 대한 고마움을 느낍니다.</span>
-            <span>항상 감사한 마음으로 사랑하며 살겠다는</span>
-            <span>소중한 맹세의 시간을 갖고자 하니</span>
-            <span>새로운 가족을 만들어가는 두 사람을</span>
-            <span>축복해주시기 바랍니다.</span>
-        </p>
-        <p class="thankyou mobile">
-            <span>아름다운 꽃에는</span>
-            <span>가꾸어 온 사람의 노고가</span>
-            <span>깃들어 있듯이</span>
-            <span>인생의 기쁜 순간에는</span>
-            <span>그동안 도와주신 분들에 대한</span>
-            <span>고마움을 느낍니다.</span>
-            <span>항상 감사한 마음으로</span>
-            <span>사랑하며 살겠다는</span>
-            <span>소중한 맹세의 시간을 갖고자 하니</span>
-            <span>새로운 가족을 만들어가는 두 사람을</span>
-            <span>축복해주시기 바랍니다.</span>
-        </p>
+    <div style="margin-top: 100vh;">
+        <!-- 실질적인 청첩장. 모든 내용이 여기 있다. -->
+        <div class="container" id="thankyou">
+            <div class="background">
+            </div>
+            <div class="content">
+                <div class="thankyou pc">
+                    <span>아름다운 꽃에는</span>
+                    <span>가꾸어 온 사람의 노고가 깃들어 있듯이</span>
+                    <span>인생의 기쁜 순간에는</span>
+                    <span>그동안 도와주신 분들에 대한 고마움을 느낍니다.</span>
+                    <span>항상 감사한 마음으로 사랑하며 살겠다는</span>
+                    <span>소중한 맹세의 시간을 갖고자 하니</span>
+                    <span>새로운 가족을 만들어가는 두 사람을</span>
+                    <span>축복해주시기 바랍니다.</span>
+                </div>
+                <div class="thankyou mobile">
+                    <span>아름다운 꽃에는</span>
+                    <span>가꾸어 온 사람의 노고가</span>
+                    <span>깃들어 있듯이</span>
+                    <span>인생의 기쁜 순간에는</span>
+                    <span>그동안 도와주신 분들에 대한</span>
+                    <span>고마움을 느낍니다.</span>
+                    <span>항상 감사한 마음으로</span>
+                    <span>사랑하며 살겠다는</span>
+                    <span>소중한 맹세의 시간을 갖고자 하니</span>
+                    <span>새로운 가족을 만들어가는 두 사람을</span>
+                    <span>축복해주시기 바랍니다.</span>
+                </div>
+            </div>
+        </div>
+        <div class="container" id="couple">
+            <div class="background">
+                <img class="pc" src="/jkw/wedding/pic2-pc.jpg" />
+                <img class="mobile" src="/jkw/wedding/pic2-mobile.jpg" />
+            </div>
+            <div class="content couple-content">
+                <svg class="pc" style="position:absolute; width:100%;height:100%;">
+                    <defs>
+                        <mask id="mask" x="0" y="0" width="100%" height="100%">
+                            <rect x="0" y="0" width="100%" height="100%" fill="#fff"/>
+                            <circle cx="36vw" cy="14vw" r="10vw"/>
+                            <circle cx="62vw" cy="10vw" r="10vw"/>
+                        </mask>
+                    </defs>
+                    <rect x="0" y="0" width="100%" height="100%" mask="url(#mask)" fill-opacity="0.1" />
+                </svg>
+                <div>
+                    <div class="person" id="person-left">
+                        <div class="person-inner">
+                            <div class="person-circle">
+                                @*<img src="https://lh6.googleusercontent.com/-C8AOJgHh9x8/AAAAAAAAAAI/AAAAAAAAOjU/Nn3A3doJJHM/photo.jpg" />*@
+                            </div>
+                            <div class="">
+                                <span class="my-name">태희</span>
+                                <span class="parent-name">유재한 이향운의 딸</span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="person" id="person-right">
+                        <div class="person-inner">
+                            <div class="person-circle">
+                                @*<img src="https://lh6.googleusercontent.com/-C8AOJgHh9x8/AAAAAAAAAAI/AAAAAAAAOjU/Nn3A3doJJHM/photo.jpg" />*@
+                            </div>
+                            <div class="">
+                                <span class="my-name">경원</span>
+                                <span class="parent-name">전대수 황경욱의 아들</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
     </div>
-    <div class="content2">
+    <div class="content2 hidden">
         <div class="background">
             <img class="pc" src="/jkw/wedding/pic2-pc.jpg" />
             <img class="mobile" src="/jkw/wedding/pic2-mobile.jpg" />

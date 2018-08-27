@@ -10,6 +10,10 @@ body {
     padding: 0;
 }
 
+span {
+    display: block;
+}
+
 .hidden {
     display: none;
 }
@@ -19,33 +23,71 @@ div.main {
     top: 0;
     z-index: -1;
     width: 100%;
-    height: 100vh;
+    max-height: 100vh;
 }
 
 div.main img {
     width: 100%;
 }
 
-body > div.content {
-    background-color: #ffe8f3;
+div.container {
+    position: relative;
+    width: 100%;
+    height: 100vh;
+}
+
+div.background {
+    position: absolute;
+    top: 0;
+    width: 100%;
+    margin-left: auto;
+    margin-right: auto;
+    overflow: hidden;
+}
+
+div.background img {
+    width: 100%;
+}
+
+div.content {
+    position: absolute;
+    top: 0;
+    width: 100%;
+    height: 100%;
+}
+
+div#thankyou {
+}
+
+div#thankyou div.background {
+    /*width: 100vw;*/
+    min-height: 100vh;
+    background-color: white;
     opacity: 0.9;
 }
 
-p.thankyou {
+/*body > div.content {
+    background-color: #ffe8f3;
+    opacity: 0.9;
+}*/
+
+.thankyou {
+    position: relative;
+    top: 50%;
+    transform: translateY(-50%);
+
     text-align: center;
     font-family: 'Gaegu', cursive;
     font-size: 2em;
     word-break: keep-all;
-    padding: 3em 0em;
-    margin-top: 100vh;
-}
-
-.content2 {
     width: 100%;
 }
 
-span {
-    display: block;
+div#couple div.background {
+    max-height: 100vh;
+}
+
+div#couple .background img {
 }
 
 .person-circle {
@@ -59,53 +101,64 @@ span {
     width: 100%;
 }
 
+
+
 @media screen and (min-width: 750px) {
     div.main {
         overflow: hidden;
     }
 
     div.main img {
-        margin-top: -20%;
+        /*margin-top: 0%;*/
     }
 
     .mobile {
         display: none;
     }
 
-    .thankyou {
-        /*height: 100vh;*/
-    }
-
-    .content2 {
-    }
-
-    .content2 > div {
-
-    }
-
-    .content2 .background img {
-        width: 100%;
-    }
-
-    .couple {
+    .couple-content {
         font-family: LotteMartDream;
-        max-width: 1000px;
+        /*color: white;*/
         margin-left: auto;
         margin-right: auto;
     }
 
-    .couple > .person {
-        display: inline-block;
-        width: 32%;
+    .person {
+        vertical-align: top;
     }
 
-    .couple .person-inner {
+    #person-left {
+        margin-top: 20vw;
+        color: black;
+    }
+
+    #person-right {
+        margin-top: 17vw;
+        color: white;
+        text-align: right;
+        float: right;
+    }
+
+    #person-right > div {
+        float: right;
+    }
+
+    .couple-content > div {
+        max-width: 60%;
+    }
+
+    .couple-content  .person {
+        display: inline-block;
+        width: 48%;
+    }
+
+    .couple-content .person-inner {
         position: relative;
         /*top: -1em;*/
         max-width: 15em;
     }
 
-    .couple div {
+    .couple-content > div {
         margin-left: auto;
         margin-right: auto;
     }
@@ -132,6 +185,7 @@ span {
         overflow: hidden;
         max-height: 100vh;
     }
+
     .pc {
         display: none;
     }

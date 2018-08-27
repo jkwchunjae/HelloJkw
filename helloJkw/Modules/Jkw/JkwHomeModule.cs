@@ -82,7 +82,12 @@ namespace helloJkw
 			};
 #endif
 
-            Get["/wedding-test1"] = _ => View["wedding/weddingHome.cshtml"];
+            Get["/wedding/{preview?}"] = _ =>
+            {
+                string previewImage = _.preview;
+                Model.PreviewImage = previewImage ?? "preview2";
+                return View["wedding/weddingHome.cshtml", Model];
+            };
 
 			Get["/error"] = _ =>
 			{
