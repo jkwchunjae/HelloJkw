@@ -17,6 +17,7 @@
     <link rel="icon" href="/jkw/others/card-favicon.png">
     <link rel="stylesheet" href="/Static/css/wedding.css">
     <link href="https://fonts.googleapis.com/css?family=Gaegu|Gamja+Flower|Hi+Melody|Jua|Nanum+Gothic|Nanum+Pen+Script|Poor+Story|Sunflower:300" rel="stylesheet">
+    <script src="http://code.jquery.com/jquery-2.2.4.min.js" integrity="sha256-BbhdlvQf/xTY9gja0Dq3HiwQF8LaCRTXxZKRutelT44=" crossorigin="anonymous"></script>
 </head>
 <body>
     <img class="hidden" src="/jkw/wedding/wedding-@previewImage" alt="" />
@@ -58,7 +59,11 @@
         <div class="container" id="couple">
             <div class="background">
                 <img class="pc" src="/jkw/wedding/pic2-pc.jpg" />
-                <img class="mobile" src="/jkw/wedding/pic2-mobile.jpg" />
+                <img class="mobile" src="/jkw/wedding/pic2-mobile2.jpg" id="pic2-mobile2" />
+                <img class="mobile" src="/jkw/wedding/pic2-mobile3.jpg" id="pic2-mobile3" />
+                <img class="mobile" src="/jkw/wedding/pic2-mobile4.jpg" id="pic2-mobile4"/>
+                <img class="mobile" src="/jkw/wedding/pic2-mobile5.jpg" id="pic2-mobile5"/>
+                <img class="mobile" src="/jkw/wedding/pic2-mobile6.jpg" id="pic2-mobile6"/>
             </div>
             <div class="content couple-content">
                 <svg class="pc" style="position:absolute; width:100%;height:100%;">
@@ -74,64 +79,59 @@
                 <div>
                     <div class="person" id="person-left">
                         <div class="person-inner">
-                            <div class="person-circle">
+                            <div class="person-circle mobile">
                                 @*<img src="https://lh6.googleusercontent.com/-C8AOJgHh9x8/AAAAAAAAAAI/AAAAAAAAOjU/Nn3A3doJJHM/photo.jpg" />*@
+                                <img src="/jkw/wedding/circle-taehee1.jpg" />
                             </div>
-                            <div class="">
+                            <div class="description">
                                 <span class="my-name">태희</span>
                                 <span class="parent-name">유재한 이향운의 딸</span>
+                                <div class="message mobile">
+                                    <span>태희야 안녕. 태희 인사말을 쓰는 공간이야.</span>
+                                    <span>글씨 크기를 어떻게 하면 좋을지 모르겠네.</span>
+                                </div>
                             </div>
                         </div>
                     </div>
                     <div class="person" id="person-right">
                         <div class="person-inner">
-                            <div class="person-circle">
-                                @*<img src="https://lh6.googleusercontent.com/-C8AOJgHh9x8/AAAAAAAAAAI/AAAAAAAAOjU/Nn3A3doJJHM/photo.jpg" />*@
+                            <div class="person-circle mobile">
+                                <img src="/jkw/wedding/circle-jkw1.jpg" />
                             </div>
-                            <div class="">
+                            <div class="description">
                                 <span class="my-name">경원</span>
                                 <span class="parent-name">전대수 황경욱의 아들</span>
+                                <div class="message mobile">
+                                    <span>
+                                        여전히 부족한 저를 조금 더 성장시켜주는 사람을 만났습니다.
+                                        그녀와 함께 삶이란 퍼즐을 풀어보고 싶습니다.
+                                        재미있는 문제를 함께 푼 다는것이 신나고 즐겁습니다.
+                                        <br/>
+                                        항상 감사합니다.
+                                    </span>
+                                </div>
                             </div>
                         </div>
                     </div>
                 </div>
             </div>
-        </div>
-    </div>
-    <div class="content2 hidden">
-        <div class="background">
-            <img class="pc" src="/jkw/wedding/pic2-pc.jpg" />
-            <img class="mobile" src="/jkw/wedding/pic2-mobile.jpg" />
-        </div>
-        <div class="couple">
-            <div class="person">
-                <div class="person-inner">
-                    <div class="person-circle">
-                        <img src="https://lh6.googleusercontent.com/-C8AOJgHh9x8/AAAAAAAAAAI/AAAAAAAAOjU/Nn3A3doJJHM/photo.jpg" />
-                    </div>
-                    <div class="">
-                        <span class="my-name">태희</span>
-                        <span class="parent-name">유재한 이향운의 딸</span>
-                    </div>
-                </div>
-            </div>
-            <div class="person">
-                <div class="person-inner">
-                    <div class="huge-amp">&amp;</div>
-                </div>
-            </div>
-            <div class="person">
-                <div class="person-inner">
-                    <div class="person-circle">
-                        <img src="https://lh6.googleusercontent.com/-C8AOJgHh9x8/AAAAAAAAAAI/AAAAAAAAOjU/Nn3A3doJJHM/photo.jpg" />
-                    </div>
-                    <div class="">
-                        <span class="my-name">경원</span>
-                        <span class="parent-name">전대수 황경욱의 아들</span>
-                    </div>
-                </div>
+            <div class="content">
+                <button onclick="showPic2(2)">1번</button>
+                <button onclick="showPic2(3)">2번</button>
+                <button onclick="showPic2(4)">3번</button>
+                <button onclick="showPic2(5)">4번</button>
+                <button onclick="showPic2(6)">5번</button>
             </div>
         </div>
     </div>
+    <script type="text/javascript">
+        function showPic2(num) {
+            var len = $('#couple .background img.mobile').length
+            for (var i = 2; i <= len + 1; i++) {
+                $(`#pic2-mobile${i}`).hide()
+            }
+            $(`#pic2-mobile${num}`).show()
+        }
+    </script>
 </body>
 </html>

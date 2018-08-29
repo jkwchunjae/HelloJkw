@@ -66,11 +66,6 @@ div#thankyou div.background {
     opacity: 0.9;
 }
 
-/*body > div.content {
-    background-color: #ffe8f3;
-    opacity: 0.9;
-}*/
-
 .thankyou {
     position: relative;
     top: 50%;
@@ -87,18 +82,12 @@ div#couple div.background {
     max-height: 100vh;
 }
 
-div#couple .background img {
-}
-
-.person-circle {
-    border-radius: 50%;
-    max-width: 15em;
-    max-height: 15em;
-    overflow: hidden;
-}
-
 .person-circle img {
     width: 100%;
+}
+
+.couple-content {
+    font-family: LotteMartDream;
 }
 
 
@@ -117,8 +106,6 @@ div#couple .background img {
     }
 
     .couple-content {
-        font-family: LotteMartDream;
-        /*color: white;*/
         margin-left: auto;
         margin-right: auto;
     }
@@ -189,4 +176,63 @@ div#couple .background img {
     .pc {
         display: none;
     }
+
+    .thankyou {
+        font-size: 1.3em;
+    }
+
+    #couple .background img {
+        margin-top: -58%;
+    }
+
+    div.container#couple {
+        height: initial;
+    }
+
+    div#couple div.background {
+        max-height: 150vh;
+    }
+
+    .person {
+        margin-top: 20%;
+    }
+
+    .person-circle {
+        border-radius: 50%;
+        max-width: 13em;
+        max-height: 13em;
+        overflow: hidden;
+        margin-left: auto;
+        margin-right: auto;
+    }
+
+    .couple-content .description {
+        text-align: center;
+    }
+
+    .description > span {
+        margin-top: 5%;
+    }
+
+    .couple-content .my-name {
+        font-size: 4em;
+    }
+
+    .couple-content .parent-name {
+        font-size: 1.2em;
+    }
+
+    .description > .message {
+        padding-top: 3%;
+        width: 70%;
+        margin-left: auto;
+        margin-right: auto;
+    }
+
+    .description > .message > span {
+        /*word-break: keep-all;*/
+        line-height: 1.5em;
+        font-size: 0.9em;
+    }
+
 }
