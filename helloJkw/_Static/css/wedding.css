@@ -178,7 +178,8 @@ div#couple div.background {
     }
 
     .thankyou {
-        font-size: 1.3em;
+        font-size: 6vw;
+        /*font-size: 1.3em;*/
     }
 
     #couple .background img {
@@ -186,7 +187,7 @@ div#couple div.background {
     }
 
     div.container#couple {
-        height: initial;
+        height: 200vh;
     }
 
     div#couple div.background {
