@@ -191,7 +191,7 @@ div#couple div.background {
     }
 
     div#couple div.background {
-        max-height: 150vh;
+        max-height: 200vh;
     }
 
     .person {
@@ -225,7 +225,7 @@ div#couple div.background {
 
     .description > .message {
         padding-top: 3%;
-        width: 70%;
+        width: 75%;
         margin-left: auto;
         margin-right: auto;
     }
