@@ -236,4 +236,25 @@ div#couple div.background {
         font-size: 0.9em;
     }
 
+    .container#pictures {
+        height: initial;
+        background-color: #ccc;
+    }
+
+    .container#whenwhere {
+        height: initial;
+        background-color: white;
+    }
+
+    .schedule-img-wrap {
+        max-width: 40vw;
+        margin: 15vw auto 0 auto;
+        border-radius: 50%;
+        overflow: hidden;
+        border: 1.5vw solid #f3f3f3;
+    }
+
+    #when, #where {
+        font-size: 5vw;
+    }
 }
