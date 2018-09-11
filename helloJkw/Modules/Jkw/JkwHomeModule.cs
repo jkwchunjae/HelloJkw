@@ -89,6 +89,12 @@ namespace helloJkw
                 return View["wedding/weddingHome.cshtml", Model];
             };
 
+            Get["/kyungwon-taehee"] = _ =>
+            {
+                Model.PreviewImage = "preview2";
+                return View["wedding/weddingHome.cshtml", Model];
+            };
+
 			Get["/error"] = _ =>
 			{
 				string type = Request.Query.type;
