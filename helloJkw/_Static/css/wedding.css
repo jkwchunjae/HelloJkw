@@ -33,7 +33,7 @@ div.main img {
 div.container {
     position: relative;
     width: 100%;
-    height: 100vh;
+    /*height: 100vh;*/
 }
 
 div.background {
@@ -50,13 +50,14 @@ div.background img {
 }
 
 div.content {
-    position: absolute;
-    top: 0;
+    position: relative;
+    /*top: 0;*/
     width: 100%;
     height: 100%;
 }
 
 div#thankyou {
+    height: 100vh;
 }
 
 div#thankyou div.background {
@@ -78,8 +79,8 @@ div#thankyou div.background {
     width: 100%;
 }
 
-div#couple div.background {
-    max-height: 100vh;
+div#couple2 div.background {
+    /*max-height: 100vh;*/
 }
 
 .person-circle img {
@@ -182,20 +183,28 @@ div#couple div.background {
         /*font-size: 1.3em;*/
     }
 
-    #couple .background img {
-        margin-top: -58%;
-    }
-
-    div.container#couple {
+    #thankyou .background {
         height: 200vh;
     }
 
-    div#couple div.background {
-        max-height: 200vh;
+    #couple2 .background img {
+        margin-top: -58%;
+    }
+
+    div.container#couple2 {
+        /*height: 200vh;*/
+    }
+
+    div#couple2 div.background {
+        /*max-height: 200vh;*/
     }
 
     .person {
-        margin-top: 20%;
+        padding-top: 20%;
+    }
+
+    .person#person-left {
+        padding-bottom: 30%;
     }
 
     .person-circle {
@@ -213,6 +222,10 @@ div#couple div.background {
 
     .description > span {
         margin-top: 5%;
+    }
+
+    .description > span.catholic-name {
+        margin-top: -2%;
     }
 
     .couple-content .my-name {

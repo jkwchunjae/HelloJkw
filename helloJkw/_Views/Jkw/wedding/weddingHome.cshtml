@@ -1,5 +1,6 @@
 ﻿@{ 
     string previewImage = Model.PreviewImage + ".jpg";
+    bool isCatholic = Model.IsCatholic;
 }
 <!DOCTYPE html>
 <html xmlns:og="http://ogp.me/ns#" lang="ko">
@@ -54,22 +55,22 @@
                 </div>
             </div>
         </div>
-        <div class="container" id="couple">
+        <div class="container" id="couple2">
             <div class="background">
                 <img class="pc" src="/jkw/wedding/pic2-pc.jpg" />
                 <img class="mobile" src="/jkw/wedding/pic2-mobile7.jpg" />
             </div>
             <div class="content couple-content">
                 @*<svg class="pc" style="position:absolute; width:100%;height:100%;">
-                    <defs>
-                        <mask id="mask" x="0" y="0" width="100%" height="100%">
-                            <rect x="0" y="0" width="100%" height="100%" fill="#fff" />
-                            <circle cx="36vw" cy="14vw" r="10vw" />
-                            <circle cx="62vw" cy="10vw" r="10vw" />
-                        </mask>
-                    </defs>
-                    <rect x="0" y="0" width="100%" height="100%" mask="url(#mask)" fill-opacity="0.1" />
-                </svg>*@
+                        <defs>
+                            <mask id="mask" x="0" y="0" width="100%" height="100%">
+                                <rect x="0" y="0" width="100%" height="100%" fill="#fff" />
+                                <circle cx="36vw" cy="14vw" r="10vw" />
+                                <circle cx="62vw" cy="10vw" r="10vw" />
+                            </mask>
+                        </defs>
+                        <rect x="0" y="0" width="100%" height="100%" mask="url(#mask)" fill-opacity="0.1" />
+                    </svg>*@
                 <div>
                     <div class="person" id="person-right">
                         <div class="person-inner">
@@ -78,17 +79,25 @@
                             </div>
                             <div class="description">
                                 <span class="my-name">경원</span>
-                                <span class="parent-name">전대수 황경욱의 아들</span>
+                                @if (isCatholic)
+                                {
+                                    <span class="catholic catholic-name">극가스테파노</span>
+                                    <span class="catholic parent-name">전대수 미카엘<br />황경욱 루치아<br />장남</span>
+                                }
+                                else
+                                {
+                                    <span class="parent-name">전대수 황경욱의 아들</span>
+                                }
                                 <div class="message mobile">
                                     <span>
                                         여전히 부족한 저를
-                                        <br/>
+                                        <br />
                                         믿어주는 여자를 만났습니다.
-                                        <br/>
+                                        <br />
                                         그녀와 함께 삶이란 퍼즐을 풀어보고 싶습니다.
-                                        <br/>
+                                        <br />
                                         재미있는 문제를 함께 푼다는 것이
-                                        <br/>
+                                        <br />
                                         기대되고 즐겁습니다.
                                     </span>
                                 </div>
@@ -103,15 +112,24 @@
                             </div>
                             <div class="description">
                                 <span class="my-name">태희</span>
-                                <span class="parent-name">유재한 이향운의 딸</span>
+                                @if (isCatholic)
+                                {
+                                    <span class="catholic catholic-name">아녜스</span>
+                                    <span class="catholic parent-name">유재한 바오로<br />이향운 세실리아<br />차녀</span>
+                                }
+                                else
+                                {
+                                    <span class="parent-name">유재한 이향운의 딸</span>
+                                }
+
                                 <div class="message mobile">
                                     <span>
                                         저를 더 성장시키는 남자를 만났습니다.
-                                        <br/>
+                                        <br />
                                         혼자 해낸 것이라 생각했던 일들이
-                                        <br/>
+                                        <br />
                                         이 사람 덕분에 가능했음을 깨달았습니다.
-                                        <br/>
+                                        <br />
                                         이제 둘이 함께 성장하며 살아가고 싶습니다.
                                     </span>
                                 </div>
@@ -210,5 +228,19 @@
         //}
     </script>
     <script src="/Static/js/wedding2.js"></script>
+    @if (!@Model.isDebug)
+    {
+    <script>
+        (function (i, s, o, g, r, a, m) {
+            i['GoogleAnalyticsObject'] = r; i[r] = i[r] || function () {
+                (i[r].q = i[r].q || []).push(arguments)
+            }, i[r].l = 1 * new Date(); a = s.createElement(o),
+                m = s.getElementsByTagName(o)[0]; a.async = 1; a.src = g; m.parentNode.insertBefore(a, m)
+        })(window, document, 'script', '//www.google-analytics.com/analytics.js', 'ga');
+
+        ga('create', 'UA-49135864-2', 'auto');
+        ga('send', 'pageview');
+    </script>
+    }
 </body>
 </html>
