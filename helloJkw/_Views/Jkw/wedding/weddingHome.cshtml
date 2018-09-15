@@ -1,6 +1,15 @@
 ﻿@{ 
     string previewImage = Model.PreviewImage + ".jpg";
     bool isCatholic = Model.IsCatholic;
+
+    string redirectUrl = Model.SiteBase + "/oauth/login";
+    //string loginUrl = "https://accounts.google.com/o/oauth2/auth?client_id=381224079549-pmkekmoko01ss0uqle22q0btsam7nluh.apps.googleusercontent.com&redirect_uri=" + redirectUrl + "&scope=https://www.googleapis.com/auth/userinfo.email&response_type=code";
+    string loginUrl = "https://accounts.google.com/o/oauth2/auth?client_id=381224079549-pmkekmoko01ss0uqle22q0btsam7nluh.apps.googleusercontent.com&redirect_uri=" + redirectUrl + "&scope=profile email&response_type=code";
+    string popupLoginUrl = Model.SiteBase + "/login";
+    string popupLogoutUrl = Model.SiteBase + "/logout";
+
+    string letterTaehee = Model.LetterTaehee;
+    string letterKyungwon = Model.LetterKyungwon;
 }
 <!DOCTYPE html>
 <html xmlns:og="http://ogp.me/ns#" lang="ko">
@@ -19,7 +28,7 @@
     <link rel="stylesheet" href="/Static/css/wedding.css">
     <link rel="stylesheet" href="/Static/css/wedding2.css">
     <link href="https://fonts.googleapis.com/css?family=Gaegu" rel="stylesheet">
-    @*<script src="http://code.jquery.com/jquery-2.2.4.min.js" integrity="sha256-BbhdlvQf/xTY9gja0Dq3HiwQF8LaCRTXxZKRutelT44=" crossorigin="anonymous"></script>*@
+    <script src="http://code.jquery.com/jquery-2.2.4.min.js" integrity="sha256-BbhdlvQf/xTY9gja0Dq3HiwQF8LaCRTXxZKRutelT44=" crossorigin="anonymous"></script>
 </head>
 <body class="home">
     <img class="hidden" src="/jkw/wedding/wedding-@previewImage" alt="" />
@@ -39,7 +48,7 @@
                     <span>인생의 기쁜 순간에는</span>
                     <span>그동안 도와주신 분들에 대한 고마움을 느낍니다.</span>
                     <span>항상 감사한 마음으로 사랑하며 살겠다는</span>
-                    <span>소중한 맹세의 시간을 갖고자 하니</span>
+                    <span>소중한 약속의 시간을 갖고자 하니</span>
                     <span>새로운 가족을 만들어가는 두 사람을</span>
                     <span>축복해주시기 바랍니다.</span>
                 </div>
@@ -49,7 +58,7 @@
                     <span>고마움을 느낍니다.</span>
                     <span>항상 감사한 마음으로</span>
                     <span>사랑하며 살겠다는</span>
-                    <span>소중한 맹세의 시간을 갖고자 하니</span>
+                    <span>소중한 약속의 시간을 갖고자 하니</span>
                     <span>두 사람을</span>
                     <span>축복해주시기 바랍니다.</span>
                 </div>
@@ -88,7 +97,7 @@
                                 {
                                     <span class="parent-name">전대수 황경욱의 아들</span>
                                 }
-                                <div class="message mobile">
+                                <div class="message ">
                                     <span>
                                         여전히 부족한 저를
                                         <br />
@@ -122,7 +131,7 @@
                                     <span class="parent-name">유재한 이향운의 딸</span>
                                 }
 
-                                <div class="message mobile">
+                                <div class="message ">
                                     <span>
                                         저를 더 성장시키는 남자를 만났습니다.
                                         <br />
@@ -215,6 +224,29 @@
                 </div>
             </section>
         </div>
+        <div class="container" id="letter">
+            <div class="background"></div>
+            <div class="content" id="letter-content">
+                <h2>Letter</h2>
+                @if (Model.isLogin)
+                {
+                    <select name="to" id="letter-to">
+                        <option value="taehee">태희에게</option>
+                        <option value="kyungwon">경원에게</option>
+                    </select>
+                    <textarea id="letter-text" maxlength="9999"></textarea>
+                    <button id="letter-save">저장</button>
+                    <button class="btn-logout">로그아웃</button>
+                }
+                else
+                {
+                    <span>로그인하면 편지를 쓸 수 있습니다.<br/>카톡으로 들어오신 분은 다른브라우저로 연 후 로그인해주세요.</span>
+                    <p class="mobile"> <img src="/Static/image/login/kakaotalk_open_other_browser_0.jpg"/> </p>
+                    <p class="mobile"> <img src="/Static/image/login/kakaotalk_open_other_browser_1.jpg"/> </p>
+                    <button class="btn-login"><img src="/Static/image/login/google/red_signin_long/Red_signin_Long_base_44dp.png" /></button>
+                }
+            </div>
+        </div>
 
     </div>
 
@@ -226,6 +258,54 @@
         //    }
         //    $(`#pic2-mobile${num}`).show()
         //}
+        var letter = {
+            'taehee': '@letterTaehee',
+            'kyungwon': '@letterKyungwon',
+        };
+
+        $('#letter-to').change(() => {
+            var to = $('#letter-to').val();
+            setLetter(to)
+        });
+
+        function setLetter(to) {
+            $('#letter-text').val(letter[to]);
+        }
+
+        setLetter('taehee');
+
+        $('#letter-text').keyup(function () {
+            $(this).css('height', 'auto');
+            $(this).height(this.scrollHeight);
+        });
+
+        $('#letter-save').click(() => {
+            var to = $('#letter-to').val();
+            var letter = $('#letter-text').val();
+
+            // wedding2.js 가 response 를 훔쳐간다... 일단 이렇게 하고 끝내자.
+                $('#letter-save').text('저장되었습니다.');
+                setTimeout(() => {
+                    $('#letter-save').text('저장');
+                }, 2000);
+
+            $.post('/wedding/letters', { to, letter }, function(data) {
+                //console.log(data);
+                //$('#letter-save').text('저장되었습니다.');
+                //setTimeout(() => {
+                //    $('#letter-save').text('저장');
+                //}, 2000);
+            }, function() {
+                //alert('실패. 문제가 있습니다. 최대 10000자 까지 저장할 수 있습니다.')
+            });
+        });
+
+        $('.btn-login').click(() => {
+            window.open('@popupLoginUrl', '', 'width=400px, height=400px, resizable=no, scrollbar=no, status=no;');
+        });
+        $('.btn-logout').click(function () {
+            window.open('@popupLogoutUrl', '', 'width=400px, height=400px, resizable=no, scrollbar=no, status=no;');
+        });
     </script>
     <script src="/Static/js/wedding2.js"></script>
     @if (!@Model.isDebug)

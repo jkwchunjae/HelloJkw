@@ -84,9 +84,11 @@ namespace helloJkw
 
             Get["/wedding/{preview?}"] = _ =>
             {
-                string previewImage = _.preview;
-                Model.PreviewImage = previewImage ?? "preview2";
-                return View["wedding/weddingHome.cshtml", Model];
+                //string previewImage = _.preview;
+                //Model.PreviewImage = previewImage ?? "preview2";
+                //return View["wedding/weddingHome.cshtml", Model];
+
+                return Response.AsRedirect("/kyungwon-taehee");
             };
 
             Get["/kyungwon-taehee/{option?}"] = _ =>
@@ -95,7 +97,60 @@ namespace helloJkw
                 string option = _.option;
                 option = option?.ToLower() ?? "";
                 Model.IsCatholic = option.Contains("catholic");
+
+                Model.LetterTaehee = "";
+                Model.LetterKyungwon = "";
+
+                if (session.IsLogin)
+                {
+                    Action<string, string> SetLetter = (to, from) =>
+                    {
+                        var dirPath = $"jkw/project/wedding/letters/{to}";
+                        var filePath = $"{dirPath}/{from}.txt";
+
+                        if (File.Exists(filePath))
+                        {
+                            if (to == "taehee")
+                                Model.LetterTaehee = File.ReadAllText(filePath, Encoding.UTF8);
+                            if (to == "kyungwon")
+                                Model.LetterKyungwon = File.ReadAllText(filePath, Encoding.UTF8);
+                        }
+                    };
+
+                    string fromm = session.User.Name + "." + session.User.Email;
+                    SetLetter("taehee", fromm);
+                    SetLetter("kyungwon", fromm);
+                }
                 return View["wedding/weddingHome.cshtml", Model];
+            };
+
+            Post["/wedding/letters"] = _ =>
+            {
+                if (!session.IsLogin)
+                    return HttpStatusCode.Forbidden;
+
+                string from = session.User.Name + "." + session.User.Email;
+                string to = Request.Form["to"];
+                string letter = Request.Form["letter"];
+
+                if (letter.Length > 10000)
+                    return HttpStatusCode.BadRequest;
+
+                var dirPath = $"jkw/project/wedding/letters/{to}";
+                var filePath = $"{dirPath}/{from}.txt";
+                if (!Directory.Exists(dirPath))
+                    Directory.CreateDirectory(dirPath);
+
+                File.WriteAllText(filePath, letter, Encoding.UTF8);
+
+                var logDirPath = $"jkw/project/wedding/letters/{to}/log";
+                var logPath = $"{logDirPath}/{from}_{DateTime.Now.ToString("yyyyMMdd_HHmmss")}.txt";
+                if (!Directory.Exists(logDirPath))
+                    Directory.CreateDirectory(logDirPath);
+
+                File.WriteAllText(logPath, letter, Encoding.UTF8);
+
+                return HttpStatusCode.OK;
             };
 
 			Get["/error"] = _ =>

@@ -91,11 +91,49 @@ div#couple2 div.background {
     font-family: LotteMartDream;
 }
 
+.container#pictures {
+    height: initial;
+    background-color: #ccc;
+}
 
+.container#whenwhere {
+    height: initial;
+    background-color: white;
+}
+
+.schedule-img-wrap {
+    max-width: 40vw;
+    margin: 15vw auto 0 auto;
+    border-radius: 50%;
+    overflow: hidden;
+    border: 1.5vw solid #f3f3f3;
+}
+
+#letter {
+    background-color: #fff9df;
+    /*border-top: 1px solid gray;*/
+}
+
+#letter-to {
+    background: none;
+}
+
+#letter-text {
+    background: none;
+}
+
+.btn-login {
+    border: none;
+    padding: 0;
+    background: none;
+}
 
 @media screen and (min-width: 750px) {
     div.main {
         overflow: hidden;
+    }
+
+    .container {
     }
 
     div.main img {
@@ -104,6 +142,10 @@ div#couple2 div.background {
 
     .mobile {
         display: none;
+    }
+
+    .container#couple2 {
+        height: 100vh;
     }
 
     .couple-content {
@@ -135,7 +177,7 @@ div#couple2 div.background {
         max-width: 60%;
     }
 
-    .couple-content  .person {
+    .couple-content .person {
         display: inline-block;
         width: 48%;
     }
@@ -143,7 +185,7 @@ div#couple2 div.background {
     .couple-content .person-inner {
         position: relative;
         /*top: -1em;*/
-        max-width: 15em;
+        /*max-width: 15em;*/
     }
 
     .couple-content > div {
@@ -165,6 +207,30 @@ div#couple2 div.background {
         text-align: center;
         position: relative;
         top: -1em;
+    }
+
+    .schedule-img-wrap {
+        max-width: 10vw;
+        margin: 3vw auto 0 auto;
+        border-radius: 50%;
+        overflow: hidden;
+        border: 0.5vw solid #f3f3f3;
+    }
+
+    .container#letter {
+    }
+
+    #letter-content {
+        max-width: 40%;
+        margin-left: auto;
+        margin-right: auto;
+        padding-top: 2em;
+    }
+
+    #letter-text {
+        min-height: 30vh;
+        max-height: 70vh;
+        font-size: 1.5em;
     }
 }
 
@@ -249,25 +315,17 @@ div#couple2 div.background {
         font-size: 0.9em;
     }
 
-    .container#pictures {
-        height: initial;
-        background-color: #ccc;
-    }
-
-    .container#whenwhere {
-        height: initial;
-        background-color: white;
-    }
-
-    .schedule-img-wrap {
-        max-width: 40vw;
-        margin: 15vw auto 0 auto;
-        border-radius: 50%;
-        overflow: hidden;
-        border: 1.5vw solid #f3f3f3;
-    }
-
     #when, #where {
         font-size: 5vw;
+    }
+
+    .container#letter {
+        padding: 1em;
+    }
+
+    #letter-text {
+        min-height: 30vh;
+        max-height: 70vh;
+        font-size: 1.5em;
     }
 }
