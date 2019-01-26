@@ -124,6 +124,39 @@ namespace helloJkw
                 return View["wedding/weddingHome.cshtml", Model];
             };
 
+            Get["/kck-jsg"] = _ =>
+            {
+                Model.PreviewImage = "preview2";
+                string option = _.option;
+                option = option?.ToLower() ?? "";
+                Model.IsCatholic = option.Contains("catholic");
+
+                Model.LetterJsg = "";
+                Model.LetterKck = "";
+
+                if (session.IsLogin)
+                {
+                    Action<string, string> SetLetter = (to, from) =>
+                    {
+                        var dirPath = $"jkw/project/wedding/letters/{to}";
+                        var filePath = $"{dirPath}/{from}.txt";
+
+                        if (File.Exists(filePath))
+                        {
+                            if (to == "jsg")
+                                Model.LetterJsg = File.ReadAllText(filePath, Encoding.UTF8);
+                            if (to == "kck")
+                                Model.LetterKck = File.ReadAllText(filePath, Encoding.UTF8);
+                        }
+                    };
+
+                    string fromm = session.User.Name + "." + session.User.Email;
+                    SetLetter("jsg", fromm);
+                    SetLetter("kck", fromm);
+                }
+                return View["wedding/wedding-kck-jsg.cshtml", Model];
+            };
+
             Post["/wedding/letters"] = _ =>
             {
                 if (!session.IsLogin)
@@ -133,7 +166,7 @@ namespace helloJkw
                 string to = Request.Form["to"];
                 string letter = Request.Form["letter"];
 
-                if (letter.Length > 10000)
+                if (letter.Length > 40000)
                     return HttpStatusCode.BadRequest;
 
                 var dirPath = $"jkw/project/wedding/letters/{to}";

@@ -1,0 +1,315 @@
+﻿@{ 
+    string previewImage = Model.PreviewImage + ".jpg";
+    bool isCatholic = Model.IsCatholic;
+
+    string redirectUrl = Model.SiteBase + "/oauth/login";
+    //string loginUrl = "https://accounts.google.com/o/oauth2/auth?client_id=381224079549-pmkekmoko01ss0uqle22q0btsam7nluh.apps.googleusercontent.com&redirect_uri=" + redirectUrl + "&scope=https://www.googleapis.com/auth/userinfo.email&response_type=code";
+    string loginUrl = "https://accounts.google.com/o/oauth2/auth?client_id=381224079549-pmkekmoko01ss0uqle22q0btsam7nluh.apps.googleusercontent.com&redirect_uri=" + redirectUrl + "&scope=profile email&response_type=code";
+    string popupLoginUrl = Model.SiteBase + "/login";
+    string popupLogoutUrl = Model.SiteBase + "/logout";
+
+    string letterJsg = Model.LetterJsg;
+    string letterKck = Model.LetterKck;
+}
+<!DOCTYPE html>
+<html xmlns:og="http://ogp.me/ns#" lang="ko">
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    <meta name="viewport" content="width=device-width">
+    <title>박창규 전슬기의 청첩장</title>
+    <meta property="og:title" content="박창규 전슬기의 청첩장">
+    <meta property="og:type" content="website">
+    <meta property="og:url" content="http://hellojkw.com/wedding">
+    <meta property="og:image" content="http://hellojkw.com/jkw/wedding/jsg/wedding-@previewImage">
+    <meta property="og:description" content="2019.03.02 토요일 오전 11시 흑석동성당">
+    <meta name="author" content="박창규, 전슬기">
+    <meta name="description" content="2019.03.02 토요일 오전 11시 흑석동성당">
+    <link rel="icon" href="/jkw/others/card-favicon.png">
+    <link rel="stylesheet" href="/Static/css/wedding.css">
+    <link rel="stylesheet" href="/Static/css/wedding2.css">
+    <link href="https://fonts.googleapis.com/css?family=Gaegu" rel="stylesheet">
+    <script src="http://code.jquery.com/jquery-2.2.4.min.js" integrity="sha256-BbhdlvQf/xTY9gja0Dq3HiwQF8LaCRTXxZKRutelT44=" crossorigin="anonymous"></script>
+</head>
+<body class="home">
+    <img class="hidden" src="/jkw/wedding/jsg/wedding-@previewImage" alt="" />
+    <div class="main">
+        <img class="pc" src="/jkw/wedding/jsg/wedding-main.jpg" alt="" />
+        <img class="mobile" src="/jkw/wedding/jsg/wedding-main-mobile.jpg" alt="" />
+    </div>
+    <div style="margin-top: 100vh;">
+        <!-- 실질적인 청첩장. 모든 내용이 여기 있다. -->
+        <div class="container" id="thankyou">
+            <div class="background">
+            </div>
+            <div class="content">
+                <div class="thankyou pc">
+                    <span>아름다운 꽃에는</span>
+                    <span>가꾸어 온 사람의 노고가 깃들어 있듯이</span>
+                    <span>인생의 기쁜 순간에는</span>
+                    <span>그동안 도와주신 분들에 대한 고마움을 느낍니다.</span>
+                    <span>항상 감사한 마음으로 사랑하며 살겠다는</span>
+                    <span>소중한 약속의 시간을 갖고자 하니</span>
+                    <span>새로운 가족을 만들어가는 두 사람을</span>
+                    <span>축복해주시기 바랍니다.</span>
+                </div>
+                <div class="thankyou mobile">
+                    <span>인생의 기쁜 순간에는</span>
+                    <span>그동안 도와주신 분들께</span>
+                    <span>고마움을 느낍니다.</span>
+                    <span>항상 감사한 마음으로</span>
+                    <span>사랑하며 살겠다는</span>
+                    <span>소중한 약속의 시간을 갖고자 하니</span>
+                    <span>두 사람을</span>
+                    <span>축복해주시기 바랍니다.</span>
+                </div>
+            </div>
+        </div>
+        <div class="container" id="couple2">
+            <div class="background">
+                <img class="pc" src="/jkw/wedding/jsg/pic2-pc.jpg" />
+                <img class="mobile" src="/jkw/wedding/jsg/pic2-mobile7.jpg" />
+            </div>
+            <div class="content couple-content">
+                @*<svg class="pc" style="position:absolute; width:100%;height:100%;">
+                        <defs>
+                            <mask id="mask" x="0" y="0" width="100%" height="100%">
+                                <rect x="0" y="0" width="100%" height="100%" fill="#fff" />
+                                <circle cx="36vw" cy="14vw" r="10vw" />
+                                <circle cx="62vw" cy="10vw" r="10vw" />
+                            </mask>
+                        </defs>
+                        <rect x="0" y="0" width="100%" height="100%" mask="url(#mask)" fill-opacity="0.1" />
+                    </svg>*@
+                <div>
+                    <div class="person" id="person-right">
+                        <div class="person-inner">
+                            <div class="person-circle mobile">
+                                <img src="/jkw/wedding/jsg/circle-jsg2.jpg" />
+                            </div>
+                            <div class="description">
+                                <span class="my-name">슬기</span>
+                                @if (isCatholic)
+                                {
+                                    <span class="catholic catholic-name">글라라</span>
+                                    <span class="catholic parent-name">전대수 미카엘<br />황경욱 루치아<br />셋째</span>
+                                }
+                                else
+                                {
+                                    <span class="parent-name">전대수 황경욱의 딸</span>
+                                }
+                                <div class="message ">
+                                    <span>
+                                        <br />
+                                        <br />
+                                        <br />
+                                        <br />
+                                    </span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="person" id="person-left">
+                        <div class="person-inner">
+                            <div class="person-circle mobile">
+                                @*<img src="https://lh6.googleusercontent.com/-C8AOJgHh9x8/AAAAAAAAAAI/AAAAAAAAOjU/Nn3A3doJJHM/photo.jpg" />*@
+                                <img src="/jkw/wedding/jsg/circle-kck2.jpg" />
+                            </div>
+                            <div class="description">
+                                <span class="my-name">창규</span>
+                                @if (isCatholic)
+                                {
+                                    <span class="catholic catholic-name">스테파노</span>
+                                    <span class="catholic parent-name">김대길 베드로<br />이수자 솔리나<br />장남</span>
+                                }
+                                else
+                                {
+                                    <span class="parent-name">김대길 이수자의 아들</span>
+                                }
+
+                                <div class="message ">
+                                    <span>
+                                        <br />
+                                        <br />
+                                        <br />
+                                    </span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="container" id="pictures">
+            <section id="couple-gallery" style="float: initial;">
+                <h2>Gallery</h2>
+                <div id="pc-gallery">
+                    <ul class="small-block-grid-4 clearing-thumbs" data-clearing>
+                        <li><img src="/jkw/wedding/jsg/pictures/1.jpg" alt=""></li>
+                        <li><img src="/jkw/wedding/jsg/pictures/2.jpg" alt=""></li>
+                        <li><img src="/jkw/wedding/jsg/pictures/3.jpg" alt=""></li>
+                        <li><img src="/jkw/wedding/jsg/pictures/4.jpg" alt=""></li>
+                        <li><img src="/jkw/wedding/jsg/pictures/5.jpg" alt=""></li>
+                        <li><img src="/jkw/wedding/jsg/pictures/6.jpg" alt=""></li>
+                        <li><img src="/jkw/wedding/jsg/pictures/7.jpg" alt=""></li>
+                        <li><img src="/jkw/wedding/jsg/pictures/8.jpg" alt=""></li>
+                        <li><img src="/jkw/wedding/jsg/pictures/9.jpg" alt=""></li>
+                        <li><img src="/jkw/wedding/jsg/pictures/10.jpg" alt=""></li>
+                        <li><img src="/jkw/wedding/jsg/pictures/11.jpg" alt=""></li>
+                        <li><img src="/jkw/wedding/jsg/pictures/12.jpg" alt=""></li>
+                        <li><img src="/jkw/wedding/jsg/pictures/13.jpg" alt=""></li>
+                        <li><img src="/jkw/wedding/jsg/pictures/14.jpg" alt=""></li>
+                    </ul>
+                </div>
+                <div class="couple-mobile-slider-wrap">
+                    <div class="bx-wrapper" style="max-width: 100%; margin: 0px auto">
+                        <div class="bx-viewport" style="width: 100%; overflow: hidden; position: relative">
+                            <div class="couple-mobile-slider" style="width: 1615%; position: relative; transition-duration: 1s; transform: translate3d(0px, 0px, 0px)">
+                                <img src="/jkw/wedding/jsg/pictures/1.jpg" alt="" style="float: left; list-style: none; position: relative; width: 100vw">
+                                <img src="/jkw/wedding/jsg/pictures/2.jpg" alt="" style="float: left; list-style: none; position: relative; width: 100vw">
+                                <img src="/jkw/wedding/jsg/pictures/3.jpg" alt="" style="float: left; list-style: none; position: relative; width: 100vw">
+                                <img src="/jkw/wedding/jsg/pictures/4.jpg" alt="" style="float: left; list-style: none; position: relative; width: 100vw">
+                                <img src="/jkw/wedding/jsg/pictures/5.jpg" alt="" style="float: left; list-style: none; position: relative; width: 100vw">
+                                <img src="/jkw/wedding/jsg/pictures/6.jpg" alt="" style="float: left; list-style: none; position: relative; width: 100vw">
+                                <img src="/jkw/wedding/jsg/pictures/7.jpg" alt="" style="float: left; list-style: none; position: relative; width: 100vw">
+                                <img src="/jkw/wedding/jsg/pictures/8.jpg" alt="" style="float: left; list-style: none; position: relative; width: 100vw">
+                                <img src="/jkw/wedding/jsg/pictures/9.jpg" alt="" style="float: left; list-style: none; position: relative; width: 100vw">
+                                <img src="/jkw/wedding/jsg/pictures/10.jpg" alt="" style="float: left; list-style: none; position: relative; width: 100vw">
+                                <img src="/jkw/wedding/jsg/pictures/11.jpg" alt="" style="float: left; list-style: none; position: relative; width: 100vw">
+                                <img src="/jkw/wedding/jsg/pictures/12.jpg" alt="" style="float: left; list-style: none; position: relative; width: 100vw">
+                                <img src="/jkw/wedding/jsg/pictures/13.jpg" alt="" style="float: left; list-style: none; position: relative; width: 100vw">
+                                <img src="/jkw/wedding/jsg/pictures/14.jpg" alt="" style="float: left; list-style: none; position: relative; width: 100vw">
+                            </div>
+                        </div>
+                    </div>
+                    <div class="blocking" style="display: none"></div>
+                </div>
+            </section>
+        </div>
+        <div class="container" id="whenwhere">
+            <section id="schedule" style="float: initial">
+                <div class="schedule-content-wrap">
+                    <h2>Schedule</h2>
+                    <div class="row">
+                        <div class="schedule-img-wrap">
+                            <img src="/jkw/wedding/jsg/handshake1.jpg" />
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="large-6">
+                            <p>
+                                <span id="when">
+                                    3월 2일 토요일 오전 11시
+                                </span>
+                                <span id="where">
+                                    흑석동 성당
+                                </span>
+                                <span id="link-where">
+                                    <a href="http://naver.me/FmrJy5jO" target="_blank">오시는 길</a>
+                                </span>
+                            </p>
+                        </div>
+                    </div>
+                </div>
+            </section>
+        </div>
+        <div class="container" id="letter">
+            <div class="background"></div>
+            <div class="content" id="letter-content">
+                <h2>Letter</h2>
+                @if (Model.isLogin)
+                {
+                    <select name="to" id="letter-to">
+                        <option value="jsg">슬기에게</option>
+                        <option value="kck">창규에게</option>
+                    </select>
+                    <textarea id="letter-text" maxlength="29999"></textarea>
+                    <button id="letter-save">저장</button>
+                    <button class="btn-logout">로그아웃</button>
+                }
+                else
+                {
+                    <span>로그인하면 편지를 쓸 수 있습니다.<br/>카톡으로 들어오신 분은 다른브라우저로 연 후 로그인해주세요.</span>
+                    <p class="mobile"> <img src="/Static/image/login/kakaotalk_open_other_browser_0.jpg"/> </p>
+                    <p class="mobile"> <img src="/Static/image/login/kakaotalk_open_other_browser_1.jpg"/> </p>
+                    <button class="btn-login"><img src="/Static/image/login/google/red_signin_long/Red_signin_Long_base_44dp.png" /></button>
+                }
+            </div>
+        </div>
+
+    </div>
+
+    <script type="text/javascript">
+        //function showPic2(num) {
+        //    var len = $('#couple .background img.mobile').length
+        //    for (var i = 2; i <= len + 1; i++) {
+        //        $(`#pic2-mobile${i}`).hide()
+        //    }
+        //    $(`#pic2-mobile${num}`).show()
+        //}
+        var letter = {
+            'jsg': `@letterJsg`,
+            'kck': `@letterKck`,
+        };
+
+        $('#letter-to').change(() => {
+            var to = $('#letter-to').val();
+            setLetter(to)
+        });
+
+        function setLetter(to) {
+            $('#letter-text').val(letter[to]);
+        }
+
+        setLetter('jsg');
+
+        $('#letter-text').keyup(function () {
+            $(this).css('height', 'auto');
+            $(this).height(this.scrollHeight);
+        });
+
+        $('#letter-save').click(() => {
+            var to = $('#letter-to').val();
+            var letter = $('#letter-text').val();
+
+            // wedding2.js 가 response 를 훔쳐간다... 일단 이렇게 하고 끝내자.
+                $('#letter-save').text('저장되었습니다.');
+                setTimeout(() => {
+                    $('#letter-save').text('저장');
+                }, 2000);
+
+            $.post('/wedding/letters', { to, letter }, function(data) {
+                //console.log(data);
+                //$('#letter-save').text('저장되었습니다.');
+                //setTimeout(() => {
+                //    $('#letter-save').text('저장');
+                //}, 2000);
+            }, function() {
+                //alert('실패. 문제가 있습니다. 최대 10000자 까지 저장할 수 있습니다.')
+            });
+        });
+
+        $('.btn-login').click(() => {
+            window.open('@popupLoginUrl', '', 'width=400px, height=400px, resizable=no, scrollbar=no, status=no;');
+        });
+        $('.btn-logout').click(function () {
+            window.open('@popupLogoutUrl', '', 'width=400px, height=400px, resizable=no, scrollbar=no, status=no;');
+        });
+    </script>
+    <script src="/Static/js/wedding2.js"></script>
+    @if (!@Model.isDebug)
+    {
+    <script>
+        (function (i, s, o, g, r, a, m) {
+            i['GoogleAnalyticsObject'] = r; i[r] = i[r] || function () {
+                (i[r].q = i[r].q || []).push(arguments)
+            }, i[r].l = 1 * new Date(); a = s.createElement(o),
+                m = s.getElementsByTagName(o)[0]; a.async = 1; a.src = g; m.parentNode.insertBefore(a, m)
+        })(window, document, 'script', '//www.google-analytics.com/analytics.js', 'ga');
+
+        ga('create', 'UA-49135864-2', 'auto');
+        ga('send', 'pageview');
+    </script>
+    }
+</body>
+</html>

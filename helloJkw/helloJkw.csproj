@@ -236,6 +236,7 @@
     <None Include="_Views\Jkw\redirect.cshtml" />
     <None Include="_Views\Jkw\Layout.cshtml" />
     <None Include="_Views\Jkw\blog\LayoutBlog.cshtml" />
+    <None Include="_Views\Jkw\wedding\wedding-kck-jsg.cshtml" />
     <None Include="_Views\Jkw\wedding\weddingHome.cshtml" />
     <None Include="_Views\Jkw\word-blank\wordBlankLogin.cshtml" />
     <None Include="_Views\Jkw\word-blank\wordBlankMain.cshtml" />
