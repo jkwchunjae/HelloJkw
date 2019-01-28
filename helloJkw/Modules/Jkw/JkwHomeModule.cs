@@ -124,12 +124,13 @@ namespace helloJkw
                 return View["wedding/weddingHome.cshtml", Model];
             };
 
-            Get["/happy-wedding"] = _ =>
+            Get["/happy-wedding/{option?}"] = _ =>
             {
-                Model.PreviewImage = "jsg-preview";
+                Model.PreviewImage = "jsg-preview2";
                 string option = _.option;
                 option = option?.ToLower() ?? "";
-                Model.IsCatholic = true;
+                Model.IsCatholic = option.Contains("catholic");
+                Model.IsLetter = option.Contains("letter");
 
                 Model.LetterJsg = "";
                 Model.LetterKck = "";

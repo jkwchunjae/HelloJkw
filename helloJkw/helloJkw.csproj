@@ -126,6 +126,7 @@
     <Compile Include="Utils\HitCounter.cs" />
     <Compile Include="Utils\Utils.cs" />
     <Content Include="_Static\css\baduk.css" />
+    <Content Include="_Static\css\wedding-jsg.css" />
     <Content Include="_Static\css\wedding.css" />
     <Content Include="_Static\css\wedding2.css" />
     <Content Include="_Static\css\worldcup.css" />

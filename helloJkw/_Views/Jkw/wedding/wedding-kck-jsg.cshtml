@@ -25,7 +25,7 @@
     <meta name="author" content="김창규, 전슬기">
     <meta name="description" content="2019.03.02 토요일 오전 11시 흑석동성당">
     <link rel="icon" href="/jkw/others/card-favicon.png">
-    <link rel="stylesheet" href="/Static/css/wedding.css">
+    <link rel="stylesheet" href="/Static/css/wedding-jsg.css">
     <link rel="stylesheet" href="/Static/css/wedding2.css">
     <link href="https://fonts.googleapis.com/css?family=Gaegu" rel="stylesheet">
     <script src="http://code.jquery.com/jquery-2.2.4.min.js" integrity="sha256-BbhdlvQf/xTY9gja0Dq3HiwQF8LaCRTXxZKRutelT44=" crossorigin="anonymous"></script>
@@ -33,8 +33,10 @@
 <body class="home">
     <img class="hidden" src="/jkw/wedding/jsg/wedding-@previewImage" alt="" />
     <div class="main">
-        <img class="pc" src="/jkw/wedding/jsg/wedding-main.jpg" alt="" />
-        <img class="mobile" src="/jkw/wedding/jsg/wedding-main-mobile.jpg" alt="" />
+        @*<img class="pc" src="/jkw/wedding/jsg/wedding-main.jpg" alt="" />*@
+        <img class="pc" src="/jkw/wedding/jsg/wedding-main2.jpg" alt="" />
+        @*<img class="pc" src="/jkw/wedding/jsg/pic2-pc.jpg" alt="" />*@
+        <img class="mobile" src="/jkw/wedding/jsg/wedding-main-mobile2.jpg" alt="" />
     </div>
     <div style="margin-top: 100vh;">
         <!-- 실질적인 청첩장. 모든 내용이 여기 있다. -->
@@ -43,30 +45,26 @@
             </div>
             <div class="content">
                 <div class="thankyou pc">
-                    <span>아름다운 꽃에는</span>
-                    <span>가꾸어 온 사람의 노고가 깃들어 있듯이</span>
-                    <span>인생의 기쁜 순간에는</span>
-                    <span>그동안 도와주신 분들에 대한 고마움을 느낍니다.</span>
-                    <span>항상 감사한 마음으로 사랑하며 살겠다는</span>
-                    <span>소중한 약속의 시간을 갖고자 하니</span>
-                    <span>새로운 가족을 만들어가는 두 사람을</span>
-                    <span>축복해주시기 바랍니다.</span>
+                    <span>서로가 마주보며 다져온 사랑을</span>
+                    <span>이제 함께 한 곳을 바라보며 걸어갈 수 있는</span>
+                    <span>큰 사랑으로 키우고자 합니다.</span>
+                    <span>저희 두 사람이 사랑의 이름으로 지켜나갈 수 있게</span>
+                    <span>앞날을 축복해 주시면 감사하겠습니다.</span>
                 </div>
                 <div class="thankyou mobile">
-                    <span>인생의 기쁜 순간에는</span>
-                    <span>그동안 도와주신 분들께</span>
-                    <span>고마움을 느낍니다.</span>
-                    <span>항상 감사한 마음으로</span>
-                    <span>사랑하며 살겠다는</span>
-                    <span>소중한 약속의 시간을 갖고자 하니</span>
-                    <span>두 사람을</span>
-                    <span>축복해주시기 바랍니다.</span>
+                    <span>서로가 마주보며 다져온 사랑을</span>
+                    <span>이제 함께 한 곳을 바라보며</span>
+                    <span>걸어갈 수 있는</span>
+                    <span>큰 사랑으로 키우고자 합니다.</span>
+                    <span>저희 두 사람이 사랑의 이름으로</span>
+                    <span>지켜나갈 수 있게</span>
+                    <span>앞날을 축복해 주시면 감사하겠습니다.</span>
                 </div>
             </div>
         </div>
         <div class="container" id="couple2">
             <div class="background">
-                <img class="pc" src="/jkw/wedding/jsg/pic2-pc.jpg" />
+                <img class="pc" src="/jkw/wedding/jsg/pic2-pc2.jpg" />
                 <img class="mobile" src="/jkw/wedding/jsg/pic2-mobile7.jpg" />
             </div>
             <div class="content couple-content">
@@ -81,33 +79,6 @@
                         <rect x="0" y="0" width="100%" height="100%" mask="url(#mask)" fill-opacity="0.1" />
                     </svg>*@
                 <div>
-                    <div class="person" id="person-right">
-                        <div class="person-inner">
-                            <div class="person-circle mobile">
-                                <img src="/jkw/wedding/jsg/circle-jsg2.jpg" />
-                            </div>
-                            <div class="description">
-                                <span class="my-name">슬기</span>
-                                @if (isCatholic)
-                                {
-                                    <span class="catholic catholic-name">글라라</span>
-                                    <span class="catholic parent-name">전대수 미카엘<br />황경욱 루치아<br />셋째</span>
-                                }
-                                else
-                                {
-                                    <span class="parent-name">전대수 황경욱의 딸</span>
-                                }
-                                <div class="message ">
-                                    <span>
-                                        <br />
-                                        <br />
-                                        <br />
-                                        <br />
-                                    </span>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
                     <div class="person" id="person-left">
                         <div class="person-inner">
                             <div class="person-circle mobile">
@@ -128,9 +99,51 @@
 
                                 <div class="message ">
                                     <span>
+                                        이 사람이라면 내 평생을 함께해도
                                         <br />
+                                        되겠다는 확신이 들었습니다.
                                         <br />
+                                        함께 있으면 편안한 사람
                                         <br />
+                                        가만히만 마주 보아도 즐거운 사람
+                                        <br />
+                                        행복하게 만들어 주고 싶은 사람
+                                        <br />
+                                        이사람 이라면.
+                                    </span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="person" id="person-right" style="margin-top: 20vw;">
+                        <div class="person-inner">
+                            <div class="person-circle mobile">
+                                <img src="/jkw/wedding/jsg/circle-jsg2.jpg" />
+                            </div>
+                            <div class="description">
+                                <span class="my-name">슬기</span>
+                                @if (isCatholic)
+                                {
+                                    <span class="catholic catholic-name">글라라</span>
+                                    <span class="catholic parent-name">전대수 미카엘<br />황경욱 루치아<br />막내</span>
+                                }
+                                else
+                                {
+                                    <span class="parent-name">전대수 황경욱의 딸</span>
+                                }
+                                <div class="message ">
+                                    <span>
+                                        쿵!하면 짝!하는
+                                        <br />
+                                        재밌는 짝꿍을 만났습니다.
+                                        <br />
+                                        이 사람을 통해 일상을 더욱 행복하고
+                                        <br />
+                                        즐겁게 보는 시각을 얻게됐습니다.
+                                        <br />
+                                        앞으로 소소한 행복을
+                                        <br />
+                                        같이 만들어가고싶습니다.
                                     </span>
                                 </div>
                             </div>
@@ -146,7 +159,7 @@
                 <div id="pc-gallery">
                     <ul class="small-block-grid-4 clearing-thumbs" data-clearing>
                         <li><img src="/jkw/wedding/jsg/pictures/1.jpg" alt=""></li>
-                        <li><img src="/jkw/wedding/jsg/pictures/2.jpg" alt=""></li>
+                        <li><img src="/jkw/wedding/jsg/pictures/2.JPG" alt=""></li>
                         <li><img src="/jkw/wedding/jsg/pictures/3.jpg" alt=""></li>
                         <li><img src="/jkw/wedding/jsg/pictures/4.jpg" alt=""></li>
                         <li><img src="/jkw/wedding/jsg/pictures/5.jpg" alt=""></li>
@@ -166,7 +179,7 @@
                         <div class="bx-viewport" style="width: 100%; overflow: hidden; position: relative">
                             <div class="couple-mobile-slider" style="width: 1615%; position: relative; transition-duration: 1s; transform: translate3d(0px, 0px, 0px)">
                                 <img src="/jkw/wedding/jsg/pictures/1.jpg" alt="" style="float: left; list-style: none; position: relative; width: 100vw">
-                                <img src="/jkw/wedding/jsg/pictures/2.jpg" alt="" style="float: left; list-style: none; position: relative; width: 100vw">
+                                <img src="/jkw/wedding/jsg/pictures/2.JPG" alt="" style="float: left; list-style: none; position: relative; width: 100vw">
                                 <img src="/jkw/wedding/jsg/pictures/3.jpg" alt="" style="float: left; list-style: none; position: relative; width: 100vw">
                                 <img src="/jkw/wedding/jsg/pictures/4.jpg" alt="" style="float: left; list-style: none; position: relative; width: 100vw">
                                 <img src="/jkw/wedding/jsg/pictures/5.jpg" alt="" style="float: left; list-style: none; position: relative; width: 100vw">
@@ -213,6 +226,8 @@
                 </div>
             </section>
         </div>
+        @if (Model.IsLetter)
+        {
         <div class="container" id="letter">
             <div class="background"></div>
             <div class="content" id="letter-content">
@@ -236,7 +251,7 @@
                 }
             </div>
         </div>
-
+        }
     </div>
 
     <script type="text/javascript">
