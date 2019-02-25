@@ -37,6 +37,8 @@ namespace helloJkw
 				if (!session.IsLogin)
 					return View["diary/jkwDiaryRequireLogin", Model];
 
+                DiaryThemeManager.Reload();
+
 				// 자신의 다이어리가 있다면 가장 우선적으로 보여준다.
 				// 없으면 나의 다이어리를 보여준다.
 				string defaultDiaryName = UserManager.GetUser("112902876433833556239").DiaryName;
@@ -53,6 +55,10 @@ namespace helloJkw
 				// 내 일기장 아닌데 허용 목록에 없으면 커트
 				if (!diaryUserInfo.IsDiaryAcceptedUser(session.User))
 					return View["diary/jkwDiarySomethingWrong", Model];
+
+                var userInfo = UserManager.GetJsonInfo(session.User);
+                var themeName = userInfo?.DiaryTheme ?? diaryUserInfo.DiaryTheme;
+                var diaryTheme = DiaryThemeManager.GetTheme(themeName);
 
 				bool withSecure = session.User.DiaryName == diaryName;
 
@@ -74,6 +80,7 @@ namespace helloJkw
 				Model.DiaryName = diaryName;
 				Model.DiaryList = diaryList;
 				Model.IsMine = session.User.DiaryName == diaryName;
+                Model.Theme = diaryTheme;
 				return View["diary/jkwDiaryHome", Model];
 			};
 			#endregion
@@ -302,9 +309,52 @@ namespace helloJkw
 					return JsonConvert.SerializeObject(result);
 				}
 			};
-			#endregion
+            #endregion
 
-			#endregion
-		}
+            #endregion
+
+            #region Theme
+            Get["/diary/theme"] = _ =>
+            {
+                //if (!session.IsLogin)
+                //    return View["diary/jkwDiaryRequireLogin", Model];
+
+                var userInfo = UserManager.GetJsonInfo(session?.User);
+
+                DiaryThemeManager.Reload();
+                var themes = DiaryThemeManager.GetAllThemes();
+                Model.Themes = themes;
+                Model.ThemeTitles = DiaryTheme.Titles();
+                Model.CurrentThemeName = userInfo?.DiaryTheme ?? "";
+                return View["diary/jkwDiaryTheme", Model];
+            };
+
+            Post["/diary/theme/reload"] = _ =>
+            {
+                DiaryThemeManager.Reload();
+                return "";
+            };
+
+            Post["/diary/theme/set"] = _ =>
+            {
+                var userInfo = UserManager.GetJsonInfo(session?.User);
+                userInfo.DiaryTheme = Request.Form["themeName"];
+                UserManager.SaveUserInfo();
+                return "";
+            };
+
+            Post["/diary/theme/save"] = _ =>
+            {
+                if (!session.IsLogin)
+                    return "";
+
+                var themeText = (string)Request.Form["theme"];
+                var theme = JsonConvert.DeserializeObject<DiaryTheme>(themeText);
+                theme.Owner = session?.User?.Email ?? "";
+                DiaryThemeManager.AddOrUpdate(theme);
+                return "";
+            };
+            #endregion
+        }
 	}
 }

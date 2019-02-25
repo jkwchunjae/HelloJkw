@@ -83,6 +83,9 @@
     <Compile Include="Jkw\Blog\BlogManager.cs" />
     <Compile Include="Jkw\Blog\Post.cs" />
     <Compile Include="Jkw\Diary\DiaryManager.cs" />
+    <Compile Include="Jkw\Diary\DiaryTheme.cs" />
+    <Compile Include="Jkw\Diary\ThemeInfoAttribute.cs" />
+    <Compile Include="Jkw\Diary\DiaryThemeManager.cs" />
     <Compile Include="Jkw\Kbo\KboCenter.cs" />
     <Compile Include="Jkw\Kbo\KboDataManager.cs" />
     <Content Include="Jkw\Kbo\KboMatch.cs" />
@@ -214,6 +217,7 @@
     <None Include="_Views\Jkw\diary\jkwDiarySearch.cshtml" />
     <None Include="_Views\Jkw\diary\jkwDiaryShowDates.cshtml" />
     <None Include="_Views\Jkw\diary\jkwDiaryModify.cshtml" />
+    <None Include="_Views\Jkw\diary\jkwDiaryTheme.cshtml" />
     <None Include="_Views\Jkw\diary\jkwDiaryWrite.cshtml" />
     <None Include="_Views\Jkw\diary\jkwDiarySomethingWrong.cshtml" />
     <None Include="_Views\Jkw\diary\jkwDiaryRequireLogin.cshtml" />

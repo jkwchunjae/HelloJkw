@@ -53,6 +53,7 @@ namespace helloJkw
 				session.RefreshExpire();
 			}
 			Model.isLogin = session.IsLogin;
+            Model.user = "";
 			if (session.IsLogin)
 			{
 				Model.user = session.User;

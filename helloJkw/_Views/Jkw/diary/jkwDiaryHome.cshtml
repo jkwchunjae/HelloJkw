@@ -1,86 +1,130 @@
 ﻿@{
-	Layout = "Layout.cshtml";
+    Layout = "Layout.cshtml";
+
+    var theme = Model.Theme;
+    var background = theme.CssText("Background");
+    var diaryBackground = theme.CssText("DiaryBackground");
+    var diaryFont = theme.CssText("DiaryFont");
+    var diaryFontSize = theme.CssText("DiaryFontSize");
+    var diaryFontColor = theme.CssText("DiaryFontColor");
+    var diaryLineHeight = theme.CssText("DiaryLineHeight");
 }
 
-<div>
-	<div id="diary-text">
-		<h2>@Model.Date.ToString("yyyy.MM.dd") <span class="smaller">@Model.DayOfWeek</span></h2>
-		@foreach (var diary in @Model.DiaryList)
-		{
-		<div class="diary">
-			<pre>@diary.Text</pre>
-		</div>
-		}
-		@if (@Model.hasPrev) {
-		<a href="/diary/@Model.DiaryName/@Model.PrevDate.ToString("yyyyMMdd")" class="btn btn-default" id="diary-prev" title="키보드 ←">이전</a>
-		} else {
-		<a href="#" class="btn btn-default" id="diary-prev" disabled="disabled">이전</a>
-		}
-		@if (@Model.hasNext) {
-		<a href="/diary/@Model.DiaryName/@Model.NextDate.ToString("yyyyMMdd")" class="btn btn-default" id="diary-next" title="키보드 →">다음</a>
-		} else {
-		<a href="#" class="btn btn-default" id="diary-next" disabled="disabled">다음</a>
-		}
+<div class="container">
+    <div id="diary-text">
+        <h2>@Model.Date.ToString("yyyy.MM.dd") <span class="smaller">@Model.DayOfWeek</span></h2>
+        @foreach (var diary in @Model.DiaryList)
+        {
+            <div class="diary">
+                <pre>@diary.Text</pre>
+            </div>
+        }
+        @if (@Model.hasPrev)
+        {
+            <a href="/diary/@Model.DiaryName/@Model.PrevDate.ToString("yyyyMMdd")" class="btn btn-default" id="diary-prev" title="키보드 ←">이전</a>
+        }
+        else
+        {
+            <a href="#" class="btn btn-default" id="diary-prev" disabled="disabled">이전</a>
+        }
+        @if (@Model.hasNext)
+        {
+            <a href="/diary/@Model.DiaryName/@Model.NextDate.ToString("yyyyMMdd")" class="btn btn-default" id="diary-next" title="키보드 →">다음</a>
+        }
+        else
+        {
+            <a href="#" class="btn btn-default" id="diary-next" disabled="disabled">다음</a>
+        }
 
-		@if (@Model.IsMine)
-		{
-		<a href="/diary/write/@Model.DiaryName" class="btn btn-success btn-diary-action" id="diary-write" title="키보드 N">쓰기</a>
-		<a href="/diary/modify/@Model.DiaryName/@Model.Date.ToString("yyyyMMdd")" class="btn btn-warning btn-diary-action" id="diary-modify">수정</a>
-		}
-		<a href="/diary/showdates/@Model.DiaryName" class="btn btn-default btn-diary-action">일기 전체</a>
-		@if (@Model.IsMine)
-		{
-		<a href="/diary/search/@Model.DiaryName" class="btn btn-default btn-diary-action">일기 검색</a>
-		}
-		@*<a href="/diary/home" class="btn btn-default btn-diary-action" id="diary-home">일기장 홈</a>*@
-	</div>
+        @if (@Model.IsMine)
+        {
+            <a href="/diary/write/@Model.DiaryName" class="btn btn-success btn-diary-action" id="diary-write" title="키보드 N">쓰기</a>
+            <a href="/diary/modify/@Model.DiaryName/@Model.Date.ToString("yyyyMMdd")" class="btn btn-warning btn-diary-action" id="diary-modify">수정</a>
+        }
+        <a href="/diary/showdates/@Model.DiaryName" class="btn btn-default btn-diary-action">일기 전체</a>
+        @if (@Model.IsMine)
+        {
+            <a href="/diary/search/@Model.DiaryName" class="btn btn-default btn-diary-action">일기 검색</a>
+        }
+        <a href="/diary/theme" class="btn btn-default btn-diary-action">테마</a>
+        @*<a href="/diary/home" class="btn btn-default btn-diary-action" id="diary-home">일기장 홈</a>*@
+    </div>
 </div>
 
 @section Css
 {
-<style type="text/css">
-	::selection {
-		text-shadow: none;
-		background-color: #c8c8c8;
-	}
+    <style type="text/css">
+        ::selection {
+            text-shadow: none;
+            background-color: #c8c8c8;
+        }
 
-	h2 {
-		margin-top: 0px;
-	}
+        h2 {
+            margin-top: 0px;
+        }
 
-	div#diary-text {
-		max-width: 600px;
-	}
+        div#diary-text {
+            max-width: 600px;
+        }
 
-	div.diary pre {
-		white-space: pre-wrap;
-	}
+        div.diary pre {
+            white-space: pre-wrap;
+        }
 
-	.btn-diary-action {
-		float: right;
-		margin-left: 5px;
-	}
+        .btn-diary-action {
+            float: right;
+            margin-left: 5px;
+        }
 
-	#disqus_thread {
-		max-width: 600px;
-	}
-</style>
+        #disqus_thread {
+            max-width: 600px;
+        }
+    </style>
+
+    <style type="text/css">
+        body > .container {
+            margin-left: 0;
+            margin-right: 0;
+            width: 100vw;
+        }
+
+        .container {
+            margin-left: auto;
+            margin-right: auto;
+        }
+    </style>
+
+    <style type="text/css">
+        body {
+            @background
+        }
+
+        div.diary pre {
+            @diaryFont
+            @diaryFontSize
+            @diaryBackground
+            @diaryFontColor
+            @diaryLineHeight
+        }
+    </style>
+
+    @Html.Raw(Model.Theme.FontLink)
 }
 
 @section Javascript
 {
-<script type="text/javascript">
-	$("nav.navbar").addClass("navbar-shrink");
+    <script type="text/javascript">
+        $("nav.navbar").addClass("navbar-shrink");
 
-	$(document).keyup(function (e) {
-		var key = e.which;
-		if (key == 37) { // Arrow Left
-			location.href = $('#diary-prev').attr('href');
-		} else if (key == 39) { // Arrow Right
-			location.href = $('#diary-next').attr('href');
-		} else if (key == 78) { // Key N
-			location.href = $('#diary-write').attr('href');
-		}
-	});
-</script>
+        $(document).keyup(function (e) {
+            var key = e.which;
+            if (key == 37) { // Arrow Left
+                location.href = $('#diary-prev').attr('href');
+            } else if (key == 39) { // Arrow Right
+                location.href = $('#diary-next').attr('href');
+            } else if (key == 78) { // Key N
+                location.href = $('#diary-write').attr('href');
+            }
+        });
+    </script>
 }

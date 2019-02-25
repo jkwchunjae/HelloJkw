@@ -99,6 +99,7 @@ namespace helloJkw
 		public string Id;
 		public string DiaryName;
 		public List<string> DiaryAcceptedList;
+        public string DiaryTheme;
 
 		public UserInfoJson()
 		{ }

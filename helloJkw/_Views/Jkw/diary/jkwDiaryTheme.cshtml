@@ -1,0 +1,231 @@
+﻿@{
+    Layout = "Layout.cshtml";
+}
+
+<div class="container">
+    <div id="diary-text">
+        <h2>2019.01.01<span class="smaller">화</span></h2>
+        <div class="diary">
+            <pre>일기장</pre>
+        </div>
+    </div>
+
+    <div>
+        <select id="themes">
+            <option value=""></option>
+            @foreach (var theme in Model.Themes)
+            {
+                <option value="@theme.Name">@theme.Name</option>
+            }
+            <option value="NEW">NEW</option>
+        </select>
+        <table class="table">
+            <thead>
+                <tr>
+                    <th>Name</th>
+                    <th>Value</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td class="theme-input-name">Name</td>
+                    <td><input class="form-control theme-input" id="input-Name" /></td>
+                </tr>
+                @foreach (var themeTitle in Model.ThemeTitles)
+                {
+                <tr>
+                    <td class="theme-input-name">@themeTitle</td>
+                    <td><input class="form-control theme-input" id="input-@themeTitle" data-title="@themeTitle"/></td>
+                </tr>
+                }
+            </tbody>
+        </table>
+        <button class="btn">Set</button>
+        <button class="btn" onclick="saveTheme()">Save</button>
+    </div>
+</div>
+
+@section Css
+{
+    <style type="text/css">
+        ::selection {
+            text-shadow: none;
+            background-color: #c8c8c8;
+        }
+
+        h2 {
+            margin-top: 0px;
+        }
+
+        div#diary-text {
+            max-width: 600px;
+        }
+
+        div.diary pre {
+            white-space: pre-wrap;
+        }
+
+        .btn-diary-action {
+            float: right;
+            margin-left: 5px;
+        }
+
+        #disqus_thread {
+            max-width: 600px;
+        }
+    </style>
+
+    <style type="text/css">
+        body > .container {
+            margin-left: 0;
+            margin-right: 0;
+            width: 100vw;
+        }
+
+        .container {
+            margin-left: auto;
+            margin-right: auto;
+        }
+    </style>
+}
+
+@section Javascript
+{
+    <script type="text/javascript">
+        $("nav.navbar").addClass("navbar-shrink");
+
+        var myName = "@Model.user.Email";
+        var myThemeName = "@Model.CurrentThemeName"
+
+        var cssData = {
+            'Background': {
+                selector: 'body',
+                title: 'background'
+            },
+            'DiaryBackground': {
+                selector: 'div.diary pre',
+                title: 'background'
+            },
+            'DiaryFont': {
+                selector: 'div.diary pre',
+                title: 'font-family'
+            },
+            'DiaryFontSize': {
+                selector: 'div.diary pre',
+                title: 'font-size'
+            },
+            'DiaryFontColor': {
+                selector: 'div.diary pre, .theme-input-name',
+                title: 'color'
+            },
+            'DiaryLineHeight': {
+                selector: 'div.diary pre',
+                title: 'line-height'
+            },
+        }
+
+        var themes = [
+            @foreach (var theme in Model.Themes)
+            {
+                @:{
+                @:"Name": "@theme.Name",
+                @:"Owner": "@theme.Owner",
+                @:"Background": "@theme.Background",
+                @:"DiaryBackground": "@theme.DiaryBackground",
+                @:"FontLink": "@Html.Raw(theme.FontLink.Replace("\"", "\\\""))",
+                @:"DiaryFont": "@theme.DiaryFont.Replace("\"", "\\\"")",
+                @:"DiaryFontSize": "@theme.DiaryFontSize",
+                @:"DiaryFontColor": "@theme.DiaryFontColor",
+                @:"DiaryLineHeight": "@theme.DiaryLineHeight",
+                @:},
+            }
+        ];
+
+        $('#themes').val(myThemeName);
+        showData(myThemeName);
+        applyTheme(myThemeName);
+
+        $("#themes").change(function () {
+            var themeName = $(this).val();
+            if (themeName.toLowerCase() === "new") {
+                clearData();
+                return;
+            }
+            showData(themeName);
+            applyTheme(themeName);
+        })
+
+        $(".theme-input").keyup(function () {
+            var name = $(this).attr('data-title');
+            var value = $(this).val();
+            if (name === '' || name === undefined) {
+                return;
+            }
+            if (cssData[name] === undefined) {
+                return;
+            }
+            var selector = cssData[name].selector;
+            var title = cssData[name].title;
+
+            $(selector).css(title, value);
+        })
+
+        function applyTheme(themeName) {
+            var theme = themes.find(x => x.Name === themeName);
+            if (theme === undefined) {
+                return;
+            }
+            Object.keys(theme)
+                .filter(key => cssData[key])
+                .forEach(key => {
+                    var selector = cssData[key].selector;
+                    var title = cssData[key].title;
+                    $(selector).css(title, theme[key]);
+                })
+        }
+
+        function clearData() {
+            $(`.theme-input`).removeAttr('disabled');
+            Object.keys(themes[0])
+                .forEach(key => $(`#input-${key}`).val(''));
+        }
+
+        function showData(themeName) {
+            var theme = themes.find(x => x.Name === themeName);
+            if (theme === undefined) {
+                return;
+            }
+            if (theme.Owner === myName) {
+                $(`.theme-input`).removeAttr('disabled')
+            } else {
+                $(`.theme-input`).attr('disabled', 'disabled')
+            }
+            $(`#input-Name`).attr('disabled', 'disabled')
+            for (var key of Object.keys(theme)) {
+                $(`#input-${key}`).val(theme[key]);
+            }
+        }
+
+        function saveTheme() {
+            var name = $(`#input-Name`).val().trim();
+            if (name === '') {
+                showAlert('이름! NAME!!');
+                return;
+            }
+            var theme = new Object();
+            Object.keys(themes[0])
+                .filter(key => key !== 'Owner')
+                .forEach(key => theme[key] = $(`#input-${key}`).val().trim());
+
+            $.post('/diary/theme/save', {
+                theme: JSON.stringify(theme),
+            });
+        }
+
+        function deleteTheme(themeName) {
+            $.post('/diary/theme/delete', {
+                themeName: themeName
+            })
+        }
+    </script>
+}

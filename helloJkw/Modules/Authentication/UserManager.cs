@@ -52,7 +52,7 @@ namespace helloJkw
 			return _userInfoJsonDic;
 		}
 
-		static UserInfoJson GetJsonInfo(User user)
+		public static UserInfoJson GetJsonInfo(User user)
 		{
 			if (user == null) return new UserInfoJson();
 
