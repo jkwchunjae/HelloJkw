@@ -1,56 +1,81 @@
 ﻿@{
-	Layout = "Layout.cshtml";
+    Layout = "Layout.cshtml";
+
+    var theme = Model.Theme;
+    var background = theme.CssText("Background");
+    var diaryBackground = theme.CssText("DiaryBackground");
+    var diaryFont = theme.CssText("DiaryFont");
+    var diaryFontSize = theme.CssText("DiaryFontSize");
+    var diaryFontColor = theme.CssText("DiaryFontColor");
+    var diaryLineHeight = theme.CssText("DiaryLineHeight");
 }
 
 <div>
-	<div id="diary-modify">
-		<h2>@Model.Date.ToString("yyyy.MM.dd") <span class="smaller">@Model.DayOfWeek</span></h2>
-		@foreach (var diary in @Model.DiaryList)
-		{
-		<div class="diary">
-			<textarea class="diary-text" id="diary-text-@diary.Index" data-index="@diary.Index">@diary.Text</textarea>
-		</div>
-		}
+    <div id="diary-modify">
+        <h2>@Model.Date.ToString("yyyy.MM.dd") <span class="smaller">@Model.DayOfWeek</span></h2>
+        @foreach (var diary in @Model.DiaryList)
+        {
+            <div class="diary">
+                <textarea class="diary-text" id="diary-text-@diary.Index" data-index="@diary.Index">@diary.Text</textarea>
+            </div>
+        }
 
-		<button class="btn btn-warning btn-diary-action" id="diary-modify">수정</button>
-	</div>
+        <button class="btn btn-warning btn-diary-action" id="diary-modify">수정</button>
+    </div>
 </div>
 
 @section Css
 {
-<link href="/Static/bootstrap-datepicker/css/bootstrap-datepicker3.min.css" rel="stylesheet">
-<style type="text/css">
-	::selection {
-		text-shadow: none;
-		background-color: #c8c8c8;
-	}
+    <link href="/Static/bootstrap-datepicker/css/bootstrap-datepicker3.min.css" rel="stylesheet">
+    <style type="text/css">
+        ::selection {
+            text-shadow: none;
+            background-color: #c8c8c8;
+        }
 
-	h2 {
-		margin-top: 0px;
-	}
+        h2 {
+            margin-top: 0px;
+        }
 
-	div#diary-modify {
-		max-width: 600px;
-	}
+        div#diary-modify {
+            max-width: 600px;
+        }
 
-	.diary-text {
-		width: 600px;
-		/*min-height: 200px;*/
-		height: auto;
-		max-height: 600px;
-	}
+        .diary-text {
+            width: 600px;
+            /*min-height: 200px;*/
+            height: auto;
+            max-height: 600px;
+        }
 
-	.btn-diary-action {
-		float: right;
-		margin-left: 5px;
-	}
-</style>
+        .btn-diary-action {
+            float: right;
+            margin-left: 5px;
+        }
+    </style>
+
+    <style type="text/css">
+        body {
+            @background
+        }
+
+        .diary-text {
+            @diaryFont
+            @diaryFontSize
+            @diaryBackground
+            @diaryFontColor
+            @diaryLineHeight
+        }
+
+    </style>
+
+    @Html.Raw(Model.Theme.FontLink)
 }
 
 @section Javascript
 {
-<script src="/Static/bootstrap-datepicker/js/bootstrap-datepicker.min.js"></script>
-<script type="text/javascript">
+    <script src="/Static/bootstrap-datepicker/js/bootstrap-datepicker.min.js"></script>
+    <script type="text/javascript">
 	$("nav.navbar").addClass("navbar-shrink");
 
 	$('.diary-text').keyup(function () {
@@ -93,5 +118,5 @@
 			$(this).height(this.scrollHeight);
 		});
 	});
-</script>
+    </script>
 }

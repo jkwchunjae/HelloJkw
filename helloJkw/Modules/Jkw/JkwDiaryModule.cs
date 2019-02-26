@@ -118,9 +118,14 @@ namespace helloJkw
 					.OrderByDescending(x => x.Year)
 					.ToList();
 
-				Model.DiaryName = diaryName;
+                var userInfo = UserManager.GetJsonInfo(session.User);
+                var themeName = userInfo?.DiaryTheme;
+                var diaryTheme = DiaryThemeManager.GetTheme(themeName);
+
+                Model.DiaryName = diaryName;
 				Model.DateGroup = dateGroup;
-				return View["diary/jkwDiaryShowDates", Model];
+                Model.Theme = diaryTheme;
+                return View["diary/jkwDiaryShowDates", Model];
 			};
 			#endregion
 
@@ -132,9 +137,15 @@ namespace helloJkw
 
 				string diaryName = _.diaryName;
 				bool withSecure = session.User.DiaryName == diaryName;
-				//DiaryManager.
+                //DiaryManager.
 
-				return View["diary/jkwDiarySearch", Model];
+                var userInfo = UserManager.GetJsonInfo(session.User);
+                var themeName = userInfo?.DiaryTheme;
+                var diaryTheme = DiaryThemeManager.GetTheme(themeName);
+
+                Model.Theme = diaryTheme;
+
+                return View["diary/jkwDiarySearch", Model];
 			};
 			#endregion
 
@@ -152,9 +163,14 @@ namespace helloJkw
 				if (session.User.DiaryName != diaryName)
 					return View["diary/jkwDiarySomethingWrong", Model];
 
-				Model.Date = DateTime.Today;
+                var userInfo = UserManager.GetJsonInfo(session.User);
+                var themeName = userInfo.DiaryTheme;
+                var diaryTheme = DiaryThemeManager.GetTheme(themeName);
+
+                Model.Date = DateTime.Today;
 				Model.DayOfWeek = DateTime.Today.GetWeekday(DateLanguage.KR, WeekdayFormat.D);
 				Model.DiaryName = diaryName;
+                Model.Theme = diaryTheme;
 				return View["diary/jkwDiaryWrite", Model];
 			};
 			#endregion
@@ -204,12 +220,17 @@ namespace helloJkw
 
 				var diaryList = DiaryManager.GetDiary(diaryName, date, withSecure: true);
 
-				Model.DiaryName = diaryName;
+                var userInfo = UserManager.GetJsonInfo(session.User);
+                var themeName = userInfo.DiaryTheme;
+                var diaryTheme = DiaryThemeManager.GetTheme(themeName);
+
+                Model.DiaryName = diaryName;
 				Model.Date = date;
 				Model.DayOfWeek = date.GetWeekday(DateLanguage.KR, WeekdayFormat.D);
 				Model.DiaryList = diaryList;
+                Model.Theme = diaryTheme;
 
-				return View["diary/jkwDiaryModify", Model];
+                return View["diary/jkwDiaryModify", Model];
 			};
 			#endregion
 

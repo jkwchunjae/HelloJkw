@@ -1,57 +1,82 @@
 ﻿@{
-	Layout = "Layout.cshtml";
+    Layout = "Layout.cshtml";
+
+    var theme = Model.Theme;
+    var background = theme.CssText("Background");
+    var diaryBackground = theme.CssText("DiaryBackground");
+    var diaryFont = theme.CssText("DiaryFont");
+    var diaryFontSize = theme.CssText("DiaryFontSize");
+    var diaryFontColor = theme.CssText("DiaryFontColor");
+    var diaryLineHeight = theme.CssText("DiaryLineHeight");
 }
 
 <div>
-	<div id="diary-write">
-		<div class="col-md-6" style="margin-bottom: 10px ; padding: 0;">
-			<div class='input-group date' id='diary-date-group'>
-				<span class="input-group-addon">
-					<span class="glyphicon glyphicon-calendar"></span>
-				</span>
-				<input type='text' class="form-control" id="diary-date" style="width: 100px;"/>
-				<span class="form-control" id="date-desc" style="width:100px;">월 (어제)</span>
-			</div>
-		</div>
-		<div class="diary">
-			<textarea id="diary-text"></textarea>
-		</div>
+    <div id="diary-write">
+        <div class="col-md-6" style="margin-bottom: 10px ; padding: 0;">
+            <div class='input-group date' id='diary-date-group'>
+                <span class="input-group-addon">
+                    <span class="glyphicon glyphicon-calendar"></span>
+                </span>
+                <input type='text' class="form-control" id="diary-date" style="width: 100px;" />
+                <span class="form-control" id="date-desc" style="width:100px;">월 (어제)</span>
+            </div>
+        </div>
+        <div class="diary">
+            <textarea id="diary-text"></textarea>
+        </div>
 
-		<button class="btn btn-success btn-diary-action" id="diary-write">저장</button>
-	</div>
+        <button class="btn btn-success btn-diary-action" id="diary-write">저장</button>
+    </div>
 </div>
 
 @section Css
 {
-<link href="/Static/bootstrap/css/bootstrap-datetimepicker.css" rel="stylesheet">
-<style type="text/css">
-	::selection {
-		text-shadow: none;
-		background-color: #c8c8c8;
-	}
+    <link href="/Static/bootstrap/css/bootstrap-datetimepicker.css" rel="stylesheet">
+    <style type="text/css">
+        ::selection {
+            text-shadow: none;
+            background-color: #c8c8c8;
+        }
 
-	div#diary-write {
-		max-width: 600px;
-	}
+        div#diary-write {
+            max-width: 600px;
+        }
 
-	#diary-text {
-		width: 100%;
-		min-height: 200px;
-		max-height: 60vh;
-	}
+        #diary-text {
+            width: 100%;
+            min-height: 200px;
+            max-height: 60vh;
+        }
 
-	.btn-diary-action {
-		float: right;
-		margin-left: 5px;
-	}
-</style>
+        .btn-diary-action {
+            float: right;
+            margin-left: 5px;
+        }
+    </style>
+
+    <style type="text/css">
+        body {
+            @background
+        }
+
+        #diary-text {
+            @diaryFont
+            @diaryFontSize
+            @diaryBackground
+            @diaryFontColor
+            @diaryLineHeight
+        }
+
+    </style>
+
+    @Html.Raw(Model.Theme.FontLink)
 }
 
 @section Javascript
 {
-<script src="/Static/bootstrap/js/moment.js"></script>
-<script src="/Static/bootstrap/js/bootstrap-datetimepicker.js"></script>
-<script type="text/javascript">
+    <script src="/Static/bootstrap/js/moment.js"></script>
+    <script src="/Static/bootstrap/js/bootstrap-datetimepicker.js"></script>
+    <script type="text/javascript">
 	$("nav.navbar").addClass("navbar-shrink");
 
 	$(function () {
@@ -123,5 +148,5 @@
 		setDate(moment(new Date()));
 		$('#diary-text').focus();
 	});
-</script>
+    </script>
 }

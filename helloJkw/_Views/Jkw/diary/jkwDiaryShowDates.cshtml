@@ -1,9 +1,17 @@
 ﻿@{
-	Layout = "Layout.cshtml";
+    Layout = "Layout.cshtml";
+
+    var theme = Model.Theme;
+    var background = theme.CssText("Background");
+    var diaryBackground = theme.CssText("DiaryBackground");
+    var diaryFont = theme.CssText("DiaryFont");
+    var diaryFontSize = theme.CssText("DiaryFontSize");
+    var diaryFontColor = theme.CssText("DiaryFontColor");
+    var diaryLineHeight = theme.CssText("DiaryLineHeight");
 }
 
 <div>
-	<div id="diary-modify">
+	<div id="dates-list">
 		@foreach (var yearGroup in @Model.DateGroup)
 		{
 			<h2>@yearGroup.Year</h2>
@@ -43,7 +51,7 @@
 		margin-bottom: 0px;
 	}
 
-	div#diary-modify {
+	div#dates-list {
 		max-width: 800px;
 	}
 
@@ -59,6 +67,30 @@
 		margin-left: 5px;
 	}
 </style>
+
+<style type="text/css">
+    body {
+        @background
+    }
+
+    #dates-list a {
+        @diaryFont
+    }
+
+    #dates-list h2, #dates-list h3, #dates-list a {
+        @diaryFontColor
+    }
+
+    td.td-text pre, td.td-date {
+        @diaryFont
+        @diaryFontSize
+        @diaryBackground
+        @diaryFontColor
+        @diaryLineHeight
+    }
+</style>
+
+@Html.Raw(Model.Theme.FontLink)
 }
 
 @section Javascript

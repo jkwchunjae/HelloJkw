@@ -40,7 +40,7 @@
                 }
             </tbody>
         </table>
-        <button class="btn">Set</button>
+        <button class="btn" onclick="setTheme()">Set</button>
         <button class="btn" onclick="saveTheme()">Save</button>
     </div>
 </div>
@@ -204,6 +204,16 @@
             for (var key of Object.keys(theme)) {
                 $(`#input-${key}`).val(theme[key]);
             }
+        }
+
+        function setTheme() {
+            var themeName = $('#input-Name').val().trim();
+            if (themeName === undefined || themeName === '') {
+                return;
+            }
+            $.post('/diary/theme/set', {
+                themeName: themeName
+            })
         }
 
         function saveTheme() {

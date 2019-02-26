@@ -1,5 +1,13 @@
 ﻿@{
     Layout = "Layout.cshtml";
+
+    var theme = Model.Theme;
+    var background = theme.CssText("Background");
+    var diaryBackground = theme.CssText("DiaryBackground");
+    var diaryFont = theme.CssText("DiaryFont");
+    var diaryFontSize = theme.CssText("DiaryFontSize");
+    var diaryFontColor = theme.CssText("DiaryFontColor");
+    var diaryLineHeight = theme.CssText("DiaryLineHeight");
 }
 
 <div id="diary-search">
@@ -95,6 +103,22 @@
 		border: 0;
 	}
 </style>
+
+    <style type="text/css">
+        body {
+            @background
+        }
+
+        td.td-text pre, td.td-date {
+            @diaryFont
+            @diaryFontSize
+            @diaryBackground
+            @diaryFontColor
+            @diaryLineHeight
+        }
+    </style>
+
+    @Html.Raw(Model.Theme.FontLink)
 }
 
 @section Javascript
@@ -136,6 +160,7 @@
 
 							var tr = document.createElement('tr')
 							var tdDate = document.createElement('td')
+                            $(tdDate).addClass('td-date')
 							var tdText = document.createElement('td')
 							$(tdDate).text(diaryDate + ' (' + diaryWeekday + ')')
 							var pre = document.createElement('pre')
