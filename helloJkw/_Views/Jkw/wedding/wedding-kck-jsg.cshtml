@@ -5,8 +5,10 @@
     string redirectUrl = Model.SiteBase + "/oauth/login";
     //string loginUrl = "https://accounts.google.com/o/oauth2/auth?client_id=381224079549-pmkekmoko01ss0uqle22q0btsam7nluh.apps.googleusercontent.com&redirect_uri=" + redirectUrl + "&scope=https://www.googleapis.com/auth/userinfo.email&response_type=code";
     string loginUrl = "https://accounts.google.com/o/oauth2/auth?client_id=381224079549-pmkekmoko01ss0uqle22q0btsam7nluh.apps.googleusercontent.com&redirect_uri=" + redirectUrl + "&scope=profile email&response_type=code";
-    string popupLoginUrl = Model.SiteBase + "/login";
-    string popupLogoutUrl = Model.SiteBase + "/logout";
+    string siteBase = Model.SiteBase.Contains("hellojkw.com") ? Model.SiteBase.Replace("http://", "https://") : Model.SiteBase;
+
+	string popupLoginUrl = siteBase + "/login";
+	string popupLogoutUrl = siteBase + "/logout";
 
     string letterJsg = Model.LetterJsg;
     string letterKck = Model.LetterKck;

@@ -1,6 +1,8 @@
 ﻿@inherits Nancy.ViewEngines.Razor.NancyRazorViewBase<dynamic>
 @{
-	string popupLoginUrl = Model.SiteBase + "/login";
+    string siteBase = Model.SiteBase.Contains("hellojkw.com") ? Model.SiteBase.Replace("http://", "https://") : Model.SiteBase;
+
+	string popupLoginUrl = siteBase + "/login";
 }
 
 <!DOCTYPE html>

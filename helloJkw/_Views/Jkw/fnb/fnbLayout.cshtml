@@ -5,8 +5,10 @@
 	string desc;
 	try { desc = @Model.Desc; } catch { desc = "블루홀 풋살 동호회 F&B"; }
 
-	string popupLoginUrl = Model.SiteBase + "/login";
-	string popupLogoutUrl = Model.SiteBase + "/logout";
+    string siteBase = Model.SiteBase.Contains("hellojkw.com") ? Model.SiteBase.Replace("http://", "https://") : Model.SiteBase;
+
+	string popupLoginUrl = siteBase + "/login";
+	string popupLogoutUrl = siteBase + "/logout";
 }
 <!DOCTYPE html>
 <html lang="ko">
