@@ -28,7 +28,12 @@ namespace helloJkw
 #endif
 			Before += ctx =>
 			{
-				Model.SiteBase = Request.Url.SiteBase;
+                var siteBase = Request.Url.SiteBase;
+                if (siteBase.Contains("hellojkw.com"))
+                {
+                    siteBase = siteBase.Replace("http://", "https://");
+                }
+				Model.SiteBase = siteBase;
 				SetSession();
 				return null;
 			};
