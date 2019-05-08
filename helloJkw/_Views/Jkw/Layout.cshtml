@@ -19,6 +19,11 @@
     <meta name="author" content="jkw">
     <meta name="description" content="@desc">
     <title>@title</title>
+    <script>
+        if (location.href.startsWith('http://') && !location.href.includes('localhost')) {
+            location.href = location.href.replace('http://', 'https://');
+        }
+    </script>
     <!-- Bootstrap Core CSS -->
     <link href="/Static/bootstrap/css/bootstrap.min.css" rel="stylesheet">
     <!-- Custom CSS -->
