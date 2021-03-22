@@ -13,11 +13,13 @@ namespace helloJkw
 {
 	public static class UserDatabase
 	{
+		private static readonly string _dbRoot = "jkw/db/users/";
+
 		static UserDatabase()
 		{
 		}
 
-		public static bool IsRegister(string id)
+		private static bool IsRegister(string id)
 		{
 			var user = GetUser(id);
 			return user != null;
@@ -33,29 +35,17 @@ namespace helloJkw
 			try
 			{
 				int no = GetLastNo() + 1;
-				var user = new User(no, id, regDate: DateTime.Now) { Name = userName, Email = email, ImageUrl = imageUrl, LastLogin = DateTime.Now, Grade = UserGrade.Friend };
-				string query = @"insert into users (id, no, name, email, grade, regdate, lastdate, imageurl) 
-										values(@id, @no, @name, @email, @grade, @regdate, @lastdate, @imageurl);";
-				var cmd = query.CreateCommand();
-				#region Setting Prams
-				cmd.Parameters.AddWithValue("@id", user.Id);
-				cmd.Parameters.AddWithValue("@no", user.No);
-				cmd.Parameters.AddWithValue("@name", user.Name);
-				cmd.Parameters.AddWithValue("@email", user.Email);
-				cmd.Parameters.AddWithValue("@grade", user.Grade.ToString());
-				cmd.Parameters.AddWithValue("@regdate", user.RegDate);
-				cmd.Parameters.AddWithValue("@lastdate", user.LastLogin);
-				cmd.Parameters.AddWithValue("@imageurl", user.ImageUrl);
-				#endregion
+				var user = new User(no, id, regDate: DateTime.Now)
+				{
+					Name = userName,
+					Email = email,
+					ImageUrl = imageUrl,
+					LastLogin = DateTime.Now,
+					Grade = UserGrade.Friend
+				};
 
-				if (cmd.ExecuteNonQuery() == 1)
-				{
-					return user;
-				}
-				else
-				{
-					throw new RegistrationFailException();
-				}
+				SaveUser(user);
+				return user;
 			}
 			catch(Exception ex)
 			{
@@ -69,32 +59,16 @@ namespace helloJkw
 			#region GetUser from id
 			try
 			{
-				var query = "select * from users where id = @id;";
-				using (var cmd = query.CreateCommand())
+				var userFilePath = Path.Combine(_dbRoot, $"user.google.{id}.json");
+				if (File.Exists(userFilePath))
 				{
-					cmd.Parameters.AddWithValue("@id", id);
-					using (var reader = cmd.ExecuteReader())
-					{
-						if (reader.Read())
-						{
-							return new User(
-								no: reader.GetInt32("no"),
-								id: reader.GetString("id"),
-								regDate: reader.GetDateTime("regDate")
-							)
-							{
-								Name = reader.GetString("name"),
-								Grade = (UserGrade)Enum.Parse(typeof(UserGrade), reader.GetString("grade")),
-								LastLogin = reader.GetDateTime("lastdate"),
-								ImageUrl = reader.GetString("imageurl"),
-								Email = reader.GetString("email"),
-							};
-						}
-						else
-						{
-							return null;
-						}
-					}
+					var text = File.ReadAllText(userFilePath);
+					var user = JsonConvert.DeserializeObject<User>(text);
+					return user;
+				}
+				else
+				{
+					return null;
 				}
 			}
 			catch (Exception ex)
@@ -108,95 +82,55 @@ namespace helloJkw
 			#endregion
 		}
 
-        public static List<User> GetAllUser()
-        {
-            var userList = new List<User>();
-            try
-            {
-                var query = "select * from users where email is not null;";
-                using (var cmd = query.CreateCommand())
-                {
-                    using (var reader = cmd.ExecuteReader())
-                    {
-                        while (reader.Read())
-                        {
-                            var user = new User(
-                                no: reader.GetInt32("no"),
-                                id: reader.GetString("id"),
-                                regDate: reader.GetDateTime("regDate")
-                            )
-                            {
-                                Name = reader.GetString("name"),
-                                Grade = (UserGrade)Enum.Parse(typeof(UserGrade), reader.GetString("grade")),
-                                LastLogin = reader.GetDateTime("lastdate"),
-                                ImageUrl = reader.GetString("imageurl"),
-                                Email = reader.GetString("email"),
-                            };
+		public static List<User> GetAllUser()
+		{
+			var userIdList = Directory.GetFiles(_dbRoot)
+				.Select(path => Path.GetFileNameWithoutExtension(path).Replace("user.google.", ""));
 
-                            userList.Add(user);
-                        }
-                    }
-                }
-            }
-            catch (Exception ex)
-            {
-                Logger.Log(ex);
-            }
-            return userList;
-        }
+			var userList = userIdList
+				.Select(id => GetUser(id))
+				.ToList();
+
+			return userList;
+		}
 
 		private static int GetLastNo()
 		{
-			string query = "select max(no) as maxno from users;";
-			using (var reader = DB.ExecuteReader(query))
+			var users = GetAllUser();
+			if (users.Any())
 			{
-				if (reader.Read())
-				{
-					return (int)reader["maxno"];
-				}
-				else
-				{
-					return 0;
-				}
+				return users.Max(x => x.No);
 			}
-			throw new Exception();
+			else
+			{
+				return 0;
+			}
+		}
+
+		private static void SaveUser(User user)
+		{
+			var userFilePath = Path.Combine(_dbRoot, $"user.google.{user.Id}.json");
+			var userJsonText = JsonConvert.SerializeObject(user, Formatting.Indented);
+			File.WriteAllText(userFilePath, userJsonText, Encoding.UTF8);
 		}
 
 		public static void SaveLastLogin(this User user)
 		{
-			Logger.Log("save user last login: {0}, {1}".With(user.Id, user.LastLogin));
-			string query = @"update users set lastdate=@lastdate where id=@id;";
-			using (var cmd = query.CreateCommand())
-			{
-				cmd.Parameters.AddWithValue("@id", user.Id);
-				cmd.Parameters.AddWithValue("@lastdate", user.LastLogin);
-				cmd.ExecuteNonQuery();
-			}
+			SaveUser(user);
 		}
 
 		public static void SaveUserName(this User user)
 		{
-			Logger.Log("save user name: {0}, {1}".With(user.Id, user.Name));
-			string query = @"update users set name=@name where id=@id;";
-			using (var cmd = query.CreateCommand())
-			{
-				cmd.Parameters.AddWithValue("@id", user.Id);
-				cmd.Parameters.AddWithValue("@name", user.Name);
-				cmd.ExecuteNonQuery();
-			}
+			SaveUser(user);
 		}
 
 		public static void SaveUserImage(this User user, string imageUrl = null)
 		{
-			if (imageUrl != null) user.ImageUrl = imageUrl;
-			Logger.Log("save user image: {0}, {1}".With(user.Id, user.ImageUrl));
-			string query = @"update users set imageurl=@imageurl where id=@id;";
-			using (var cmd = query.CreateCommand())
+			if (imageUrl != null)
 			{
-				cmd.Parameters.AddWithValue("@id", user.Id);
-				cmd.Parameters.AddWithValue("@imageurl", user.ImageUrl);
-				cmd.ExecuteNonQuery();
+				user.ImageUrl = imageUrl;
 			}
+			SaveUser(user);
 		}
 	}
 }

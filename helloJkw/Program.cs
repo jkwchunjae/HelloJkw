@@ -32,42 +32,6 @@ namespace helloJkw
 
 			#endregion
 
-			#region Check Database Connection
-			try
-			{
-#if DEBUG
-				var conn = DB.Connection;
-				conn.Close();
-#else
-				var query = @"insert into server_start values (now());";
-				var affectedRow = query.ExecuteNonQuery();
-				if (affectedRow != 1)
-				{
-					throw new Exception(query + " 쿼리 실행에 실패하였습니다.");
-				}
-#endif
-				Logger.Log("Database연결에 성공하였습니다.");
-			}
-			catch (Exception ex)
-			{
-				Logger.Log("Database에 접속할 수 없습니다.");
-				Logger.Log(ex);
-				return;
-			}
-			#endregion
-
-			#region Load something
-#if !DEBUG
-			Logger.Log("Load LuciaShop");
-			LuciaStatic.LuciaDir = LuciaStatic.RootPath.CreateDirInfo();
-			LuciaStatic.UpdateLuciaDir(0);
-
-			Logger.Log("Load KboCenter");
-			KboCenter.Load();
-#endif
-            WorldcupBettingManager.Load();
-			#endregion
-
 			using (var host = new NancyHost(new Uri("http://localhost:" + port)))
 			{
 				host.Start();

@@ -58,21 +58,21 @@ namespace helloJkw.Utils
 		{
 #if (DEBUG)
 #else
-			lock (_hitDic)
-			{
-				if (saveMinute > 0 && DateTime.Now.Subtract(_lastSaveTime).TotalMinutes < saveMinute)
-					return;
-				_lastSaveTime = DateTime.Now;
+			//lock (_hitDic)
+			//{
+			//	if (saveMinute > 0 && DateTime.Now.Subtract(_lastSaveTime).TotalMinutes < saveMinute)
+			//		return;
+			//	_lastSaveTime = DateTime.Now;
 
-				var jsonHit = JsonConvert.SerializeObject(
-					_hitDic
-						.Select(e => new { Date = e.Key.Item1, Key = e.Key.Item2, Hit = e.Value })
-						.OrderByDescending(e => e.Date)
-						.ThenByDescending(e => e.Hit)
-						);
+			//	var jsonHit = JsonConvert.SerializeObject(
+			//		_hitDic
+			//			.Select(e => new { Date = e.Key.Item1, Key = e.Key.Item2, Hit = e.Value })
+			//			.OrderByDescending(e => e.Date)
+			//			.ThenByDescending(e => e.Hit)
+			//			);
 
-				File.WriteAllText(_path, jsonHit, Encoding.UTF8);
-			}
+			//	File.WriteAllText(_path, jsonHit, Encoding.UTF8);
+			//}
 #endif
 		}
 	}
